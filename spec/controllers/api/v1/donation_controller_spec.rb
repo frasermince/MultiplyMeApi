@@ -5,10 +5,18 @@ describe Api::V1::DonationsController do
     context 'when donation is valid' do
       it 'returns the donation and sets the status to created' do
         donation = Donation.create(amount: 5)
-        stub_donation_creation donation
+        stub_donation_creation donation, true
         post :create, donation: {amount: 5}
         expect(response).to have_http_status(:created)
         expect(assigns[:donation]).to eq(donation)
+      end
+    end
+    context 'when donation is invalid' do
+      it 'returns the error and sets the status to unprocessable' do
+        donation = Donation.create(amount: 5)
+        stub_donation_creation donation, false
+        post :create, donation: {amount: 5}
+        expect(response).to have_http_status(:unprocessable_entity)
       end
     end
   end
@@ -24,9 +32,8 @@ describe Api::V1::DonationsController do
       end
     end
     context 'when donation is not found' do
-      it 'returns the error and the status not found' do
+      it 'returns the error and sets the status to not found' do
         get :show, id: 2
-        Rails.logger.warn "***RESPONSE #{response.inspect}"
         expect(response).to have_http_status(:not_found)
       end
     end
@@ -38,8 +45,8 @@ describe Api::V1::DonationsController do
       and_return(donation)
   end
 
-  def stub_donation_creation(donation)
-    allow(donation).to receive(:save).and_return(true)
+  def stub_donation_creation(donation, is_saved)
+    allow(donation).to receive(:save).and_return(is_saved)
     allow(Donation).to receive(:new).
       with('amount' => '5').
       and_return(donation)
