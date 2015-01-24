@@ -1,7 +1,6 @@
 module Api
   module V1
     class DonationsController < ApplicationController
-
       def create
         @donation = Donation.new donation_params
         if @donation.save
@@ -9,6 +8,11 @@ module Api
         else
           render json: @donation.errors, status: :unprocessable_entity
         end
+      end
+
+      def show
+        @donation = Donation.find params[:id]
+        render json: {donation: @donation}, status: :ok
       end
 
       private
