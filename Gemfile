@@ -12,6 +12,7 @@ gem 'pg'
 
 group :development, :test do
   gem 'rspec-rails', '~> 3.0'
+  gem 'sqlite3'
 end
 
 group :test do

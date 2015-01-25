@@ -1,11 +1,19 @@
 development:
-development:
-  adapter: postgresql
+  test:
+  adapter: sqlite3
+  database: db/test.sqlite3
   encoding: utf8
-  host: localhost
-  database: multiplyme_development
   pool: 5
   timeout: 5000
+
+#  adapter: postgresql
+#  encoding: utf8
+#  host: localhost
+#  database: multiplyme_development
+#  pool: 5
+#  timeout: 5000
+
+
 #  username: Fraser
 
 test: &TEST
@@ -23,4 +31,3 @@ production:
   pool: 5
   username:
   password:
-
