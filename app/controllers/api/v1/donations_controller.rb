@@ -15,6 +15,15 @@ module Api
         render json: {donation: @donation}, status: :ok
       end
 
+      def update
+        @donation = Donation.find params[:id]
+        if @donation.update donation_params
+          render json: {donation: @donation}, status: :ok
+        else
+          render json: @donation.errors, status: :unprocessable_entity
+        end
+      end
+
       private
 
       def donation_params

@@ -39,6 +39,27 @@ describe Api::V1::DonationsController do
     end
   end
 
+  describe '#update' do
+    context 'when donation is updated successfully' do
+      it 'returns the donation and sets the status to ok' do
+        donation = Donation.create amount: 5
+        stub_donation_finding donation, 1
+        put :update, id: 1, donation: {amount: 4}
+        expect(response).to have_http_status(:ok)
+        expect(assigns[:donation].amount).to eq(4)
+      end
+    end
+    context 'when donation is not updated successfully' do
+      it 'returns the error and sets the status to unprocessable' do
+        donation = Donation.create amount: 5
+        stub_donation_finding donation, 1
+        stub_donation_creation donation, false
+        put :update, id: 1, donation: {amount: 4}
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
+    end
+  end
+
   def stub_donation_finding(donation, id)
     allow(Donation).to receive(:find).
       with(id.to_s).
