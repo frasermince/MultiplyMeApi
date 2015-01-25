@@ -26,3 +26,21 @@ Things you may want to cover:
 
 Please feel free to use a different markup language if you do not plan to run
 <tt>rake doc:app</tt>.
+
+=== >>>Issues I ran into while trying to do bundle intall on OSX
+
+ <tt> Can't find the PostgreSQL client library (libpq)
+ *** extconf.rb failed ***
+ Could not create Makefile due to some reason, probably lack of necessary
+ libraries and/or headers.  Check the mkmf.log file for more details.  You may
+ need configuration options.</tt>
+
+To resolve it, I ran
+* sudo su
+* env ARCHFLAGS="-arch x86_64" gem install pg
+
+the env variable has to do with your processor architecture. In order to check yours run the following:
+* uname -a
+
+
+
