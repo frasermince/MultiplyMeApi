@@ -21,6 +21,7 @@ end
 group :test do
   gem 'factory_girl_rails'
   gem 'shoulda-matchers', require: false
+  gem 'simplecov', require: false
 end
 
 # To use ActiveModel has_secure_password
