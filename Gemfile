@@ -7,6 +7,9 @@ gem 'rails-api'
 
 gem 'spring', :group => :development
 
+gem 'devise'
+gem 'omniauth'
+gem 'devise_token_auth'
 
 gem 'pg'
 
@@ -16,6 +19,7 @@ group :development, :test do
 end
 
 group :test do
+  gem 'factory_girl_rails'
   gem 'shoulda-matchers', require: false
 end
 

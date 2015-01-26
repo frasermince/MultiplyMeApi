@@ -1,6 +1,7 @@
 require 'rails_helper'
 
 describe Api::V1::DonationsController do
+  login_user
   describe '#create' do
     context 'when donation is valid' do
       it 'returns the donation and sets the status to created' do
