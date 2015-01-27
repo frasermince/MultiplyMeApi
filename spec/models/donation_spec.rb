@@ -45,6 +45,29 @@ RSpec.describe Donation, :type => :model do
 
   end
 
+  describe 'deleting a donation' do
+    it 'calculates the amount and count of one child' do
+      create_one_child
+      @child_donation.destroy
+      expect_parent_downline_to_equal 0, 0
+    end
+
+    it 'calculate even among multiple levels' do
+      create_grandchild
+      @grandchild_donation.destroy
+      expect_parent_downline_to_equal 1, 1
+      expect_child_downline_to_equal 0, 0
+    end
+
+    it 'calculates with multiple children per level' do
+      create_second_grandchild
+      @second_grandchild_donation.destroy
+      expect_parent_downline_to_equal 2, 8
+      expect_child_downline_to_equal 1, 7
+    end
+
+  end
+
   def expect_child_downline_to_equal(count, amount)
     expect(@child_donation.reload.downline_count).to eq(count)
     expect(@child_donation.reload.downline_amount).to eq(amount)

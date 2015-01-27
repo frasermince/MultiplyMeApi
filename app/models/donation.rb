@@ -1,14 +1,19 @@
 class Donation < ActiveRecord::Base
   before_create :before_create
-  before_update :before_update, if: :amount_changed?
+  before_update :before_amount_update, if: :amount_changed?
+  before_destroy :before_destroy
   belongs_to :parent, :class_name => 'Donation'
   has_many :children, :class_name => 'Donation', :foreign_key => 'parent_id'
+
+  def before_destroy
+    traverse_upline self.parent, 'destroy'
+  end
   
   def before_create
     traverse_upline self.parent, 'create'
   end
 
-  def before_update
+  def before_amount_update
     traverse_upline self.parent, 'update'
   end
 
@@ -24,6 +29,8 @@ class Donation < ActiveRecord::Base
       add_downline_amount amount
     elsif action == 'update'
       replace_downline_amount amount_was, amount
+    elsif action == 'destroy'
+      reduce_downline amount
     end
   end
 
@@ -36,6 +43,13 @@ class Donation < ActiveRecord::Base
   def replace_downline_amount(old, new)
     self.downline_amount -= old
     self.downline_amount += new
+    self.save
+  end
+
+  def reduce_downline(amount)
+    Rails.logger.warn "***AMOUNT #{amount}"
+    self.downline_amount -= amount
+    self.downline_count -= 1
     self.save
   end
 end
