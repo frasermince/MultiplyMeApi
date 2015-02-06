@@ -1,7 +1,11 @@
+source 'https://code.stripe.com'
 source 'https://rubygems.org'
 
 
 gem 'rails', '4.1.5'
+gem 'omniauth-stripe-connect'
+gem 'rest-client'
+gem 'stripe', :source => 'https://code.stripe.com/'
 
 gem 'rails-api'
 
@@ -21,6 +25,7 @@ group :test do
   gem 'factory_girl_rails'
   gem 'shoulda-matchers', require: false
   gem 'simplecov', require: false
+  gem 'webmock'
 end
 
 # To use ActiveModel has_secure_password
