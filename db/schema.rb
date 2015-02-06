@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150125015132) do
+ActiveRecord::Schema.define(version: 20150206231517) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -21,6 +21,16 @@ ActiveRecord::Schema.define(version: 20150125015132) do
     t.float    "amount"
     t.integer  "downline_count",  default: 0
     t.float    "downline_amount", default: 0.0
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "organization_id"
+  end
+
+  add_index "donations", ["organization_id"], name: "index_donations_on_organization_id", using: :btree
+
+  create_table "organizations", force: true do |t|
+    t.string   "name"
+    t.string   "stripe_access_token"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

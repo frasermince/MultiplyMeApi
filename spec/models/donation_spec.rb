@@ -9,6 +9,7 @@ end
 
 RSpec.describe Donation, :type => :model do
 
+  it { should belong_to(:organization) }
   it { should belong_to(:parent) }
   it { should have_many(:children) }
 
