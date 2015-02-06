@@ -47,7 +47,6 @@ class Donation < ActiveRecord::Base
   end
 
   def reduce_downline(amount)
-    Rails.logger.warn "***AMOUNT #{amount}"
     self.downline_amount -= amount
     self.downline_count -= 1
     self.save
