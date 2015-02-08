@@ -2,6 +2,7 @@ class Donation < ActiveRecord::Base
   before_create :before_create
   before_update :before_amount_update, if: :amount_changed?
   before_destroy :before_destroy
+  belongs_to :user
   belongs_to :organization
   belongs_to :parent, :class_name => 'Donation'
   has_many :children, :class_name => 'Donation', :foreign_key => 'parent_id'
