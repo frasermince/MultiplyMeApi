@@ -17,6 +17,11 @@ gem 'devise_token_auth'
 
 gem 'pg'
 
+group :development do
+  gem 'guard'
+  gem 'guard-rspec', require: false
+end
+
 group :development, :test do
   gem 'rspec-rails', '~> 3.0'
 end
@@ -29,7 +34,7 @@ group :test do
 end
 
 # To use ActiveModel has_secure_password
-# gem 'bcrypt-ruby', '~> 3.1.2'
+# gem 'bcrypt-ruby'
 
 # To use Jbuilder templates for JSON
 # gem 'jbuilder'
