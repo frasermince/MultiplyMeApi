@@ -27,7 +27,7 @@ module Api
       private
 
       def donation_params
-        params.require(:donation).permit(:parent_id, :amount)
+        params.require(:donation).permit(:parent_id, :amount, :user_id, :organization_id)
       end
 
     end
