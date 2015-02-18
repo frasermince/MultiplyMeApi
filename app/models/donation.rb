@@ -6,6 +6,7 @@ class Donation < ActiveRecord::Base
   belongs_to :organization
   belongs_to :parent, :class_name => 'Donation'
   has_many :children, :class_name => 'Donation', :foreign_key => 'parent_id'
+  validates :amount, :downline_count, :downline_amount, :organization_id, :user_id, presence: true
 
   def before_destroy
     traverse_upline self.parent, 'destroy'

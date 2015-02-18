@@ -14,6 +14,18 @@ RSpec.describe Donation, :type => :model do
   it { should belong_to(:parent) }
   it { should have_many(:children) }
 
+  describe 'factories' do
+    it 'should be valid' do
+      expect(create(:parent)).to be_valid
+      expect(create(:child)).to be_valid
+      expect(create(:grandchild)).to be_valid
+      expect(create(:second_grandchild)).to be_valid
+      expect(create(:second_child)).to be_valid
+      expect(create(:third_child)).to be_valid
+
+    end
+  end
+
   describe 'creating a donation' do
     it 'calculates the amount and count of one child' do
       create_one_child

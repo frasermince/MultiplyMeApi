@@ -1,5 +1,17 @@
 FactoryGirl.define do
   factory :donation do
+    after(:build) do |donation|
+      user = User.first
+      organization = Organization.first
+      if user.nil?
+        user = create(:user)
+      end
+      if organization.nil?
+        organization = create(:organization)
+      end
+        user.donations.push donation
+        organization.donations.push donation
+    end
 
     factory :parent do
       amount 5
