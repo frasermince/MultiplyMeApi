@@ -3,6 +3,7 @@ module Api
     class DonationsController < ApplicationController
       def create
         @donation = Donation.new donation_params
+        @donation.user_id = current_user.id
         if @donation.save
           render json: {donation: @donation}, status: :created
         else
@@ -27,7 +28,7 @@ module Api
       private
 
       def donation_params
-        params.require(:donation).permit(:parent_id, :amount, :user_id, :organization_id)
+        params.require(:donation).permit(:parent_id, :amount, :organization_id)
       end
 
     end
