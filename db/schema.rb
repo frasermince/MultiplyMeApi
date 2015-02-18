@@ -60,7 +60,7 @@ ActiveRecord::Schema.define(version: 20150217231425) do
     t.text     "tokens"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "stripe_id"
+    t.string   "stripe_id"
   end
 
   add_index "users", ["email"], name: "index_users_on_email", using: :btree

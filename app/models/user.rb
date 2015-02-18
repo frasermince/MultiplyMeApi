@@ -1,3 +1,4 @@
+require "stripe"
 class User < ActiveRecord::Base
   include DeviseTokenAuth::Concerns::User
   has_many :donations
@@ -16,5 +17,19 @@ class User < ActiveRecord::Base
       organization.stripe_access_token
     )
     return customer.id
+  end
+
+  def create_credit_card(token)
+    customer = Stripe::Customer.retrieve(self.stripe_id)
+    customer.cards.create(:card => token)
+  end
+
+  def add_credit_card(token)
+    if self.stripe_id.present?
+      self.create_credit_card token
+      true
+    else
+      false
+    end
   end
 end
