@@ -14,6 +14,7 @@ describe Api::V1::DonationsController do
     context 'when donation is valid' do
       it 'returns the donation and sets the status to created' do
         stub_donation_creation @donation, true
+        expect_stripe_user @donation
         post :create, donation: donation_attributes, card: card_attributes
         expect(response).to have_http_status(:created)
         expect(assigns[:donation]).to eq(@donation)
@@ -94,6 +95,11 @@ describe Api::V1::DonationsController do
     allow(Donation).to receive(:new).
       with(string_params).
       and_return(donation)
+  end
+
+  def expect_stripe_user(donation)
+    allow(donation.user).to receive(:save_stripe_user)
+    expect(donation.user).to receive(:save_stripe_user)
   end
 
 end
