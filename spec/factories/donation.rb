@@ -12,6 +12,9 @@ FactoryGirl.define do
       amount 5
       id 1
       parent_id nil
+      factory :unchallenged_donation do
+        is_challenged false
+      end
     end
 
     factory :child do
@@ -39,6 +42,18 @@ FactoryGirl.define do
       factory :updated_second_grandchild do
         amount 5
       end
+    end
+
+    factory :second_child do
+      amount 1
+      id 5
+      parent_id 1
+    end
+
+    factory :third_child do
+      amount 1
+      id 6
+      parent_id 1
     end
 
   end

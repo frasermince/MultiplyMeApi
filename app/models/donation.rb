@@ -1,5 +1,6 @@
 class Donation < ActiveRecord::Base
   before_create :before_create
+  after_create :after_create
   before_update :before_amount_update, if: :amount_changed?
   before_destroy :before_destroy
   belongs_to :user
@@ -8,12 +9,24 @@ class Donation < ActiveRecord::Base
   has_many :children, :class_name => 'Donation', :foreign_key => 'parent_id'
   validates :amount, :downline_count, :downline_amount, :organization_id, :user_id, presence: true
 
+  # amount is a integer in cents
   def before_destroy
     traverse_upline self.parent, 'destroy'
   end
-  
+
   def before_create
     traverse_upline self.parent, 'create'
+  end
+
+  def after_create
+    parent = self.parent
+    if parent.present? && parent.is_challenged && parent.children.count == 3
+      parent.purchase
+    end
+  end
+
+  def purchase
+    Rails.logger.warn "***STRIPE"
   end
 
   def before_amount_update

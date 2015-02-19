@@ -13,6 +13,16 @@ module DonationCreator
     @child_donation.update(attributes_for(:updated_child))
   end
 
+  def create_two_children(is_challenged = true)
+    if is_challenged
+      create_one_child
+    else
+      @parent = create(:unchallenged_donation)
+      @child_donation = create(:child)
+    end
+    create(:second_child)
+  end
+
   def create_grandchild
     create_one_child
     @grandchild_donation = create(:grandchild)

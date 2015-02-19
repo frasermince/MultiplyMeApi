@@ -46,6 +46,34 @@ RSpec.describe Donation, :type => :model do
     end
   end
 
+  describe '#after_create' do
+    context 'if it is a challenge' do
+      it 'calls a function to create a purchase for parent' do
+        create_two_children
+        allow_any_instance_of(Donation).to receive(:purchase).and_return(nil)
+        expect_any_instance_of(Donation).to receive(:purchase)
+        third_child = build(:third_child)
+        third_child.save
+      end
+    end
+
+    context 'if it is not a challenge' do
+      it 'does not call purchase' do
+        create_two_children false
+        allow_any_instance_of(Donation).to receive(:purchase).and_return(nil)
+        expect_any_instance_of(Donation).not_to receive(:purchase)
+        third_child = build(:third_child)
+        third_child.save
+      end
+    end
+  end
+
+  describe '#purchase' do
+    it 'succeeds in making a purchase' do
+
+    end
+  end
+
   describe 'updating a donation' do
     it 'calculates the amount and count of one child' do
       create_and_update_one_child
@@ -86,6 +114,7 @@ RSpec.describe Donation, :type => :model do
       expect_parent_downline_to_equal 2, child_amount + grandchild_amount
       expect_child_downline_to_equal 1, grandchild_amount
     end
+
   end
 
   def expect_child_downline_to_equal(count, amount)
