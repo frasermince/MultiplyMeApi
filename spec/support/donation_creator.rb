@@ -1,6 +1,6 @@
 module DonationCreator
-  def create_parent
-    @parent_donation = create(:parent)
+  def create_parent(is_challenged=true)
+    @parent_donation = is_challenged ? create(:parent) : create(:unchallenged_donation)
   end
 
   def create_one_child
@@ -13,14 +13,14 @@ module DonationCreator
     @child_donation.update(attributes_for(:updated_child))
   end
 
-  def create_two_children(is_challenged = true)
-    if is_challenged
-      create_one_child
+  def create_three_children(is_paid = false)
+    if is_paid
+      @parent_donation = create(:paid_donation)
     else
-      @parent = create(:unchallenged_donation)
-      @child_donation = create(:child)
+      create_one_child
     end
     create(:second_child)
+    create(:third_child)
   end
 
   def create_grandchild

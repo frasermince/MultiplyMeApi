@@ -15,6 +15,9 @@ FactoryGirl.define do
       factory :unchallenged_donation do
         is_challenged false
       end
+      factory :paid_donation do
+        is_paid true
+      end
     end
 
     factory :child do

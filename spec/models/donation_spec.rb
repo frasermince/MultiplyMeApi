@@ -48,22 +48,34 @@ RSpec.describe Donation, :type => :model do
 
   describe '#after_create' do
     context 'if it is a challenge' do
-      it 'calls a function to create a purchase for parent' do
-        create_two_children
+      it 'does not create a purchase for self' do
         allow_any_instance_of(Donation).to receive(:purchase).and_return(nil)
-        expect_any_instance_of(Donation).to receive(:purchase)
-        third_child = build(:third_child)
-        third_child.save
+        expect_any_instance_of(Donation).not_to receive(:purchase)
+        create_parent
       end
     end
 
     context 'if it is not a challenge' do
-      it 'does not call purchase' do
-        create_two_children false
+      it 'does create a purchase for self' do
+        allow_any_instance_of(Donation).to receive(:purchase).and_return(nil)
+        expect_any_instance_of(Donation).to receive(:purchase)
+        create_parent false
+      end
+    end
+
+    context 'if it has three children and is already paid' do
+      it 'does not call a function to create a purchase for parent' do
         allow_any_instance_of(Donation).to receive(:purchase).and_return(nil)
         expect_any_instance_of(Donation).not_to receive(:purchase)
-        third_child = build(:third_child)
-        third_child.save
+        create_three_children true
+      end
+    end
+
+    context 'if it has three children and is not paid' do
+      it 'does call purchase' do
+        allow_any_instance_of(Donation).to receive(:purchase).and_return(nil)
+        expect_any_instance_of(Donation).to receive(:purchase)
+        create_three_children
       end
     end
   end

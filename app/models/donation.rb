@@ -20,12 +20,17 @@ class Donation < ActiveRecord::Base
 
   def after_create
     parent = self.parent
-    if parent.present? && parent.is_challenged && parent.children.count == 3
+    unless self.is_challenged
+      self.purchase
+    end
+    if parent.present? && !parent.is_paid && parent.children.count == 3
       parent.purchase
     end
   end
 
   def purchase
+    self.is_paid = true
+    self.save
     Rails.logger.warn "***STRIPE"
   end
 
