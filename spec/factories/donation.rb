@@ -4,6 +4,14 @@ FactoryGirl.define do
     user_id {User.first.present? ? User.first.id : create(:user).id}
     amount 3
 
+    factory :subscription_donation do
+      amount 3
+      is_subscription true
+      factory :nonsubscription_donation do
+        is_subscription false
+      end
+    end
+
     factory :updated_donation do
       amount 4
     end

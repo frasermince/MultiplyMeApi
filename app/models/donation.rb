@@ -28,11 +28,19 @@ class Donation < ActiveRecord::Base
     end
   end
 
+  def create_subscription
+
+  end
+
+  def create_payment
+
+  end
+
   def purchase
     unless self.is_paid
+      self.is_subscription ? self.create_subscription : self.create_payment
       self.is_paid = true
       self.save
-      Rails.logger.warn "***STRIPE"
       return true
     end
     false
