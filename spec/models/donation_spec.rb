@@ -63,14 +63,6 @@ RSpec.describe Donation, :type => :model do
       end
     end
 
-    context 'if it has three children and is already paid' do
-      it 'does not call a function to create a purchase for parent' do
-        allow_any_instance_of(Donation).to receive(:purchase).and_return(nil)
-        expect_any_instance_of(Donation).not_to receive(:purchase)
-        create_three_children true
-      end
-    end
-
     context 'if it has three children and is not paid' do
       it 'does call purchase' do
         allow_any_instance_of(Donation).to receive(:purchase).and_return(nil)
@@ -81,8 +73,18 @@ RSpec.describe Donation, :type => :model do
   end
 
   describe '#purchase' do
-    it 'succeeds in making a purchase' do
+    context 'succeeds in making a purchase' do
+      it 'returns true' do
+        create_parent
+        expect(@parent_donation.purchase).to be_truthy
+      end
+    end
 
+    context 'purchase was previously made' do
+      it 'returns false' do
+        create_paid
+        expect(@paid_donation.purchase).to be_falsey
+      end
     end
   end
 

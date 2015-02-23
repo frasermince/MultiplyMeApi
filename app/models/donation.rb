@@ -23,15 +23,19 @@ class Donation < ActiveRecord::Base
     unless self.is_challenged
       self.purchase
     end
-    if parent.present? && !parent.is_paid && parent.children.count == 3
+    if parent.present? && parent.children.count == 3
       parent.purchase
     end
   end
 
   def purchase
-    self.is_paid = true
-    self.save
-    Rails.logger.warn "***STRIPE"
+    unless self.is_paid
+      self.is_paid = true
+      self.save
+      Rails.logger.warn "***STRIPE"
+      return true
+    end
+    false
   end
 
   def before_amount_update
@@ -56,9 +60,9 @@ class Donation < ActiveRecord::Base
   end
 
   def add_downline_amount(amount)
-      self.downline_amount += amount
-      self.downline_count += 1
-      self.save
+    self.downline_amount += amount
+    self.downline_count += 1
+    self.save
   end
 
   def replace_downline_amount(old, new)
