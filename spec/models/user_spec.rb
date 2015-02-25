@@ -1,5 +1,10 @@
 require 'rails_helper'
 
+
+RSpec.configure do |c|
+  c.include StripeHelpers
+end
+
 RSpec.describe User, :type => :model do
   before(:each) do
     @user = create(:user)
@@ -52,26 +57,13 @@ RSpec.describe User, :type => :model do
       expect{@user.create_credit_card '12345'}.to raise_error
     end
 
-    it 'fails to create credit card because token is invalid' do
+    it 'fails to create credit card because stripe_id is invalid' do
       expect{@user.create_credit_card create_token}.to raise_error
     end
   end
 
   def valid_stripe_params
-      organization = create(:organization)
-      ['test@test.com', create_token, organization]
+      ['test@test.com', create_token]
   end
 
-  def create_token
-    Stripe.api_key = Rails.application.secrets.stripe_secret_key
-    response = Stripe::Token.create(
-      card: {
-        :number => "4242424242424242",
-        :exp_month => 2,
-        :exp_year => 2016,
-        :cvc => "314"
-      }
-    )
-    response.id
-  end
 end
