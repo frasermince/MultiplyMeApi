@@ -32,13 +32,19 @@ class Donation < ActiveRecord::Base
 
   end
 
-  def create_payment
-
+  def create_charge
+    charge = Stripe::Charge.create(
+      amount: amount,
+      currency: 'usd',
+      customer: self.user.stripe_id
+    )
+    self.stripe_id = charge.id
+    self.save
   end
 
   def purchase
     unless self.is_paid
-      self.is_subscription ? self.create_subscription : self.create_payment
+      self.is_subscription ? self.create_subscription : self.create_charge
       self.is_paid = true
       self.save
       return true

@@ -72,6 +72,22 @@ RSpec.describe Donation, :type => :model do
     end
   end
 
+  describe '#create_charge' do
+    context 'has an nil stripe id' do
+      it 'throws an exception' do
+        create_parent
+        expect{@parent.create_charge}.to raise_error
+      end
+    end
+    context 'has a valid stripe id' do
+      it 'creates a charge' do
+        donation = create(:stripe_donation)
+        expect{donation.create_charge}.not_to raise_error
+        expect(donation.reload.stripe_id).to be
+      end
+    end
+  end
+
   describe '#purchase' do
     context 'succeeds in making a purchase' do
 
@@ -85,10 +101,10 @@ RSpec.describe Donation, :type => :model do
       end
 
       context 'and donation is not a subscription' do
-        it 'calls create_payment' do
+        it 'calls create_charge' do
           donation = create(:nonsubscription_donation)
-          allow_any_instance_of(Donation).to receive(:create_payment).and_return(true)
-          expect_any_instance_of(Donation).to receive(:create_payment)
+          allow_any_instance_of(Donation).to receive(:create_charge).and_return(true)
+          expect_any_instance_of(Donation).to receive(:create_charge)
           donation.purchase
         end
       end

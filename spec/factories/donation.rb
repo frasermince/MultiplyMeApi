@@ -4,6 +4,9 @@ FactoryGirl.define do
     user_id {User.first.present? ? User.first.id : create(:user).id}
     amount 300
 
+    factory :stripe_donation do
+      user_id {create(:stripe_user).id}
+    end
 
     factory :subscription_donation do
       is_subscription true
