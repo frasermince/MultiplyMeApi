@@ -33,7 +33,7 @@ module Api
       end
 
       def card_params
-        [params[:card][:email], params[:card][:token], @donation.organization]
+        params.require(:card).permit(:email, :token)
       end
 
     end
