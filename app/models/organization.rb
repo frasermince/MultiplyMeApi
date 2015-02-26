@@ -4,7 +4,7 @@ class Organization < ActiveRecord::Base
 
   def set_access_token(code)
       response = RestClient.post('https://connect.stripe.com/oauth/token', oauth_params(code))
-      handle_response response.headers
+      handle_response response
   end
 
   private
@@ -19,7 +19,8 @@ class Organization < ActiveRecord::Base
   end
 
   def handle_response(response)
-    self.stripe_access_token = response[:access_token]
+    response = JSON.parse(response)
+    self.stripe_access_token = response['access_token']
     self.save
   end
 end

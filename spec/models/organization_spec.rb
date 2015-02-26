@@ -15,12 +15,13 @@ RSpec.describe Organization, :type => :model do
 
   def http_intercept
     stub_request(:post, 'https://connect.stripe.com/oauth/token').
-      to_return(headers: {access_token: 'sk_test_SPNYvScKYYd4yI3J2IPZaRiE',
+      to_return(body: {access_token: 'sk_test_SPNYvScKYYd4yI3J2IPZaRiE',
                           livemode: 'false',
                           refresh_token: 'rt_5duf0O9X8RdzBDnRfSfZapWcm7vrzd2c2WAKz9ombMq1wZ23',
                           token_type: 'bearer',
                           stripe_publishable_key: 'pk_test_sckgAK8fY9AekFVGcpBHvrPK',
                           stripe_user_id: 'acct_1038MV2UpLKQwkTh',
-                          scope: 'read_only'})
+                          scope: 'read_only'
+                      }.to_json)
   end
 end
