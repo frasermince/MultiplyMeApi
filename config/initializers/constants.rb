@@ -1,0 +1,1 @@
+PERCENTAGE_FEE = 2

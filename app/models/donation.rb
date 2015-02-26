@@ -33,10 +33,12 @@ class Donation < ActiveRecord::Base
   end
 
   def create_charge
+    Stripe.api_key = self.organization.stripe_access_token
     charge = Stripe::Charge.create(
       amount: amount,
       currency: 'usd',
-      customer: self.user.stripe_id
+      customer: self.user.stripe_id,
+      application_fee: amount * (PERCENTAGE_FEE / 100)
     )
     self.stripe_id = charge.id
     self.save
