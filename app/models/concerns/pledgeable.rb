@@ -15,6 +15,15 @@ module Pledgeable
   end
 
   def create_subscription
+    Stripe.api_key = self.organization.stripe_access_token
+    customer = Stripe::Customer.retrieve self.user.stripe_id
+    subscription = customer.subscriptions.create(
+      application_fee_percent: PERCENTAGE_FEE,
+      plan: 'pledge',
+      quantity: self.amount
+    )
+    self.stripe_id = subscription.id
+    self.save
 
   end
 

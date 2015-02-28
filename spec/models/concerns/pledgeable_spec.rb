@@ -1,5 +1,10 @@
 require 'rails_helper'
 
+RSpec.configure do |c|
+    c.include DonationCreator
+    c.include DonationAmounts
+end
+
 RSpec.describe Pledgeable do
   describe '#after_create' do
     context 'if it is a challenge' do
@@ -27,8 +32,24 @@ RSpec.describe Pledgeable do
     end
   end
 
+  describe '#create_subscription' do
+    context 'has a nil stripe id' do
+      it 'throws an exception' do
+        create_parent
+        expect{@parent.create_subscription}.to raise_error
+      end
+    end
+    context 'has a valid stripe id' do
+      it 'creates a subscription' do
+        donation = create(:stripe_donation)
+        expect{donation.create_subscription}.not_to raise_error
+        expect(donation.reload.stripe_id).to be
+      end
+    end
+  end
+
   describe '#create_charge' do
-    context 'has an nil stripe id' do
+    context 'has a nil stripe id' do
       it 'throws an exception' do
         create_parent
         expect{@parent.create_charge}.to raise_error
@@ -42,6 +63,7 @@ RSpec.describe Pledgeable do
       end
     end
   end
+
   describe '#purchase' do
     context 'succeeds in making a purchase' do
 
