@@ -33,7 +33,7 @@ module Pledgeable
       amount: amount,
       currency: 'usd',
       customer: self.user.stripe_id,
-      application_fee: amount * PERCENTAGE_FEE
+      application_fee: (amount * (PERCENTAGE_FEE / 100)).round
     )
     self.stripe_id = charge.id
     self.save

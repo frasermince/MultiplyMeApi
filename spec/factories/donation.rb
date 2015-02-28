@@ -5,6 +5,7 @@ FactoryGirl.define do
     amount 300
 
     factory :stripe_donation do
+      amount 10000
       user_id {create(:stripe_user).id}
     end
 
