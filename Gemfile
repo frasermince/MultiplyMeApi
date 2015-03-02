@@ -7,6 +7,7 @@ gem 'omniauth-stripe-connect'
 gem 'rest-client'
 gem 'stripe', :source => 'https://code.stripe.com/'
 
+gem 'unicorn'
 gem 'rails-api'
 
 gem 'spring', :group => :development
