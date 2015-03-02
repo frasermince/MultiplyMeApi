@@ -4,6 +4,7 @@ source 'https://rubygems.org'
 
 gem 'rails', '4.1.5'
 gem 'omniauth-stripe-connect'
+gem 'capistrano'
 gem 'rest-client'
 gem 'stripe', :source => 'https://code.stripe.com/'
 
