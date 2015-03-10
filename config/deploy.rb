@@ -28,7 +28,7 @@ set :scm, :git
 set :linked_files, %w{config/database.yml}
 
 # Default value for linked_dirs is []
-set :linked_dirs, %w{bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system}
+set :linked_dirs, %w{log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system}
 
 # Default value for default_env is {}
 # set :default_env, { path: "/opt/ruby/bin:$PATH" }
@@ -47,9 +47,16 @@ namespace :secrets do
 end
 
 before :deploy, 'deploy:setup_config'
-after :deploy, 'secrets:deploy'
+after :deploy, 'secrets:deploy', 'deploy:binstub'
 
 namespace :deploy do
+  desc "Bundle"
+  task :binstub do
+    on roles(:app) do
+      execute "cd #{release_path}"
+      execute "bundle --binstubs #{shared_path}/bin"
+    end
+  end
 
   desc "Database config"
   task :setup_config do
