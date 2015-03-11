@@ -8,9 +8,9 @@ set :stage, :production
 
 set :branch, 'master'
 
-role :app, %w{fraser@104.131.176.248}
-role :web, %w{fraser@104.131.176.248}
-role :db,  %w{fraser@104.131.176.248}
+role :app, %w{fraser@104.131.176.248 fraser@104.131.74.124}
+role :web, %w{fraser@104.131.176.248 fraser@104.131.74.124}
+role :db,  %w{fraser@104.131.176.248 fraser@104.131.74.124}
 
 
 # Extended Server Syntax
