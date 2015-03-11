@@ -9,9 +9,13 @@ module Pledgeable
     unless self.is_challenged
       self.purchase
     end
-    if parent.present? && parent.children.count == 3
+    if parent.present? && parent.challenge_completed?
       parent.purchase
     end
+  end
+
+  def challenge_completed?
+    self.children.count == 3 && self.created_at > 3.days.ago
   end
 
   def create_subscription

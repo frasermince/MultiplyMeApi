@@ -17,9 +17,13 @@ module DonationCreator
     @child_donation.update(attributes_for(:updated_child))
   end
 
-  def create_three_children
+  def create_two_children
     create_one_child
     create(:second_child)
+  end
+
+  def create_three_children
+    create_two_children
     create(:third_child)
   end
 

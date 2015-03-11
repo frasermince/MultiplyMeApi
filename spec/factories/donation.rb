@@ -21,9 +21,13 @@ FactoryGirl.define do
     end
 
     factory :parent do
+      created_at DateTime.now
       amount 500
       id 1
       parent_id nil
+      factory :old_donation do
+        created_at 4.days.ago
+      end
       factory :unchallenged_donation do
         is_challenged false
       end

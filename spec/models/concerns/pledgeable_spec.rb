@@ -7,12 +7,48 @@ end
 
 RSpec.describe Pledgeable do
   describe '#after_create' do
-    context 'if it is a challenge' do
+    context 'receives a challenge' do
       it 'does not create a purchase for self' do
         allow_any_instance_of(Donation).to receive(:purchase).and_return(nil)
         expect_any_instance_of(Donation).not_to receive(:purchase)
         create_parent
       end
+
+      context 'challenge_completed? is true' do
+        it 'does call purchase' do
+          #should stub challenge_completed but this causes a strange error
+          #allow_any_instance_of(Donation)
+          #  .to receive(:challenge_completed?)
+          #  .and_return(true)
+
+          allow_any_instance_of(Donation)
+            .to receive(:purchase)
+            .and_return(true)
+
+          expect_any_instance_of(Donation)
+            .to receive(:purchase)
+
+          create_three_children
+        end
+      end
+
+      context 'challenge_completed? is false' do
+        it 'does not call purchase' do
+
+          allow_any_instance_of(Donation)
+            .to receive(:challenge_completed?)
+            .and_return(false)
+
+          allow_any_instance_of(Donation)
+            .to receive(:purchase)
+            .and_return(true)
+
+          expect_any_instance_of(Donation)
+            .not_to receive(:purchase)
+          create_one_child
+        end
+      end
+
     end
 
     context 'if it is not a challenge' do
@@ -23,11 +59,39 @@ RSpec.describe Pledgeable do
       end
     end
 
-    context 'if it has three children and is not paid' do
-      it 'does call purchase' do
-        allow_any_instance_of(Donation).to receive(:purchase).and_return(true)
-        expect_any_instance_of(Donation).to receive(:purchase)
+  end
+
+  describe '#challenge_completed?' do
+    context 'has three children and is less than three days old' do
+      it 'returns true' do
+        allow_any_instance_of(Donation)
+          .to receive(:purchase)
+          .and_return(true)
         create_three_children
+        expect(@parent_donation.challenge_completed?).to be_truthy
+      end
+    end
+
+    context 'is more than three days old' do
+      it 'returns false' do
+        allow_any_instance_of(Donation)
+          .to receive(:purchase)
+          .and_return(true)
+        donation = create(:old_donation)
+        create(:child)
+        create(:second_child)
+        create(:third_child)
+        expect(donation.challenge_completed?).to be_falsy
+      end
+    end
+
+    context 'has less than three children' do
+      it 'returns false' do
+        allow_any_instance_of(Donation)
+          .to receive(:purchase)
+          .and_return(true)
+        create_two_children
+        expect(@parent_donation.challenge_completed?).to be_falsy
       end
     end
   end
