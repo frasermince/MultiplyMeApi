@@ -1,4 +1,6 @@
 require 'rest_client'
+# Stores information related to a specific nonprofit
+# This includes authorization key to organization's stripe account
 class Organization < ActiveRecord::Base
   has_many :donations
 
