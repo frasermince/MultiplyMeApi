@@ -54,7 +54,7 @@ namespace :deploy do
   task :binstub do
     on roles(:app) do
       execute "cd #{release_path}"
-      execute "bundle --binstubs #{shared_path}/bin"
+      execute "bundle --binstubs"
     end
   end
 
