@@ -46,7 +46,6 @@ namespace :secrets do
   end
 end
 
-before :deploy, 'deploy:setup_config'
 after :deploy, 'secrets:deploy', 'deploy:binstub'
 
 namespace :deploy do
