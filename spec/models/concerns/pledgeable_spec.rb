@@ -77,11 +77,8 @@ RSpec.describe Pledgeable do
         allow_any_instance_of(Donation)
           .to receive(:purchase)
           .and_return(true)
-        donation = create(:old_donation)
-        create(:child)
-        create(:second_child)
-        create(:third_child)
-        expect(donation.challenge_completed?).to be_falsy
+        create_three_children true
+        expect(@parent_donation.challenge_completed?).to be_falsy
       end
     end
 

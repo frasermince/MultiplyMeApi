@@ -22,8 +22,12 @@ module DonationCreator
     create(:second_child)
   end
 
-  def create_three_children
+  def create_three_children(old = false)
     create_two_children
+    if old
+      @parent_donation.created_at = 4.days.ago
+      @parent_donation.save
+    end
     create(:third_child)
   end
 
