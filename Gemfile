@@ -16,8 +16,8 @@ gem 'spring', :group => :development
 gem 'devise'
 gem 'omniauth'
 gem 'devise_token_auth'
-
 gem 'pg'
+gem 'rack-cors', '0.3.0'
 
 group :development do
   gem 'guard'

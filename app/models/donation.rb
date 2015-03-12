@@ -11,4 +11,9 @@ class Donation < ActiveRecord::Base
   # amount is a integer in cents
   validates :amount, :downline_count, :downline_amount,
             :organization_id, :user_id, presence: true
+
+  def is_owner?(user_id)
+    self.user_id == user_id
+  end
+
 end

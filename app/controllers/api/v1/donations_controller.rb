@@ -1,6 +1,9 @@
 module Api
   module V1
     class DonationsController < ApplicationController
+
+      load_and_authorize_resource :only => :update
+
       def create
         @donation = Donation.new donation_params
         @donation.user_id = current_user.id
@@ -19,7 +22,7 @@ module Api
 
       def update
         @donation = Donation.find params[:id]
-        if @donation.update donation_params
+        if @donation.user_id == current_user.id && @donation.update donation_params  
           render json: {donation: @donation}, status: :ok
         else
           render json: @donation.errors, status: :unprocessable_entity
