@@ -17,7 +17,7 @@ gem 'devise'
 gem 'omniauth'
 gem 'devise_token_auth'
 gem 'pg'
-gem 'rack-cors', '0.3.0'
+gem 'rack-cors', :require => 'rack/cors'
 
 group :development do
   gem 'guard'

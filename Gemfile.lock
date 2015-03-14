@@ -244,7 +244,7 @@ DEPENDENCIES
   omniauth
   omniauth-stripe-connect
   pg
-  rack-cors (= 0.3.0)
+  rack-cors
   rails (= 4.1.5)
   rails-api
   rest-client
