@@ -20,7 +20,7 @@ module Api
 
       def update
         @donation = Donation.find params[:id]
-        return render(json: {error:"Unauthorized" }, status: :unauthorized) if @donation.user_id == current_user.id
+        return render(json: {error:"Unauthorized" }, status: :unauthorized) unless @donation.is_owner? current_user.id
         if @donation.update donation_params
           render json: {donation: @donation}, status: :ok
         else
