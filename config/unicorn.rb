@@ -3,7 +3,7 @@ working_directory '.'
 
 # Unicorn PID file location
 # pid "/path/to/pids/unicorn.pid"
-pid '.tmp/pids/unicorn.pid'
+pid './tmp/pids/unicorn.pid'
 
 # Path to logs
 
