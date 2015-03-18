@@ -4,6 +4,7 @@ lock '3.2.1'
 set :application, 'multiply_me_api'
 set :repo_url, 'git@github.com:frasermince/MultiplyMeApi.git'
 set :scm, :git
+set :pty, true
 
 # Default branch is :master
 # ask :branch, proc { `git rev-parse --abbrev-ref HEAD`.chomp }.call
@@ -46,14 +47,42 @@ namespace :secrets do
   end
 end
 
-after :deploy, 'secrets:deploy', 'deploy:binstub'
+before :deploy, 'unicorn:stop'
+after :deploy, 'deploy:finished'
+
+namespace :unicorn do
+  desc "Start unicorn"
+  task :start do
+    on roles(:app) do
+      #execute "cd #{current_path} ; bundle exec unicorn_rails -c config/unicorn.rb -D"
+      #execute "ps aux | grep unicorn_rails | head -n 1 | awk '{print $2}' > #{deploy_to}/shared/tmp/pids/unicorn.pid"
+      execute 'sudo service unicorn start'
+    end
+  end
+
+  desc "Stop unicorn"
+  task :stop do
+    on roles(:app) do
+      #execute "kill -s QUIT `cat  #{deploy_to}/shared/tmp/pids/unicorn.pid`"
+      execute 'sudo service unicorn stop'
+    end
+  end
+end
 
 namespace :deploy do
+
   desc "Bundle"
   task :binstub do
     on roles(:app) do
       execute "cd /var/www/MultiplyMeApi/current; bundle --binstubs"
     end
+  end
+
+  desc 'after deploy'
+  task :finished do
+    invoke 'secrets:deploy'
+    invoke 'deploy:binstub'
+    invoke 'unicorn:start'
   end
 
   desc "Database config"
