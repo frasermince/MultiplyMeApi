@@ -51,12 +51,28 @@ RSpec.describe Pledgeable do
 
     end
 
+    context 'if it is a challenge' do
+      it 'sends a registration email and a notification email' do
+        allow_any_instance_of(Donation)
+          .to receive(:purchase).and_return(nil)
+        expect {create_parent}
+          .to change { ActionMailer::Base.deliveries.count }.by(2)
+      end
+    end
+
     context 'if it is not a challenge' do
       it 'does create a purchase for self' do
         allow_any_instance_of(Donation).to receive(:purchase).and_return(nil)
         expect_any_instance_of(Donation).to receive(:purchase)
         create_parent false
       end
+
+      it 'only sends a registration email' do
+        allow_any_instance_of(Donation).to receive(:purchase).and_return(nil)
+        expect {create_parent(false)}
+          .to change { ActionMailer::Base.deliveries.count }.by(1)
+      end
+
     end
 
   end

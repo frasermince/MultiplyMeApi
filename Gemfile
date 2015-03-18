@@ -7,6 +7,7 @@ gem 'omniauth-stripe-connect'
 gem 'capistrano'
 gem 'rest-client'
 gem 'stripe', :source => 'https://code.stripe.com/'
+gem 'sendgrid-ruby'
 
 gem 'unicorn'
 gem 'rails-api'
