@@ -1,8 +1,11 @@
 Rails.application.routes.draw do
   mount_devise_token_auth_for 'User', at: '/auth', controllers:  { omniauth_callbacks: "overrides/omniauth_callbacks" }
-  namespace :api, path: nil, defaults: {format: 'json'}  do
-    namespace :v1 do
-      resources :donations, only: [:create, :show, :update]
+
+  constraints :subdomain => 'api' do
+    namespace :api, path: nil, defaults: {format: 'json'}  do
+      namespace :v1 do
+        resources :donations, only: [:create, :show, :update]
+      end
     end
   end
   # The priority is based upon order of creation: first created -> highest priority.
