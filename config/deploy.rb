@@ -52,8 +52,7 @@ namespace :deploy do
   desc "Bundle"
   task :binstub do
     on roles(:app) do
-      execute "cd #{release_path}"
-      execute "bundle --binstubs"
+      execute "cd /var/www/MultiplyMeApi/current; bundle --binstubs"
     end
   end
 
