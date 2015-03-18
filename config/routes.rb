@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
   mount_devise_token_auth_for 'User', at: '/auth', controllers:  { omniauth_callbacks: "overrides/omniauth_callbacks" }
-  namespace :api, defaults: {format: 'json'}  do
+  namespace :api, path: nil, defaults: {format: 'json'}  do
     namespace :v1 do
       resources :donations, only: [:create, :show, :update]
     end
