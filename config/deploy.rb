@@ -59,7 +59,7 @@ namespace :deploy do
   desc "Database config"
   task :setup_config do
     on roles(:app) do
-      upload! StringIO.new(File.read("config/database.yml")), "#{shared_path}/config/database.yml"
+      upload! StringIO.new(File.read("config/database.yml")), "#{shared_path}/database.yml"
       execute "ln -sf #{shared_path}/database.yml #{release_path}/config/database.yml"
     end
   end
