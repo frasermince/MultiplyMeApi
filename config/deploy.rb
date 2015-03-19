@@ -29,7 +29,7 @@ set :pty, true
 set :linked_files, %w{config/database.yml}
 
 # Default value for linked_dirs is []
-set :linked_dirs, %w{log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system}
+set :linked_dirs, %w{log tmp/pids tmp/cache tmp/sockets vendor/bundle public}
 
 # Default value for default_env is {}
 # set :default_env, { path: "/opt/ruby/bin:$PATH" }
@@ -69,6 +69,26 @@ namespace :unicorn do
   end
 end
 
+namespace :upload do
+  desc 'Upload public directory'
+  task :public do
+    on roles(:app) do
+      execute "rm -r #{shared_path}/public"
+      execute "rm -r #{current_path}/public"
+      upload! 'public', "#{shared_path}/public", recursive: true
+      execute "ln -sf #{shared_path}/public #{release_path}/public"
+    end
+  end
+
+  desc "Database config"
+  task :database do
+    on roles(:app) do
+      upload! StringIO.new(File.read("config/database.yml")), "#{shared_path}/config/database.yml"
+      execute "ln -sf #{shared_path}/config/database.yml #{release_path}/config/database.yml"
+    end
+  end
+end
+
 namespace :deploy do
 
   desc "Bundle"
@@ -85,13 +105,6 @@ namespace :deploy do
     invoke 'unicorn:start'
   end
 
-  desc "Database config"
-  task :setup_config do
-    on roles(:app) do
-      upload! StringIO.new(File.read("config/database.yml")), "#{shared_path}/config/database.yml"
-      execute "ln -sf #{shared_path}/config/database.yml #{release_path}/config/database.yml"
-    end
-  end
 
   desc 'Restart application'
   task :restart do
