@@ -1,5 +1,5 @@
 # This file is used by Rack-based servers to start the application.
-
+require 'rack/rewrite'
 use Rack::Rewrite do
 
   # if it does not start with amala and it is routing
