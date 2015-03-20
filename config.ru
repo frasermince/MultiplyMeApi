@@ -5,7 +5,6 @@ use Rack::Rewrite do
   # if it does not start with amala and it is routing
   # to angular files redirect to 404
   rewrite %r{.*/ngApp/.*}, '/ngApp/404.html', not: lambda{|rack_env|
-    Rails.logger.warn "***APP #{rack_env['SERVER_NAME'].start_with?('amala')}"
     rack_env['SERVER_NAME'].start_with?('amala')
   }
 
