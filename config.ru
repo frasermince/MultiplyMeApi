@@ -1,5 +1,6 @@
 # This file is used by Rack-based servers to start the application.
 require 'rack/rewrite'
+require 'rack/cors'
 use Rack::Cors do
   allow do
     origins 'lvh.me:9001', 'amala.multiplyme.in'
