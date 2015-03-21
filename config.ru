@@ -3,7 +3,7 @@ require 'rack/rewrite'
 require 'rack/cors'
 use Rack::Cors do
   allow do
-    origins 'lvh.me:9001', 'amala.multiplyme.in'
+    origins 'localhost:9001', 'amala.multiplyme.in'
     resource '*',
       :methods => [:get, :post, :put, :delete, :options],
       :headers => :any,
