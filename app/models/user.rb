@@ -3,17 +3,17 @@ class User < ActiveRecord::Base
   include DeviseTokenAuth::Concerns::User
   has_many :donations
 
-  def save_stripe_user(email, token)
-    self.stripe_id = self.create_stripe_user email, token
+  def save_stripe_user(params)
+    self.stripe_id = self.create_stripe_user params
     self.save
   end
 
-  def create_stripe_user(email, token)
+  def create_stripe_user(params)
     Stripe.api_key = Rails.application.secrets.stripe_secret_key
     customer = Stripe::Customer.create(
       {
-        card: token,
-        email: email
+        card: params[:token],
+        email: params[:email]
       }
     )
     return customer.id

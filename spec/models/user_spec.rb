@@ -15,14 +15,14 @@ RSpec.describe User, :type => :model do
     it 'calls create_stripe_user' do
       allow(@user).to receive(:create_stripe_user).and_return("1")
       expect(@user).to receive(:create_stripe_user)
-      @user.save_stripe_user(*valid_stripe_params)
+      @user.save_stripe_user(valid_stripe_params)
       expect(@user.reload.stripe_id).to eq("1")
     end
   end
 
   describe '#create_stripe_user' do
     it 'successfully saves a stripe user' do
-      expect{@user.create_stripe_user(*valid_stripe_params)}.not_to raise_error
+      expect{@user.create_stripe_user(valid_stripe_params)}.not_to raise_error
     end
 
     it 'fails to create a stripe user' do
@@ -33,7 +33,7 @@ RSpec.describe User, :type => :model do
   describe '#add_credit_card' do
     it 'has stripe_id and thus can create card' do
       allow(@user).to receive(:create_credit_card).and_return(true)
-      @user.save_stripe_user(*valid_stripe_params)
+      @user.save_stripe_user(valid_stripe_params)
       result = @user.add_credit_card create_token
       expect(result).to eq(true)
     end
@@ -47,12 +47,12 @@ RSpec.describe User, :type => :model do
 
   describe '#create_credit_card' do
     it 'successfully creates credit card' do
-      @user.save_stripe_user(*valid_stripe_params)
+      @user.save_stripe_user(valid_stripe_params)
       expect{@user.create_credit_card create_token}.not_to raise_error
     end
 
     it 'fails to create credit card because token is invalid' do
-      @user.save_stripe_user(*valid_stripe_params)
+      @user.save_stripe_user(valid_stripe_params)
       expect{@user.create_credit_card '12345'}.to raise_error
     end
 
@@ -62,7 +62,7 @@ RSpec.describe User, :type => :model do
   end
 
   def valid_stripe_params
-      ['test@test.com', create_token]
+      {email: 'test@test.com', card: create_token}
   end
 
 end

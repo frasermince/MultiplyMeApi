@@ -15,7 +15,7 @@ FactoryGirl.define do
             :cvc => "314"
           }
         )
-        user.save_stripe_user user.email, token.id
+        user.save_stripe_user({email: user.email, token: token.id})
       end
     end
   end
