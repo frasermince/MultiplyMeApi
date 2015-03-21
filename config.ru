@@ -1,5 +1,16 @@
 # This file is used by Rack-based servers to start the application.
 require 'rack/rewrite'
+use Rack::Cors do
+  allow do
+    origins 'lvh.me:9001', 'amala.multiplyme.in'
+    resource '*',
+      :methods => [:get, :post, :put, :delete, :options],
+      :headers => 'x-domain-token',
+      :expose  => ['access-token', 'token-type', 'client', 'expiry', 'uid'],
+      :max_age => 600
+  end
+end
+
 use Rack::Rewrite do
 
   # if it does not start with amala and it is routing
@@ -14,17 +25,17 @@ use Rack::Rewrite do
   # Otherwise it just adds ngApp to the beginning of the path
   rewrite %r{.*},
     lambda{|match, rack_env|
-      url = '/ngApp'
-      if rack_env['HTTP_ACCEPT'] == 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8'
-        url += '/index.html'
-      else
-        url += rack_env['PATH_INFO']
-      end
-      url
-    },
-    :if => lambda{|rack_env|
-      rack_env['SERVER_NAME'].start_with?('amala')
-     }
+    url = '/ngApp'
+    if rack_env['HTTP_ACCEPT'] == 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8'
+      url += '/index.html'
+    else
+      url += rack_env['PATH_INFO']
+    end
+    url
+  },
+  :if => lambda{|rack_env|
+    rack_env['SERVER_NAME'].start_with?('amala')
+  }
 
 end
 
