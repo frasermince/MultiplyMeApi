@@ -22,12 +22,11 @@ RSpec.describe User, :type => :model do
 
   describe '#create_stripe_user' do
     it 'successfully saves a stripe user' do
-      @user.create_stripe_user(*valid_stripe_params)
+      expect{@user.create_stripe_user(*valid_stripe_params)}.not_to raise_error
     end
 
     it 'fails to create a stripe user' do
-      organization = create(:invalid_organization)
-      expect{@user.create_stripe_user('test@test.com', '12345', organization)}.to raise_error
+      expect{@user.reload.create_stripe_user('test@test.com', '12345')}.to raise_error
     end
   end
 

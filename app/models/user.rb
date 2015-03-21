@@ -9,6 +9,7 @@ class User < ActiveRecord::Base
   end
 
   def create_stripe_user(email, token)
+    Stripe.api_key = Rails.application.secrets.stripe_secret_key
     customer = Stripe::Customer.create(
       {
         card: token,
