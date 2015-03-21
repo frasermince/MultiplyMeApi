@@ -5,9 +5,8 @@ use Rack::Cors do
     origins 'lvh.me:9001', 'amala.multiplyme.in'
     resource '*',
       :methods => [:get, :post, :put, :delete, :options],
-      :headers => 'x-domain-token',
-      :expose  => ['access-token', 'token-type', 'client', 'expiry', 'uid'],
-      :max_age => 600
+      :headers => :any,
+      :expose  => ['access-token', 'token-type', 'client', 'expiry', 'uid']
   end
 end
 
