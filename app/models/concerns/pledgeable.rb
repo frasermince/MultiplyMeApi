@@ -7,7 +7,6 @@ module Pledgeable
   def after_create
     parent = self.parent
     if self.is_challenged
-      Rails.logger.warn "***SELF #{self.inspect}"
       NotificationMailer.send_notification_email(self.user).deliver
     else
       self.purchase
