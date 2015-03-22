@@ -6,6 +6,7 @@ class User < ActiveRecord::Base
 
   include DeviseTokenAuth::Concerns::User
   has_many :donations
+  before_create :skip_confirmation!
 
   def save_stripe_user(params)
     self.stripe_id = self.create_stripe_user params
