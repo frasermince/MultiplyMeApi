@@ -56,7 +56,7 @@ RSpec.describe Pledgeable do
         allow_any_instance_of(Donation)
           .to receive(:purchase).and_return(nil)
         expect {create_parent}
-          .to change { ActionMailer::Base.deliveries.count }.by(2)
+          .to change { ActionMailer::Base.deliveries.count }.by(1)
       end
     end
 
@@ -70,7 +70,7 @@ RSpec.describe Pledgeable do
       it 'only sends a registration email' do
         allow_any_instance_of(Donation).to receive(:purchase).and_return(nil)
         expect {create_parent(false)}
-          .to change { ActionMailer::Base.deliveries.count }.by(1)
+          .to change { ActionMailer::Base.deliveries.count }.by(0)
       end
 
     end
