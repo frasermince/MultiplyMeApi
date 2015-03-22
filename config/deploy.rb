@@ -67,6 +67,11 @@ namespace :unicorn do
       execute 'sudo service unicorn stop'
     end
   end
+  task :restart do
+    on roles(:app) do
+      execute 'sudo service unicorn restart'
+    end
+  end
 end
 
 namespace :upload do
