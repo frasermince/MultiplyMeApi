@@ -26,7 +26,7 @@ class User < ActiveRecord::Base
 
   def create_credit_card(token)
     customer = Stripe::Customer.retrieve(self.stripe_id)
-    customer.cards.create(:card => token)
+    customer.sources.create(:source => token)
   end
 
   def add_credit_card(token)
