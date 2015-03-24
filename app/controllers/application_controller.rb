@@ -1,8 +1,16 @@
 class ApplicationController < ActionController::API
+  before_action :configure_permitted_parameters, if: :devise_controller?
   include DeviseTokenAuth::Concerns::SetUserByToken
   include ActionController::MimeResponds
   rescue_from ActiveRecord::RecordNotFound, :with => :record_not_found
+  def home
 
+  end
+
+  protected
+  def configure_permitted_parameters
+    devise_parameter_sanitizer.for(:sign_up) << :name
+  end
 
   private
   def record_not_found(error)

@@ -7,5 +7,9 @@ module Overrides
         organization.set_access_token(params[:code])
       end
     end
+
+    def resource_class
+      User
+    end
   end
 end
