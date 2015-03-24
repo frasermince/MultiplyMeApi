@@ -15,7 +15,7 @@ module Api
 
       def show
         @donation = Donation.find params[:id]
-        render json: {donation: @donation}, status: :ok
+        render json: {donation: @donation, name: @donation.user.name}, status: :ok
       end
 
       def update
