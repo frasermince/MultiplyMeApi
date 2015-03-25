@@ -6,9 +6,10 @@ module Api
         render(json: {
           donation: {
             donation: @donation,
-            name: @donation.user.name
+            name: @donation.user.name,
+            email: @donation.user.email
           },
-          downline: @donation.children.map{|child| {donation: child, name: child.user.name}}
+          downline: @donation.children.map{|child| {donation: child, name: child.user.name, email: child.user.email}}
         },
         status: :ok)
       end
