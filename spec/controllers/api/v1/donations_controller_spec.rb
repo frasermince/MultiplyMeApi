@@ -1,8 +1,9 @@
 require 'rails_helper'
 
 RSpec.configure do |c|
-  c.include DonationCreator
   c.include DonationAmounts
+  c.include DonationCreator
+  c.include DonationStubber
 end
 
 describe Api::V1::DonationsController do
@@ -83,23 +84,4 @@ describe Api::V1::DonationsController do
     donation_params = donation_attributes.map {|k, v| [k.to_s, v.to_s]}.to_h
     donation_params.select{|k, v| k != 'user_id'}
   end
-
-  def stub_donation_finding(donation, id)
-    allow(Donation).to receive(:find).
-      with(id.to_s).
-      and_return(donation)
-  end
-
-  def stub_donation_creation(donation, is_saved)
-    allow(donation).to receive(:save).and_return(is_saved)
-    allow(Donation).to receive(:new).
-      with(string_params).
-      and_return(donation)
-  end
-
-  def expect_stripe_user(donation)
-    allow(donation.user).to receive(:save_stripe_user)
-    expect(donation.user).to receive(:save_stripe_user)
-  end
-
 end
