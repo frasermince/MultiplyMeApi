@@ -23,7 +23,7 @@ module Api
       end
 
       def children
-        @donation.children.map do |child|
+        @donation.children.limit(2).map do |child|
           {donation: child,
            name: child.user.name,
            image_url: child.user.get_gravatar_url
