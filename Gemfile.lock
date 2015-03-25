@@ -64,6 +64,7 @@ GEM
       multipart-post (>= 1.2, < 3)
     ffi (1.9.3)
     formatador (0.2.5)
+    gravatar_image_tag (1.2.0)
     guard (2.11.1)
       formatador (>= 0.2.4)
       listen (~> 2.7)
@@ -244,6 +245,7 @@ DEPENDENCIES
   devise
   devise_token_auth
   factory_girl_rails
+  gravatar_image_tag
   guard
   guard-rspec
   omniauth

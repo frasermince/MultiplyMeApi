@@ -4,6 +4,7 @@ class User < ActiveRecord::Base
     :trackable, :validatable, :registerable,
     :omniauthable
 
+  include GravatarImageTag
   include DeviseTokenAuth::Concerns::User
   has_many :donations
   before_create :skip_confirmation!
@@ -11,6 +12,10 @@ class User < ActiveRecord::Base
   def save_stripe_user(params)
     self.stripe_id = self.create_stripe_user params
     self.save
+  end
+
+  def get_gravatar_url
+    gravatar_image_url(self.email, filetype: :png, secure: true)
   end
 
   def create_stripe_user(params)

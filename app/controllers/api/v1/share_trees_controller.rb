@@ -3,15 +3,32 @@ module Api
     class ShareTreesController < ApplicationController
       def show
         @donation = Donation.find params[:id]
-        render(json: {
-          donation: {
-            donation: @donation,
-            name: @donation.user.name,
-            email: @donation.user.email
-          },
-          downline: @donation.children.map{|child| {donation: child, name: child.user.name, email: child.user.email}}
-        },
-        status: :ok)
+        render(json: share_tree_json, status: :ok)
+      end
+
+      private
+      def share_tree_json
+        {
+          parent: parent,
+          children: children
+        }
+      end
+
+      def parent
+        {
+          donation: @donation,
+          name: @donation.user.name,
+          image_url: @donation.user.get_gravatar_url
+        }
+      end
+
+      def children
+        @donation.children.map do |child|
+          {donation: child,
+           name: child.user.name,
+           image_url: child.user.get_gravatar_url
+          }
+        end
       end
     end
   end
