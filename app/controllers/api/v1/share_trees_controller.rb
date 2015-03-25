@@ -10,7 +10,8 @@ module Api
       def share_tree_json
         {
           parent: parent,
-          children: children
+          children: children,
+          paid: @donation.is_paid
         }
       end
 
