@@ -5,6 +5,7 @@ Rails.application.routes.draw do
     namespace :api, path: nil, defaults: {format: 'json'}  do
       namespace :v1 do
         resources :donations, only: [:create, :show, :update]
+        resources :share_trees, only: [:show]
       end
     end
   end
