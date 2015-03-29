@@ -13,7 +13,7 @@ RSpec.describe User, :type => :model do
   it { should have_many(:donations) }
 
   describe '#add_to_impact' do
-    context 'user has another of his donations as a parent' do
+    context 'user_cycles returns true' do
       it 'does not add to impact' do
         allow_any_instance_of(Donation).to receive(:user_cycles?).and_return(true)
         old_impact = @user.impact
@@ -23,7 +23,7 @@ RSpec.describe User, :type => :model do
       end
     end
 
-    context 'user does not have another of his donations as a parent' do
+    context 'user_cycles returns false' do
       it 'adds the impact of this donation to the user' do
         allow_any_instance_of(Donation).to receive(:user_cycles?).and_return(false)
         old_impact = @user.impact
