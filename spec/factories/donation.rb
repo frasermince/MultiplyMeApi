@@ -9,6 +9,23 @@ FactoryGirl.define do
       user_id {create(:stripe_user).id}
     end
 
+    factory :first_new_user_donation do
+      id 2
+      amount 1000
+      user_id {create(:second_user).id}
+      parent_id 1
+      factory :second_new_user_donation do
+        user_id {create(:third_user).id}
+        id 3
+        parent_id 2
+      end
+      factory :third_new_user_donation do
+        user_id {create(:fourth_user).id}
+        id 4
+        parent_id 3
+      end
+    end
+
     factory :subscription_donation do
       is_subscription true
       factory :nonsubscription_donation do

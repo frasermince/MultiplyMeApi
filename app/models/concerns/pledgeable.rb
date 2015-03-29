@@ -48,11 +48,30 @@ module Pledgeable
   def purchase
     unless self.is_paid
       self.is_subscription ? self.create_subscription : self.create_charge
+      self.user.add_to_impact self
       self.is_paid = true
       self.save
       return true
     end
     false
+  end
+
+  def user_cycles?
+    if self.parent.nil?
+      false
+    else
+      !(self.parent.find_cycle self.user).nil?
+    end
+  end
+
+  def find_cycle user
+    if self.user == user
+      self
+    elsif self.parent.nil?
+      nil
+    else
+      self.parent.find_cycle user
+    end
   end
 
 end

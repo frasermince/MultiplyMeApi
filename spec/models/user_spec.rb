@@ -3,6 +3,7 @@ require 'rails_helper'
 
 RSpec.configure do |c|
   c.include StripeHelpers
+  c.include DonationCreator
 end
 
 RSpec.describe User, :type => :model do
@@ -10,6 +11,28 @@ RSpec.describe User, :type => :model do
     @user = create(:user)
   end
   it { should have_many(:donations) }
+
+  describe '#add_to_impact' do
+    context 'user has another of his donations as a parent' do
+      it 'does not add to impact' do
+        allow_any_instance_of(Donation).to receive(:user_cycles?).and_return(true)
+        old_impact = @user.impact
+        create_two_children
+        @user.add_to_impact @child_donation
+        expect(@user.reload.impact).to eq(old_impact)
+      end
+    end
+
+    context 'user does not have another of his donations as a parent' do
+      it 'adds the impact of this donation to the user' do
+        allow_any_instance_of(Donation).to receive(:user_cycles?).and_return(false)
+        old_impact = @user.impact
+        create_different_user_donations
+        @user.add_to_impact @first_child
+        expect(@user.reload.impact).to eq(old_impact + @first_child.amount + @first_child.downline_amount)
+      end
+    end
+  end
 
   describe '#save_stripe_user' do
     it 'calls create_stripe_user' do
@@ -62,7 +85,7 @@ RSpec.describe User, :type => :model do
   end
 
   def valid_stripe_params
-      {email: 'test@test.com', card: create_token}
+    {email: 'test@test.com', card: create_token}
   end
 
 end

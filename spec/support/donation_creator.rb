@@ -31,6 +31,13 @@ module DonationCreator
     create(:third_child)
   end
 
+  def create_different_user_donations
+    create_parent
+    @first_child = create(:first_new_user_donation)
+    @second_child = create(:second_new_user_donation)
+    @third_child = create(:third_new_user_donation)
+  end
+
   def create_grandchild
     create_one_child
     @grandchild_donation = create(:grandchild)

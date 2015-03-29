@@ -94,7 +94,7 @@ RSpec.describe Pledgeable do
           .to receive(:purchase)
           .and_return(true)
         create_three_children true
-        expect(@parent_donation.challenge_completed?).to be_falsy
+        expect(@parent_donation.challenge_completed?).to be_falsey
       end
     end
 
@@ -104,7 +104,7 @@ RSpec.describe Pledgeable do
           .to receive(:purchase)
           .and_return(true)
         create_two_children
-        expect(@parent_donation.challenge_completed?).to be_falsy
+        expect(@parent_donation.challenge_completed?).to be_falsey
       end
     end
   end
@@ -162,6 +162,15 @@ RSpec.describe Pledgeable do
         end
       end
 
+      it 'adds to the impact' do
+        donation = create(:subscription_donation)
+        allow_any_instance_of(Donation).to receive(:create_subscription).and_return(true)
+        allow_any_instance_of(User).to receive(:add_to_impact).and_return(true)
+        expect_any_instance_of(User).to receive(:add_to_impact)
+        donation.purchase
+
+      end
+
       it 'returns true' do
         allow_any_instance_of(Donation).to receive(:create_subscription).and_return(true)
         create_parent
@@ -176,5 +185,44 @@ RSpec.describe Pledgeable do
       end
     end
 
+  end
+
+  describe '#find_cycle' do
+    context 'does not have an ancestor from the same user' do
+      it 'returns nil' do
+        create_different_user_donations
+        expect(@third_child.parent.find_cycle(@third_child.user)).to be_nil
+      end
+    end
+    context 'does have an ancestor donation from the same user' do
+
+      it 'returns this ancestor' do
+        create_two_children
+        expect(@child_donation.parent.find_cycle(@child_donation.user)).to eq(@parent_donation)
+      end
+    end
+  end
+
+  describe '#user_cycles?' do
+    context 'parent is nil' do
+      it 'returns false' do
+        create_parent
+        expect(@parent_donation.user_cycles?).to be_falsey
+      end
+    end
+    context 'find_cycle returns a donation' do
+      it 'returns true' do
+        create_one_child
+        allow_any_instance_of(Donation).to receive(:find_cycle).and_return(@parent_donation)
+        expect(@child_donation.user_cycles?).to be_truthy
+      end
+      context 'find_cycle returns nil' do
+        it 'returns false' do
+          create_one_child
+          allow_any_instance_of(Donation).to receive(:find_cycle).and_return(nil)
+          expect(@child_donation.user_cycles?).to be_falsey
+        end
+      end
+    end
   end
 end
