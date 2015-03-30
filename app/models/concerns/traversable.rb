@@ -23,8 +23,11 @@ module Traversable
 
   def traverse_upline(donation, action)
     unless donation.nil?
-      donation.perform_update_action action, self.amount_was, self.amount
-      traverse_upline donation.parent, action
+      if self.amount_was.present? && self.is_subscription
+        amount_was = self.amount_was * 12
+      end
+        donation.perform_update_action action, amount_was, self.yearly_amount
+        traverse_upline donation.parent, action
     end
   end
 

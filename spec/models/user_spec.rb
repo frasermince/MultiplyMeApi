@@ -20,7 +20,7 @@ RSpec.describe User, :type => :model do
         old_network_impact = @user.network_impact
         create_two_children
         @user.add_to_impact @child_donation
-        expect(@user.reload.personal_impact).to eq(old_personal_impact + @child_donation.amount)
+        expect(@user.reload.personal_impact).to eq(old_personal_impact + @child_donation.yearly_amount)
         expect(@user.reload.network_impact).to eq(old_network_impact)
       end
     end
@@ -32,7 +32,7 @@ RSpec.describe User, :type => :model do
         old_network_impact = @user.network_impact
         create_different_user_donations
         @user.add_to_impact @first_child
-        expect(@user.reload.personal_impact).to eq(old_personal_impact + @first_child.amount)
+        expect(@user.reload.personal_impact).to eq(old_personal_impact + @first_child.yearly_amount)
         expect(@user.reload.network_impact).to eq(old_network_impact + @first_child.downline_amount)
       end
     end

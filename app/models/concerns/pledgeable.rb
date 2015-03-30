@@ -4,6 +4,14 @@ module Pledgeable
     after_create :after_create
   end
 
+  def yearly_amount
+    yearly = self.amount
+    if self.is_subscription
+      yearly *= 12
+    end
+    yearly
+  end
+
   def after_create
     parent = self.parent
     if self.is_challenged

@@ -15,7 +15,7 @@ class User < ActiveRecord::Base
   end
 
   def get_gravatar_url
-    gravatar_image_url(self.email, filetype: :png, secure: true)
+    gravatar_image_url(self.email, filetype: :png, secure: true, size: 100)
   end
 
   def create_stripe_user(params)
@@ -47,7 +47,7 @@ class User < ActiveRecord::Base
     unless donation.user_cycles?
       self.network_impact += donation.downline_amount
     end
-    self.personal_impact += donation.amount
+    self.personal_impact += donation.yearly_amount
       self.save
   end
 end

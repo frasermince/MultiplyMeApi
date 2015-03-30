@@ -1,25 +1,25 @@
 module DonationAmounts
   def child_amount
-    attributes_for(:child)[:amount]
+    build(:child).yearly_amount
   end
 
   def updated_child_amount
-    attributes_for(:updated_child)[:amount]
+    build(:updated_child).yearly_amount
   end
 
   def grandchild_amount
-    attributes_for(:grandchild)[:amount]
+    build(:grandchild).yearly_amount
   end
 
   def updated_grandchild_amount
-    attributes_for(:updated_grandchild)[:amount]
+    build(:updated_grandchild).yearly_amount
   end
 
   def second_grandchild_amount
-    attributes_for(:second_grandchild)[:amount]
+    build(:second_grandchild).yearly_amount
   end
 
   def updated_second_grandchild_amount
-    attributes_for(:updated_second_grandchild)[:amount]
+    build(:updated_second_grandchild).yearly_amount
   end
 end

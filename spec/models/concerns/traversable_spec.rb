@@ -1,5 +1,10 @@
 require 'rails_helper'
 
+RSpec.configure do |c|
+  c.include DonationCreator
+  c.include DonationAmounts
+end
+
 #uses donation as the model that uses traversable
 #currently this is the only model that uses it
 RSpec.describe Traversable do

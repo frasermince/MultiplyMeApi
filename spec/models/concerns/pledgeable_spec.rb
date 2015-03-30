@@ -225,4 +225,19 @@ RSpec.describe Pledgeable do
       end
     end
   end
+
+  describe 'yearly_amount' do
+    context 'donation is a subscription' do
+      it "returns the donation's amount multiplyed by twelve" do
+        donation = create(:subscription_donation)
+        expect(donation.yearly_amount).to eq(donation.amount * 12)
+      end
+    end
+    context 'donation is not a subscription' do
+      it "returns the donation's amount" do
+        donation = create(:nonsubscription_donation)
+        expect(donation.yearly_amount).to eq(donation.amount)
+      end
+    end
+  end
 end
