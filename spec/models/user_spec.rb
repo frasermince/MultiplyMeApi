@@ -14,22 +14,26 @@ RSpec.describe User, :type => :model do
 
   describe '#add_to_impact' do
     context 'user_cycles returns true' do
-      it 'does not add to impact' do
+      it 'does not add to network_impact' do
         allow_any_instance_of(Donation).to receive(:user_cycles?).and_return(true)
-        old_impact = @user.impact
+        old_personal_impact = @user.personal_impact
+        old_network_impact = @user.network_impact
         create_two_children
         @user.add_to_impact @child_donation
-        expect(@user.reload.impact).to eq(old_impact)
+        expect(@user.reload.personal_impact).to eq(old_personal_impact + @child_donation.amount)
+        expect(@user.reload.network_impact).to eq(old_network_impact)
       end
     end
 
     context 'user_cycles returns false' do
       it 'adds the impact of this donation to the user' do
         allow_any_instance_of(Donation).to receive(:user_cycles?).and_return(false)
-        old_impact = @user.impact
+        old_personal_impact = @user.personal_impact
+        old_network_impact = @user.network_impact
         create_different_user_donations
         @user.add_to_impact @first_child
-        expect(@user.reload.impact).to eq(old_impact + @first_child.amount + @first_child.downline_amount)
+        expect(@user.reload.personal_impact).to eq(old_personal_impact + @first_child.amount)
+        expect(@user.reload.network_impact).to eq(old_network_impact + @first_child.downline_amount)
       end
     end
   end

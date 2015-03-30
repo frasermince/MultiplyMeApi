@@ -45,8 +45,9 @@ class User < ActiveRecord::Base
 
   def add_to_impact(donation)
     unless donation.user_cycles?
-      self.impact += donation.amount + donation.downline_amount
-      self.save
+      self.network_impact += donation.downline_amount
     end
+    self.personal_impact += donation.amount
+      self.save
   end
 end
