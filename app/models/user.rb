@@ -7,6 +7,8 @@ class User < ActiveRecord::Base
   include GravatarImageTag
   include DeviseTokenAuth::Concerns::User
   has_many :donations
+  has_many :organizations_user
+  has_many :organizations, through: :organizations_user
   before_create :skip_confirmation!
 
   def save_stripe_user(params)
@@ -22,7 +24,7 @@ class User < ActiveRecord::Base
     Stripe.api_key = Rails.application.secrets.stripe_secret_key
     customer = Stripe::Customer.create(
       {
-        card: params[:token],
+        source: params[:token],
         email: params[:email]
       }
     )

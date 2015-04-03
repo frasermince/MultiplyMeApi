@@ -1,5 +1,5 @@
 module StripeHelpers
-  def create_token
+  def create_token_object
     Stripe.api_key = Rails.application.secrets.stripe_secret_key
     response = Stripe::Token.create(
       card: {
@@ -9,6 +9,10 @@ module StripeHelpers
         :cvc => "314"
       }
     )
-    response.id
+    response
+  end
+
+  def create_token
+    create_token_object.id
   end
 end

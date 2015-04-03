@@ -29,26 +29,27 @@ module Pledgeable
   end
 
   def create_subscription
-    Stripe.api_key = self.organization.stripe_access_token
-    customer = Stripe::Customer.retrieve self.user.stripe_id
-    subscription = customer.subscriptions.create(
+    Stripe.api_key = Rails.application.secrets.stripe_secret_key
+    customer = self.organization.get_stripe_user(user)
+    subscription = customer.subscriptions.create({
       application_fee_percent: PERCENTAGE_FEE,
       plan: 'pledge',
-      quantity: self.amount
-    )
+      quantity: self.amount,
+    }, stripe_account: self.organization.stripe_id)
     self.stripe_id = subscription.id
     self.save
 
   end
 
   def create_charge
-    Stripe.api_key = self.organization.stripe_access_token
-    charge = Stripe::Charge.create(
+    Stripe.api_key = Rails.application.secrets.stripe_secret_key
+    customer = self.organization.get_stripe_user(user)
+    charge = Stripe::Charge.create({
       amount: amount,
+      application_fee: (amount * (PERCENTAGE_FEE / 100)).round,
       currency: 'usd',
-      customer: self.user.stripe_id,
-      application_fee: (amount * (PERCENTAGE_FEE / 100)).round
-    )
+      customer: customer.id
+    }, stripe_account: self.organization.stripe_id)
     self.stripe_id = charge.id
     self.save
   end

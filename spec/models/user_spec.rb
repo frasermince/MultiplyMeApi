@@ -11,6 +11,7 @@ RSpec.describe User, :type => :model do
     @user = create(:user)
   end
   it { should have_many(:donations) }
+  it { should have_many(:organizations).through(:organizations_user) }
 
   describe '#add_to_impact' do
     context 'user_cycles returns true' do
