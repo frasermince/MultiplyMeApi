@@ -21,6 +21,7 @@ gem 'omniauth'
 gem 'devise_token_auth'
 gem 'pg'
 gem 'rack-cors', :require => 'rack/cors'
+gem 'mailchimp-api'
 
 group :development do
   gem 'guard'
