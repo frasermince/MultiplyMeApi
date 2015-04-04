@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150330015021) do
+ActiveRecord::Schema.define(version: 20150401015429) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -39,7 +39,19 @@ ActiveRecord::Schema.define(version: 20150330015021) do
     t.string   "stripe_access_token"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "stripe_id"
   end
+
+  create_table "organizations_users", force: true do |t|
+    t.integer  "organization_id"
+    t.integer  "user_id"
+    t.string   "stripe_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "organizations_users", ["organization_id"], name: "index_organizations_users_on_organization_id", using: :btree
+  add_index "organizations_users", ["user_id"], name: "index_organizations_users_on_user_id", using: :btree
 
   create_table "users", force: true do |t|
     t.string   "provider",                            null: false
