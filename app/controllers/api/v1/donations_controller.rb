@@ -5,7 +5,7 @@ module Api
       def create
         @donation = Donation.new donation_params
         @donation.user_id = current_user.id
-        if @donation.save
+        if card_params[:email] && card_params[:token] && @donation.save
           @donation.user.save_stripe_user(card_params)
           render json: {donation: @donation}, status: :created
         else

@@ -25,8 +25,18 @@ describe Api::V1::DonationsController do
     context 'when donation is invalid' do
       it 'returns the error and sets the status to unprocessable' do
         stub_donation_creation @donation, false
-        post :create, donation: donation_attributes
+        post :create, donation: donation_attributes, card: card_attributes
         expect(response).to have_http_status(:unprocessable_entity)
+      end
+    end
+
+    context 'when card is fake or not present' do
+      it 'Does not save and sets status to unprocessable' do
+        count = Donation.count
+        stub_donation_creation @donation, true
+        post :create, donation: donation_attributes, card: {fake: 'fake'}
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(count).to eq(Donation.count)
       end
     end
   end
