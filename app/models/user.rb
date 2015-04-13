@@ -52,4 +52,10 @@ class User < ActiveRecord::Base
     self.personal_impact += donation.yearly_amount
       self.save
   end
+
+  def add_to_recurring(donation)
+    if donation.is_subscription
+      self.recurring_amount += donation.amount
+    end
+  end
 end
