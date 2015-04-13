@@ -39,6 +39,12 @@ class Organization < ActiveRecord::Base
       handle_response response
   end
 
+  def add_to_supporters(donation)
+    self.donation_count += 1
+    self.donation_amount += donation.yearly_amount
+
+  end
+
   private
   def oauth_params(code)
     {
