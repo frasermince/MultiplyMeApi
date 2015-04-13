@@ -54,11 +54,18 @@ module Pledgeable
     self.save
   end
 
+  def update_amounts
+    user = self.user
+    user.add_to_impact self
+    user.add_to_recurring self
+    self.organization.add_to_supporters self
+  end
+
   def purchase
     unless self.is_paid
       self.is_subscription ? self.create_subscription : self.create_charge
-      self.user.add_to_impact self
       self.is_paid = true
+      update_amounts
       self.save
       return true
     end

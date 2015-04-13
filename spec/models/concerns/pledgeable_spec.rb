@@ -141,6 +141,19 @@ RSpec.describe Pledgeable do
     end
   end
 
+  describe '#update_amounts' do
+    it 'calls several functions to update amounts' do
+      donation = create(:parent)
+      allow_any_instance_of(User).to receive(:add_to_impact)
+      expect_any_instance_of(User).to receive(:add_to_impact)
+      allow_any_instance_of(User).to receive(:add_to_recurring)
+      expect_any_instance_of(User).to receive(:add_to_recurring)
+      allow_any_instance_of(Organization).to receive(:add_to_supporters)
+      expect_any_instance_of(Organization).to receive(:add_to_supporters)
+      donation.update_amounts
+    end
+  end
+
   describe '#purchase' do
     context 'succeeds in making a purchase' do
 
