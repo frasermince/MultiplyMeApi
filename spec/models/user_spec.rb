@@ -95,9 +95,10 @@ RSpec.describe User, :type => :model do
         donation = create(:subscription_donation )
         previous_recurring_amount = @user.recurring_amount
         @user.add_to_recurring donation
-        expect(@user.recurring_amount).to eq(previous_recurring_amount + @user.recurring_amount)
+        expect(@user.recurring_amount).to eq(previous_recurring_amount + donation.amount)
       end
     end
+
     context 'is not a subcription donation' do
       it 'does not change the recurring_amount' do
         donation = create(:nonsubscription_donation)
