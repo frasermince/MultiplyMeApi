@@ -62,6 +62,16 @@ RSpec.describe Organization, :type => :model do
     end
   end
 
+  describe '#update_supporters' do
+    it 'removes the provided donation and adds the given amount' do
+      donation = create(:donation)
+      organization = create(:organization)
+      old_amount = organization.donation_amount
+      organization.update_supporters(donation, 5000)
+      expect(organization.reload.donation_amount).to eq(old_amount - donation.amount + 5000)
+    end
+  end
+
   def http_intercept
     stub_request(:post, 'https://connect.stripe.com/oauth/token').
       to_return(body: {access_token: 'sk_test_SPNYvScKYYd4yI3J2IPZaRiE',

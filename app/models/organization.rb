@@ -42,7 +42,12 @@ class Organization < ActiveRecord::Base
   def add_to_supporters(donation)
     self.donation_count += 1
     self.donation_amount += donation.yearly_amount
+  end
 
+  def update_supporters(donation, amount)
+    self.donation_amount -= donation.amount
+    self.donation_amount += amount
+    self.save
   end
 
   private
