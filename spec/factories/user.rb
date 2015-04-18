@@ -4,6 +4,7 @@ FactoryGirl.define do
     uid 'testtest'
     password 'testtest'
     provider 'email'
+    recurring_amount 2000
     factory :second_user do
       email 'other@multiplyme.in'
     end

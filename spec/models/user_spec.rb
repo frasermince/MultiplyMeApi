@@ -109,6 +109,17 @@ RSpec.describe User, :type => :model do
     end
   end
 
+  describe '#update_impact' do
+    it 'removes the amount specified in yearly_amount and adds for the amount of months' do
+      donation = create(:parent)
+      old_amount = @user.personal_impact
+      @user.update_impact(donation, 800)
+      expect(@user.reload.personal_impact).to eq(old_amount - donation.yearly_amount + 800)
+    end
+  end
+
+
+
   def valid_stripe_params
     {email: 'test@test.com', card: create_token}
   end
