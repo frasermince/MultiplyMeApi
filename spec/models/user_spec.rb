@@ -109,6 +109,15 @@ RSpec.describe User, :type => :model do
     end
   end
 
+  describe '#update_recurring' do
+    it 'removes the amount specified in yearly_amount and adds for the amount of months' do
+      donation = create(:parent)
+      old_amount = @user.recurring_amount
+      @user.update_recurring(donation, 800)
+      expect(@user.reload.recurring_amount).to eq(old_amount - donation.amount + 800)
+    end
+  end
+
   describe '#update_impact' do
     it 'removes the amount specified in yearly_amount and adds for the amount of months' do
       donation = create(:parent)

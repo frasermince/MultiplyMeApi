@@ -64,4 +64,10 @@ class User < ActiveRecord::Base
       self.recurring_amount += donation.amount
     end
   end
+
+  def update_recurring(donation, amount)
+    self.recurring_amount -= donation.amount
+    self.recurring_amount += amount
+    self.save
+  end
 end
