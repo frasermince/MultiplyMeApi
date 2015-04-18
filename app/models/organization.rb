@@ -8,10 +8,15 @@ class Organization < ActiveRecord::Base
 
   def get_stripe_user(user)
     organizations_user = OrganizationsUser.find_or_create self.id, user.id
-    customer = create_stripe_user user.stripe_id
-    organizations_user.stripe_id ||= customer.id
-    organizations_user.save
-    customer
+    if organizations_user.stripe_id.present?
+      Stripe.api_key = self.stripe_access_token
+      Stripe::Customer.retrieve organizations_user.stripe_id
+    else
+      customer = create_stripe_user user.stripe_id
+      organizations_user.stripe_id = customer.id
+      organizations_user.save
+      customer
+    end
   end
 
   def create_stripe_user(customer_id)

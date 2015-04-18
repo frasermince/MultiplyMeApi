@@ -239,7 +239,7 @@ RSpec.describe Pledgeable do
     end
   end
 
-  describe 'yearly_amount' do
+  describe '#yearly_amount' do
     context 'donation is a subscription' do
       it "returns the donation's amount multiplyed by twelve" do
         donation = create(:subscription_donation)
@@ -250,6 +250,56 @@ RSpec.describe Pledgeable do
       it "returns the donation's amount" do
         donation = create(:nonsubscription_donation)
         expect(donation.yearly_amount).to eq(donation.amount)
+      end
+    end
+  end
+
+  describe '#subscription_length' do
+    context 'is a subscription' do
+      it 'calculates the amount of months' do
+        donation = create(:parent)
+        expect(donation.subscription_length(1.month.ago)).to eq(1)
+      end
+    end
+    context 'is not a subscription' do
+      it 'returns 0' do
+        donation = create(:nonsubscription_donation)
+        expect(donation.subscription_length(1.month.ago)).to eq(0)
+      end
+    end
+  end
+
+  describe '#delete_amounts' do
+    it 'calls several functions to update amounts' do
+      donation = create(:parent)
+      allow_any_instance_of(User).to receive(:update_recurring)
+      expect_any_instance_of(User).to receive(:update_recurring)
+      allow_any_instance_of(User).to receive(:update_impact)
+      expect_any_instance_of(User).to receive(:update_impact)
+      allow_any_instance_of(Organization).to receive(:update_supporters)
+      expect_any_instance_of(Organization).to receive(:update_supporters)
+      donation.delete_amounts 2
+    end
+  end
+
+  describe '#delete_subscription' do
+    context 'donation is a subscription' do
+      it 'deletes the subscription' do
+        donation = create(:stripe_donation)
+        donation.create_subscription
+        expect_any_instance_of(Stripe::Subscription).to receive(:delete)
+        allow_any_instance_of(Donation).to receive(:delete_amounts)
+        expect_any_instance_of(Donation).to receive(:delete_amounts)
+        allow_any_instance_of(Donation).to receive(:subscription_length)
+        expect_any_instance_of(Donation).to receive(:subscription_length)
+        expect{donation.delete_subscription}.not_to raise_error
+      end
+    end
+    context 'donation is not a subscription' do
+      it 'does nothing' do
+        donation = create(:stripe_donation)
+        expect_any_instance_of(Stripe::Subscription).not_to receive(:delete)
+        donation.delete_subscription
       end
     end
   end

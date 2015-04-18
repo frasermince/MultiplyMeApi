@@ -38,7 +38,6 @@ module Pledgeable
     }, stripe_account: self.organization.stripe_id)
     self.stripe_id = subscription.id
     self.save
-
   end
 
   def create_charge
@@ -90,4 +89,31 @@ module Pledgeable
     end
   end
 
+  def subscription_length(starting_timestamp)
+    if self.is_subscription
+      today = Time.now
+      (today.year * 12 + today.month) - (starting_timestamp.year * 12 + starting_timestamp.month)
+    else
+      0
+    end
+  end
+
+  def delete_amounts(months)
+    remaining_amount = months * self.amount
+    self.user.update_impact self, remaining_amount
+    self.user.update_recurring self, remaining_amount
+    self.organization.update_supporters self, remaining_amount
+  end
+
+  def delete_subscription
+    customer = self.organization.get_stripe_user self.user
+    subscriptions = customer.subscriptions
+    if subscriptions.data.empty?
+      delete_amounts 0
+    else
+      result = subscriptions.retrieve(self.stripe_id)
+      result.delete
+      delete_amounts(subscription_length(result.start))
+    end
+  end
 end
