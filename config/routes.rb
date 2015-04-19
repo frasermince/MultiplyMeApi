@@ -6,6 +6,7 @@ Rails.application.routes.draw do
       namespace :v1 do
         resources :donations, only: [:create, :show, :update]
         resources :share_trees, only: [:show]
+        resources :organizations, only: [:show]
         get 'leaders/(:limit)' => 'leader_board#index'
         post 'subscribe/:id' => 'mailchimp#subscribe'
       end
