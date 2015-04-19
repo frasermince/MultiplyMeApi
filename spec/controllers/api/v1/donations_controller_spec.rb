@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.configure do |c|
   c.include DonationAmounts
   c.include DonationCreator
-  c.include DonationStubber
+  c.include Stubber
 end
 
 describe Api::V1::DonationsController do
@@ -14,7 +14,7 @@ describe Api::V1::DonationsController do
   describe '#create' do
     context 'when donation is valid' do
       it 'returns the donation and sets the status to created' do
-        stub_donation_creation @donation, true
+        stub_creation @donation, true
         expect_stripe_user @donation
         post :create, donation: donation_attributes, card: card_attributes
         expect(response).to have_http_status(:created)
@@ -24,7 +24,7 @@ describe Api::V1::DonationsController do
 
     context 'when donation is invalid' do
       it 'returns the error and sets the status to unprocessable' do
-        stub_donation_creation @donation, false
+        stub_creation @donation, false
         post :create, donation: donation_attributes, card: card_attributes
         expect(response).to have_http_status(:unprocessable_entity)
       end
@@ -33,7 +33,7 @@ describe Api::V1::DonationsController do
     context 'when card is fake or not present' do
       it 'Does not save and sets status to unprocessable' do
         count = Donation.count
-        stub_donation_creation @donation, true
+        stub_creation @donation, true
         post :create, donation: donation_attributes, card: {fake: 'fake'}
         expect(response).to have_http_status(:unprocessable_entity)
         expect(count).to eq(Donation.count)
@@ -44,7 +44,7 @@ describe Api::V1::DonationsController do
   describe '#show' do
     context 'when donation is found' do
       it 'returns the donation and sets the status to ok' do
-        stub_donation_finding @donation, @donation.id
+        stub_finding @donation, @donation.id
         get :show, id: @donation.id
         expect(response).to have_http_status(:ok)
         expect(assigns[:donation]).to eq(@donation)
@@ -62,7 +62,7 @@ describe Api::V1::DonationsController do
   describe '#update' do
     context 'when donation is updated successfully' do
       it 'returns the donation and sets the status to ok' do
-        stub_donation_finding @donation, @donation.id
+        stub_finding @donation, @donation.id
         put :update, id: @donation.id, donation: updated_donation_attributes
         expect(response).to have_http_status(:ok)
         expect(assigns[:donation].amount).to eq(updated_donation_attributes[:amount])
@@ -70,8 +70,8 @@ describe Api::V1::DonationsController do
     end
     context 'when donation is not updated successfully' do
       it 'returns the error and sets the status to unprocessable' do
-        stub_donation_finding @donation, @donation.id
-        stub_donation_creation @donation, false
+        stub_finding @donation, @donation.id
+        stub_creation @donation, false
         put :update, id: @donation.id, donation: updated_donation_attributes
         expect(response).to have_http_status(:unprocessable_entity)
       end
