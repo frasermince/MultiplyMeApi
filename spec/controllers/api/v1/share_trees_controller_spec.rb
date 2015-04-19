@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.configure do |c|
-  c.include DonationStubber
+  c.include Stubber
   c.include DonationCreator
 end
 
@@ -13,7 +13,7 @@ describe Api::V1::ShareTreesController do
   describe '#show' do
     context 'when donation is found' do
       it 'returns the share tree that corresponds with the donation' do
-        stub_donation_finding @parent_donation, @parent_donation.id
+        stub_finding @parent_donation, @parent_donation.id
         get :show, id: @parent_donation.id
         parsed_body = JSON.parse(response.body)
         expect(response).to have_http_status(:ok)
