@@ -27,7 +27,7 @@ RSpec.describe Organization, :type => :model do
       user = create(:stripe_user)
       organization = create(:organization)
       expect_any_instance_of(Organization).to receive(:create_stripe_token)
-      expect{organization.create_stripe_user user.stripe_id}.not_to raise_error
+      expect{organization.create_stripe_user user.stripe_id, user.email}.not_to raise_error
     end
   end
 

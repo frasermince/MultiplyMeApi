@@ -12,15 +12,14 @@ class Organization < ActiveRecord::Base
       Stripe.api_key = self.stripe_access_token
       Stripe::Customer.retrieve organizations_user.stripe_id
     else
-      customer = create_stripe_user user.stripe_id
+      customer = create_stripe_user user.stripe_id, user.email
       organizations_user.stripe_id = customer.id
       organizations_user.save
       customer
     end
   end
 
-  def create_stripe_user(customer_id)
-    email = (Stripe::Customer.retrieve customer_id).email
+  def create_stripe_user(customer_id, email)
     Stripe.api_key = self.stripe_access_token
     token_id = create_stripe_token(customer_id)
     customer = Stripe::Customer.create({
