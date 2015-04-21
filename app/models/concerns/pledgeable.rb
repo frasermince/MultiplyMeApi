@@ -2,6 +2,7 @@ module Pledgeable
   extend ActiveSupport::Concern
   included do
     after_create :after_create
+    before_destroy :delete_subscription
   end
 
   def yearly_amount
@@ -106,14 +107,18 @@ module Pledgeable
   end
 
   def delete_subscription
-    customer = self.organization.get_stripe_user self.user
-    subscriptions = customer.subscriptions
-    if subscriptions.data.empty?
-      delete_amounts 0
+    if self.is_subscription && self.is_paid
+      customer = self.organization.get_stripe_user self.user
+      subscriptions = customer.subscriptions
+      if subscriptions.data.empty?
+        delete_amounts 0
+      else
+        result = subscriptions.retrieve(self.stripe_id)
+        result.delete
+        delete_amounts(subscription_length(result.start))
+      end
     else
-      result = subscriptions.retrieve(self.stripe_id)
-      result.delete
-      delete_amounts(subscription_length(result.start))
+      delete_amounts(0)
     end
   end
 end
