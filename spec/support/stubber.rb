@@ -13,7 +13,7 @@ module Stubber
   end
 
   def expect_stripe_user(record)
-    allow(record.user).to receive(:save_stripe_user)
-    expect(record.user).to receive(:save_stripe_user)
+    allow(@user).to receive(:save_stripe_user)
+    expect(@user).to receive(:save_stripe_user)
   end
 end

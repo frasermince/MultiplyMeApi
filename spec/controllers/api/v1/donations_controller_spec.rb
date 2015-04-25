@@ -12,6 +12,7 @@ describe Api::V1::DonationsController do
   before(:each) do
     @donation = create(:donation)
   end
+  before { allow(controller).to receive(:current_user) { @user } }
   describe '#create' do
     context 'when donation is valid' do
       it 'returns the donation and sets the status to created' do

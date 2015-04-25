@@ -9,7 +9,6 @@ module Api
           @donation = Donation.new donation_params
           @donation.user_id = current_user.id
           if @donation.save
-            @donation.user.save_stripe_user(card_params)
             render json: {donation: @donation}, status: :created
           else
             render json: @donation.errors, status: :unprocessable_entity
