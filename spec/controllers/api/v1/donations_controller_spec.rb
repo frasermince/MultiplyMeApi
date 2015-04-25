@@ -4,6 +4,7 @@ RSpec.configure do |c|
   c.include DonationAmounts
   c.include DonationCreator
   c.include Stubber
+  c.include StripeHelpers
 end
 
 describe Api::V1::DonationsController do
@@ -16,7 +17,7 @@ describe Api::V1::DonationsController do
       it 'returns the donation and sets the status to created' do
         stub_creation @donation, true
         expect_stripe_user @donation
-        post :create, donation: donation_attributes, card: card_attributes
+        post :create, donation: donation_attributes, card: valid_card_attributes
         expect(response).to have_http_status(:created)
         expect(assigns[:donation]).to eq(@donation)
       end
@@ -25,7 +26,7 @@ describe Api::V1::DonationsController do
     context 'when donation is invalid' do
       it 'returns the error and sets the status to unprocessable' do
         stub_creation @donation, false
-        post :create, donation: donation_attributes, card: card_attributes
+        post :create, donation: donation_attributes, card: {email: 'test@test.com', token: '12345'}
         expect(response).to have_http_status(:unprocessable_entity)
       end
     end
@@ -86,8 +87,8 @@ describe Api::V1::DonationsController do
     attributes_for(:updated_donation)
   end
 
-  def card_attributes
-    {token: '12345', email: 'test@test.com'}
+  def valid_card_attributes
+    {token: create_token, email: 'test@test.com'}
   end
 
   def string_params

@@ -3,13 +3,17 @@ module Api
     class DonationsController < ApplicationController
       before_action :authenticate_user!, except: [:show]
       def create
-        @donation = Donation.new donation_params
-        @donation.user_id = current_user.id
-        if card_params[:email] && card_params[:token] && @donation.save
-          @donation.user.save_stripe_user(card_params)
-          render json: {donation: @donation}, status: :created
-        else
-          render json: @donation.errors, status: :unprocessable_entity
+        params_contain_card = card_params[:email] && card_params[:token] 
+        if params_contain_card
+          current_user.save_stripe_user(card_params)
+          @donation = Donation.new donation_params
+          @donation.user_id = current_user.id
+          if @donation.save
+            @donation.user.save_stripe_user(card_params)
+            render json: {donation: @donation}, status: :created
+          else
+            render json: @donation.errors, status: :unprocessable_entity
+          end
         end
       end
 
@@ -35,6 +39,8 @@ module Api
       end
 
       def card_params
+        params.require(:card).require(:email)
+        params.require(:card).require(:token)
         params.require(:card).permit(:email, :token)
       end
 
