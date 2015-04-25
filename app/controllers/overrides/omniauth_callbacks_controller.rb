@@ -5,7 +5,10 @@ module Overrides
       if params[:provider] == 'stripe_connect'
         organization = Organization.find params[:state]
         organization.set_access_token(params[:code])
+      else
+        super
       end
+      Rails.logger.warn "***HERE"
     end
 
     def resource_class

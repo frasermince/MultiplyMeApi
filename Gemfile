@@ -10,6 +10,7 @@ gem 'stripe', :source => 'https://code.stripe.com/'
 gem 'sendgrid-ruby'
 gem 'rack-rewrite'
 gem 'gravatar_image_tag'
+gem 'omniauth-facebook'
 
 gem 'unicorn'
 gem 'rails-api'
