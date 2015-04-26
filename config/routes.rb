@@ -7,6 +7,7 @@ Rails.application.routes.draw do
         resources :donations, only: [:create, :show, :update]
         resources :share_trees, only: [:show]
         resources :organizations, only: [:show]
+        resources :names, only: [:show]
         resource :user_subscription, only: [:destroy]
         get 'leaders/(:limit)' => 'leader_board#index'
         post 'subscribe/:id' => 'mailchimp#subscribe'
