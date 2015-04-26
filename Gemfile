@@ -2,7 +2,8 @@ source 'https://code.stripe.com'
 source 'https://rubygems.org'
 
 
-gem 'rails', '4.1.5'
+gem 'rails', '4.2.0'
+gem 'responders', '~> 2.0'
 gem 'omniauth-stripe-connect'
 gem 'capistrano'
 gem 'rest-client'
@@ -19,7 +20,7 @@ gem 'spring', :group => :development
 
 gem 'devise'
 gem 'omniauth'
-gem 'devise_token_auth'
+gem 'devise_token_auth', tag: 'v0.1.32.beta5'
 gem 'pg'
 gem 'rack-cors', :require => 'rack/cors'
 gem 'mailchimp-api'

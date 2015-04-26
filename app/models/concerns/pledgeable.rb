@@ -16,7 +16,7 @@ module Pledgeable
   def after_create
     parent = self.parent
     if self.is_challenged
-      NotificationMailer.send_notification_email(self.user).deliver
+      NotificationMailer.send_notification_email(self.user).deliver_now
     else
       self.purchase
     end

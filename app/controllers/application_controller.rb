@@ -1,7 +1,6 @@
 class ApplicationController < ActionController::API
   before_action :configure_permitted_parameters, if: :devise_controller?
-  include DeviseTokenAuth::Concerns::SetUserByToken
-  include ActionController::MimeResponds
+  include ActionController::RespondWith
   rescue_from ActiveRecord::RecordNotFound, :with => :record_not_found
   def home
 
