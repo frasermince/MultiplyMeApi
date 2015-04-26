@@ -9,8 +9,9 @@ module Api
         list_id = params[:id]
         email = params['email']
         begin
-          @mailchimp.lists.subscribe(params[:id], {'email' => email})
+          @mailchimp.lists.subscribe(list_id , {'email' => email})
         rescue Mailchimp::Error => ex
+          puts "***EX #{ex}"
           if ex.message
             msg = ex.message
           else
@@ -25,7 +26,7 @@ module Api
 
       private
       def mailchimp_api
-        @mailchimp = Mailchimp::API.new('28e127d80b3c82b4bf52e95e3ad0bb71-us10')
+        @mailchimp = Mailchimp::API.new Rails.application.secrets.mailchimp_api_key
       end
     end
   end
