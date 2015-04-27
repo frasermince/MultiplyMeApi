@@ -24,6 +24,16 @@ describe Api::V1::DonationsController do
       end
     end
 
+    context 'when subscribe is true' do
+      it 'adds user to mailing list' do
+        stub_creation @donation, true
+        allow(@user).to receive(:mailing_subscribe)
+        expect(@user).to receive(:mailing_subscribe)
+        post :create, subscribe: true, donation: donation_attributes, card: valid_card_attributes
+        expect(response).to have_http_status(:created)
+      end
+    end
+
     context 'when donation is invalid' do
       it 'returns the error and sets the status to unprocessable' do
         stub_creation @donation, false

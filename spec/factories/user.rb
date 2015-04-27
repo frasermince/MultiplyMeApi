@@ -1,6 +1,9 @@
 FactoryGirl.define do
   factory :user do
     email 'fraser@multiplyme.in'
+    factory :wrong_email_user do
+      email 'WRONG'
+    end
     uid 'testtest'
     password 'testtest'
     provider 'email'

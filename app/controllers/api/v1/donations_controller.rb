@@ -9,6 +9,9 @@ module Api
           @donation = Donation.new donation_params
           @donation.user_id = current_user.id
           if @donation.save
+            if params[:subscribe]
+              current_user.mailing_subscribe('fe1087b0aa')
+            end
             render json: {donation: @donation}, status: :created
           else
             render json: @donation.errors, status: :unprocessable_entity

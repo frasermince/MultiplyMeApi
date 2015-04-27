@@ -1,4 +1,5 @@
 require "stripe"
+require 'mailchimp'
 class User < ActiveRecord::Base
   devise :database_authenticatable, :recoverable,
     :trackable, :validatable, :registerable,
@@ -13,6 +14,27 @@ class User < ActiveRecord::Base
   def save_stripe_user(params)
     self.stripe_id = self.create_stripe_user params
     self.save
+  end
+
+  def mailing_subscribe(list_id)
+    @mailchimp = Mailchimp::API.new Rails.application.secrets.mailchimp_api_key
+    email = self.email
+    begin
+      @mailchimp.lists.subscribe(list_id , {'email' => email})
+    rescue Mailchimp::Error => ex
+      puts "***EX #{ex}"
+      if ex.message
+        msg = ex.message
+      else
+        msg = "An unknown error occurred"
+      end
+      return {status: false, message: msg}
+    end
+    {status: true}
+  end
+
+  def authentication_keys
+    [:email]
   end
 
   def get_gravatar_url
@@ -49,7 +71,7 @@ class User < ActiveRecord::Base
       self.network_impact += donation.downline_amount
     end
     self.personal_impact += donation.yearly_amount
-      self.save
+    self.save
   end
 
   def update_impact(donation, amount)
