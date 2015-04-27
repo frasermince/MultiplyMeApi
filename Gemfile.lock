@@ -272,7 +272,7 @@ PLATFORMS
 DEPENDENCIES
   capistrano
   devise
-  devise_token_auth
+  devise_token_auth (= 0.1.31)
   factory_girl_rails
   gravatar_image_tag
   guard
