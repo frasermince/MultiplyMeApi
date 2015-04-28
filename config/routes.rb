@@ -11,6 +11,7 @@ Rails.application.routes.draw do
         resource :user_subscription, only: [:destroy]
         get 'leaders/(:limit)' => 'leader_board#index'
         post 'subscribe/:id' => 'mailchimp#subscribe'
+        get 'omniauth/:provider' => 'overrides/omniauth_callbacks#redirect_callbacks'
       end
     end
   end
