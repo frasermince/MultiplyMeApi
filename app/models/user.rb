@@ -10,7 +10,6 @@ class User < ActiveRecord::Base
   has_many :donations
   has_many :organizations_user
   has_many :organizations, through: :organizations_user
-  before_create :skip_confirmation!
 
   def save_stripe_user(params)
     self.stripe_id = self.create_stripe_user params

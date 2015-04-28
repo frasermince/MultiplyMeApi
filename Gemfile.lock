@@ -1,3 +1,11 @@
+GIT
+  remote: git@github.com:frasermince/devise_token_auth.git
+  revision: e33b7f1e602f2934e91c27370c3f3795de2dcc51
+  specs:
+    devise_token_auth (0.1.32.beta9)
+      devise (~> 3.3)
+      rails (~> 4.2)
+
 GEM
   remote: https://rubygems.org/
   remote: https://code.stripe.com/
@@ -58,9 +66,6 @@ GEM
       responders
       thread_safe (~> 0.1)
       warden (~> 1.2.3)
-    devise_token_auth (0.1.30)
-      devise (~> 3.3)
-      rails (~> 4.1)
     diff-lcs (1.2.5)
     docile (1.1.5)
     domain_name (0.5.24)
@@ -272,7 +277,7 @@ PLATFORMS
 DEPENDENCIES
   capistrano
   devise
-  devise_token_auth (= 0.1.30)
+  devise_token_auth!
   factory_girl_rails
   gravatar_image_tag
   guard
