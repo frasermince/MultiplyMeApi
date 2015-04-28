@@ -20,7 +20,7 @@ gem 'spring', :group => :development
 
 gem 'devise'
 gem 'omniauth'
-gem 'devise_token_auth', git: 'git@github.com:ACPK/devise_token_auth.git', ref: 'a4bf70ad3b742cb9b816600a8ef9281fcdba3fe0'#, tag: 'v0.1.32.beta5'
+gem 'devise_token_auth', git: 'git@github.com:frasermince/devise_token_auth.git'
 gem 'pg'
 gem 'rack-cors', :require => 'rack/cors'
 gem 'mailchimp-api'
