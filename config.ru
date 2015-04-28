@@ -3,7 +3,7 @@ require 'rack/rewrite'
 require 'rack/cors'
 use Rack::Cors do
   allow do
-    origins 'localhost:9001', 'amala.multiplyme.in', ' http://amala-multiplyme.in.s3-website-us-west-2.amazonaws.com/', 'd3dcysehp02ch.cloudfront.net'
+    origins 'localhost:9001', 'amala.multiplyme.in', ' amala-multiplyme.in.s3-website-us-west-2.amazonaws.com/', 'd3dcysehp02ch.cloudfront.net'
     resource '*',
       :methods => [:get, :post, :put, :delete, :options],
       :headers => :any,
