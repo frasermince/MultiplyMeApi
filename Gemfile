@@ -18,7 +18,6 @@ gem 'rails-api'
 
 gem 'spring', :group => :development
 
-gem 'devise'
 gem 'omniauth'
 gem 'devise_token_auth', git: 'git@github.com:frasermince/devise_token_auth.git'
 gem 'pg'

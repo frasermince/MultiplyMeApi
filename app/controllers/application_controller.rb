@@ -1,6 +1,7 @@
 class ApplicationController < ActionController::API
   before_action :configure_permitted_parameters, if: :devise_controller?
   include ActionController::RespondWith
+  include DeviseTokenAuth::Controllers::Helpers
   rescue_from ActiveRecord::RecordNotFound, :with => :record_not_found
   def home
 
