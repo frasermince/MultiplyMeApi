@@ -49,8 +49,7 @@ module Pledgeable
       currency: 'usd',
       customer: customer.id
     }, stripe_account: self.organization.stripe_id)
-    self.stripe_id = charge.id
-    self.save
+    self.update_attribute('stripe_id', charge.id)
   end
 
   def update_amounts
