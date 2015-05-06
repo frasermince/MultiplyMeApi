@@ -18,7 +18,9 @@ module Traversable
   end
 
   def before_amount_update
-    traverse_upline self.parent, 'update'
+    if self.amount_was.present?
+      traverse_upline self.parent, 'update'
+    end
   end
 
   def traverse_upline(donation, action)
