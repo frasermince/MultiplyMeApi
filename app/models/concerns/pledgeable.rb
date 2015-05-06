@@ -37,8 +37,7 @@ module Pledgeable
       plan: 'pledge',
       quantity: self.amount,
     }, stripe_account: self.organization.stripe_id)
-    self.stripe_id = subscription.id
-    self.save
+    self.update_attribute('stripe_id', subscription.id)
   end
 
   def create_charge
