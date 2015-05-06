@@ -21,6 +21,7 @@ module Api
         @donation.children.each do |child|
           impact += child.yearly_amount
         end
+        impact
       end
 
       def parent
