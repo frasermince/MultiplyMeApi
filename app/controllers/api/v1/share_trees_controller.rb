@@ -9,10 +9,18 @@ module Api
       private
       def share_tree_json
         {
+          impact: impact,
           parent: parent,
           children: children,
           paid: @donation.is_paid
         }
+      end
+
+      def impact
+        impact = @donation.yearly_amount
+        @donation.children.each do |child|
+          impact += child.yearly_amount
+        end
       end
 
       def parent
