@@ -12,6 +12,7 @@ module Api
           impact: impact,
           parent: parent,
           children: children,
+          number_of_children: @parent.children.count,
           paid: @donation.is_paid
         }
       end
