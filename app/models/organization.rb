@@ -18,7 +18,7 @@ class Organization < ActiveRecord::Base
   def donation_amount
     total = 0
     Donation.where(organization_id: self.id, is_paid: true)
-      .each{total += donation.yearly_amount}
+      .each{|donation| total += donation.yearly_amount}
     total
   end
 
