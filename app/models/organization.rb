@@ -9,17 +9,17 @@ class Organization < ActiveRecord::Base
   attr_reader :donation_amount
 
   def donation_count
-    get_donations.count
+    User.includes(:donations)
+      .where('donations.organization_id = ? AND donations.is_paid = true', self.id)
+      .references(:donations)
+      .count
   end
 
   def donation_amount
     total = 0
-    self.get_donations.each{|donation| Rails.logger.warn"***HERE #{donation.yearly_amount}";total += donation.yearly_amount}
+    Donation.where(organization_id: self.id, is_paid: true)
+      .each{total += donation.yearly_amount}
     total
-  end
-
-  def get_donations
-    Donation.where(organization_id: self.id)
   end
 
   def get_stripe_user(user)
