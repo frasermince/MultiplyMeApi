@@ -12,6 +12,11 @@ class User < ActiveRecord::Base
   has_many :donations
   has_many :organizations_user
   has_many :organizations, through: :organizations_user
+  attr_reader :contribution
+
+  def contribution
+    personal_impact + network_impact
+  end
 
   def personal_impact
     total = 0
