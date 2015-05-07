@@ -19,11 +19,7 @@ module Api
       end
 
       def impact
-        impact = @donation.yearly_amount
-        @donation.children.each do |child|
-          impact += child.yearly_amount
-        end
-        impact
+        @donation.yearly_amount + @donation.downline_amount
       end
 
       def parent
