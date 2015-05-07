@@ -2,8 +2,9 @@ module Api
   module V1
     class NamesController < ApplicationController
       def show
-        user = Donation.find(params[:id]).user
-        render json: {name: user.name}
+        donation = Donation.find(params[:id])
+        user = donation.user
+        render json: {name: user.name, number_of_children: donation.children.count}
       end
     end
   end
