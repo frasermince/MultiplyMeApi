@@ -9,6 +9,7 @@ Rails.application.routes.draw do
         resources :organizations, only: [:show]
         resources :names, only: [:show]
         resource :user_subscription, only: [:destroy]
+        resources :user_donations, only: [:show]
         get 'leaders/(:limit)' => 'leader_board#index'
         post 'subscribe/:id' => 'mailchimp#subscribe'
       end
