@@ -4,6 +4,7 @@ module Traversable
   included do
     before_create :before_create
     before_update :before_amount_update, if: :amount_changed?
+    before_update :before_paid_update, if: :is_paid_changed?
     before_destroy :before_destroy
     belongs_to :parent, :class_name => 'Donation'
     has_many :children, :class_name => 'Donation', :foreign_key => 'parent_id'
@@ -20,6 +21,12 @@ module Traversable
   def before_amount_update
     if self.amount_was.present?
       traverse_upline self.parent, 'update'
+    end
+  end
+
+  def before_paid_update
+    if self.is_paid_was.present?
+      traverse_upline self.parent, 'update impact'
     end
   end
 
@@ -40,6 +47,10 @@ module Traversable
       replace_downline_amount amount_was, amount
     elsif action == 'destroy'
       reduce_downline amount
+    elsif action == 'update impact'
+      user = self.user
+      user.network_impact += amount
+      user.save
     end
   end
 
