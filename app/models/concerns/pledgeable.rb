@@ -62,9 +62,8 @@ module Pledgeable
   def purchase
     unless self.is_paid
       self.is_subscription ? self.create_subscription : self.create_charge
-      self.is_paid = true
+      self.update(is_paid: true)
       update_amounts
-      self.save
       return true
     end
     false
