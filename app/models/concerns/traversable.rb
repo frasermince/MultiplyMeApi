@@ -1,10 +1,10 @@
+require 'set'
 module Traversable
   extend ActiveSupport::Concern
 
   included do
     before_create :before_create
     before_update :before_amount_update, if: :amount_changed?
-    before_update :before_paid_update, if: :is_paid_changed?
     before_destroy :before_destroy
     belongs_to :parent, :class_name => 'Donation'
     has_many :children, :class_name => 'Donation', :foreign_key => 'parent_id'
@@ -24,8 +24,12 @@ module Traversable
     end
   end
 
-  def before_paid_update
-    traverse_upline self.parent, 'update impact'
+  def traverse_downline(set)
+    set.add self.id
+    self.children.each do |child|
+      set = set | child.traverse_downline(set)
+    end
+    set
   end
 
   def traverse_upline(donation, action)
@@ -45,12 +49,6 @@ module Traversable
       replace_downline_amount amount_was, amount
     elsif action == 'destroy'
       reduce_downline amount
-    elsif action == 'update impact'
-      unless cycles
-        user = self.user
-        user.network_impact += amount
-        user.save
-      end
     end
   end
 

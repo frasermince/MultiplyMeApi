@@ -52,17 +52,10 @@ module Pledgeable
     self.update_attribute('stripe_id', charge.id)
   end
 
-  def update_amounts
-    user = self.user
-    user.add_to_impact self
-    user.add_to_recurring self
-  end
-
   def purchase
     unless self.is_paid
       self.is_subscription ? self.create_subscription : self.create_charge
       self.update(is_paid: true)
-      update_amounts
       return true
     end
     false
@@ -95,25 +88,14 @@ module Pledgeable
     end
   end
 
-  def delete_amounts(months)
-    remaining_amount = months * self.amount
-    self.user.update_impact self, remaining_amount
-    self.user.update_recurring self, remaining_amount
-  end
-
   def delete_subscription
     if self.is_subscription && self.is_paid
       customer = self.organization.get_stripe_user self.user
       subscriptions = customer.subscriptions
-      if subscriptions.data.empty?
-        delete_amounts 0
-      else
+      unless subscriptions.data.empty?
         result = subscriptions.retrieve(self.stripe_id)
         result.delete
-        delete_amounts(subscription_length(result.start))
       end
-    else
-      delete_amounts(0)
     end
   end
 end

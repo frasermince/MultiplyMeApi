@@ -1,6 +1,8 @@
-require "stripe"
+require 'stripe'
 require 'mailchimp'
+require 'set'
 class User < ActiveRecord::Base
+
   devise :database_authenticatable, :recoverable,
     :trackable, :validatable, :registerable,
     :omniauthable
@@ -10,6 +12,39 @@ class User < ActiveRecord::Base
   has_many :donations
   has_many :organizations_user
   has_many :organizations, through: :organizations_user
+
+  def personal_impact
+    total = 0
+    self.donations.where(is_paid: 1).each{|donation| total += donation.yearly_amount }
+    total
+  end
+
+  def network_impact
+    network_set = Set.new
+    self.donations.each do |donation|
+      network_set = network_set | donation.traverse_downline(network_set)
+    end
+    network_set.subtract self.donations.map{|donation| donation.id}
+    total = 0
+    network_set.each do |id|
+      donation = Donation.find(id)
+      if donation.is_paid
+        total += donation.yearly_amount
+      end
+    end
+    total
+  end
+
+  def only_recurring
+    self.donations.each do |donation|
+      return false unless donation.is_subscription
+    end
+    true
+  end
+
+  def recurring_amount
+    Donation.where(user_id: self.id, is_paid: true).sum(:amount)
+  end
 
   def save_stripe_user(params)
     self.stripe_id = self.create_stripe_user params
@@ -74,21 +109,9 @@ class User < ActiveRecord::Base
     self.save
   end
 
-  def update_impact(donation, amount)
-    self.personal_impact -= donation.yearly_amount
-    self.personal_impact += amount
-    self.save
-  end
-
   def add_to_recurring(donation)
     if donation.is_subscription
       self.recurring_amount += donation.amount
     end
-  end
-
-  def update_recurring(donation, amount)
-    self.recurring_amount -= donation.amount
-    self.recurring_amount += amount
-    self.save
   end
 end
