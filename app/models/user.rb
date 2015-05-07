@@ -36,14 +36,14 @@ class User < ActiveRecord::Base
   end
 
   def only_recurring
-    self.donations.each do |donation|
+    self.donations.where(is_paid: true).each do |donation|
       return false unless donation.is_subscription
     end
     true
   end
 
   def recurring_amount
-    Donation.where(user_id: self.id, is_paid: true).sum(:amount)
+    Donation.where(user_id: self.id, is_paid: true, is_subscription: true).sum(:amount)
   end
 
   def save_stripe_user(params)
