@@ -56,7 +56,6 @@ module Pledgeable
     user = self.user
     user.add_to_impact self
     user.add_to_recurring self
-    self.organization.add_to_supporters self
   end
 
   def purchase
@@ -100,7 +99,6 @@ module Pledgeable
     remaining_amount = months * self.amount
     self.user.update_impact self, remaining_amount
     self.user.update_recurring self, remaining_amount
-    self.organization.update_supporters self, remaining_amount
   end
 
   def delete_subscription
