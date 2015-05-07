@@ -46,7 +46,7 @@ module Traversable
     elsif action == 'destroy'
       reduce_downline amount
     elsif action == 'update impact'
-      if self.user_cycles?
+      unless self.user_cycles?
         user = self.user
         user.network_impact += amount
         user.save
