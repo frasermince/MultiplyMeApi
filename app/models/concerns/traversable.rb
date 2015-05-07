@@ -33,12 +33,12 @@ module Traversable
       if self.amount_was.present? && self.is_subscription
         amount_was = self.amount_was * 12
       end
-        donation.perform_update_action action, amount_was, self.yearly_amount
+      donation.perform_update_action action, amount_was, self.yearly_amount, self.user_cycles?
         traverse_upline donation.parent, action
     end
   end
 
-  def perform_update_action(action, amount_was, amount)
+  def perform_update_action(action, amount_was, amount, cycles)
     if action == 'create'
       add_downline_amount amount
     elsif action == 'update'
@@ -46,7 +46,7 @@ module Traversable
     elsif action == 'destroy'
       reduce_downline amount
     elsif action == 'update impact'
-      unless self.user_cycles?
+      unless cycles
         user = self.user
         user.network_impact += amount
         user.save
