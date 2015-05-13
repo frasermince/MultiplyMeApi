@@ -5,7 +5,7 @@ module Overrides
     def redirect_callbacks
       # derive target redirect route from 'resource_class' param, which was set
       # before authentication.
-      devise_mapping = request.env['omniauth.params']['resource_class'].underscore.to_sym
+      devise_mapping = session['omniauth.params']['resource_class'].underscore.to_sym
       redirect_route = "#{Devise.mappings[devise_mapping].as_json["path"]}/#{params[:provider]}/callback"
 
       # preserve omniauth info for success route. ignore 'extra' in twitter
