@@ -162,7 +162,6 @@ GEM
       slop (~> 3.4)
     rack (1.6.0)
     rack-cors (0.4.0)
-    rack-rewrite (1.5.1)
     rack-test (0.6.3)
       rack (>= 1.0)
     rails (4.2.0)
@@ -287,7 +286,6 @@ DEPENDENCIES
   omniauth-stripe-connect
   pg
   rack-cors
-  rack-rewrite
   rails (= 4.2.0)
   rails-api
   responders (~> 2.0)
