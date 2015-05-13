@@ -23,7 +23,6 @@ module Overrides
       else
         super
       end
-      Rails.logger.warn "***HERE"
     end
 
     def resource_class
