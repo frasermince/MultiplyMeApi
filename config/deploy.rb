@@ -1,4 +1,4 @@
-# config valid only for Capistrano 3.1
+# config valid only for Capistrano 3.4
 lock '3.4.0'
 
 set :application, 'multiply_me_api'
