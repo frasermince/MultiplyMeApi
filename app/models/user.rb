@@ -106,17 +106,4 @@ class User < ActiveRecord::Base
     end
   end
 
-  def add_to_impact(donation)
-    unless donation.user_cycles?
-      self.network_impact += donation.downline_amount
-    end
-    self.personal_impact += donation.yearly_amount
-    self.save
-  end
-
-  def add_to_recurring(donation)
-    if donation.is_subscription
-      self.recurring_amount += donation.amount
-    end
-  end
 end

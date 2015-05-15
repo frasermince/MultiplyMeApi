@@ -269,29 +269,12 @@ RSpec.describe Pledgeable do
     end
   end
 
-  describe '#delete_amounts' do
-    it 'calls several functions to update amounts' do
-      donation = create(:parent)
-      allow_any_instance_of(User).to receive(:update_recurring)
-      expect_any_instance_of(User).to receive(:update_recurring)
-      allow_any_instance_of(User).to receive(:update_impact)
-      expect_any_instance_of(User).to receive(:update_impact)
-      allow_any_instance_of(Organization).to receive(:update_supporters)
-      expect_any_instance_of(Organization).to receive(:update_supporters)
-      donation.delete_amounts 2
-    end
-  end
-
   describe '#delete_subscription' do
     context 'donation is a subscription' do
       it 'deletes the subscription' do
         donation = create(:stripe_donation)
         donation.create_subscription
         expect_any_instance_of(Stripe::Subscription).to receive(:delete)
-        allow_any_instance_of(Donation).to receive(:delete_amounts)
-        expect_any_instance_of(Donation).to receive(:delete_amounts)
-        allow_any_instance_of(Donation).to receive(:subscription_length)
-        expect_any_instance_of(Donation).to receive(:subscription_length)
         expect{donation.delete_subscription}.not_to raise_error
       end
     end
@@ -299,8 +282,6 @@ RSpec.describe Pledgeable do
       it 'does nothing' do
         donation = create(:unpaid_stripe_donation)
         expect_any_instance_of(Stripe::Subscription).not_to receive(:delete)
-        allow_any_instance_of(Donation).to receive(:delete_amounts)
-        expect_any_instance_of(Donation).to receive(:delete_amounts)
         donation.delete_subscription
       end
     end

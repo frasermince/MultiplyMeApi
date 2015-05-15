@@ -38,32 +38,6 @@ RSpec.describe User, :type => :model do
 
   end
 
-  describe '#add_to_impact' do
-    context 'user_cycles returns true' do
-      it 'does not add to network_impact' do
-        allow_any_instance_of(Donation).to receive(:user_cycles?).and_return(true)
-        old_personal_impact = @user.personal_impact
-        old_network_impact = @user.network_impact
-        create_two_children
-        @user.add_to_impact @child_donation
-        expect(@user.reload.personal_impact).to eq(old_personal_impact + @child_donation.yearly_amount)
-        expect(@user.reload.network_impact).to eq(old_network_impact)
-      end
-    end
-
-    context 'user_cycles returns false' do
-      it 'adds the impact of this donation to the user' do
-        allow_any_instance_of(Donation).to receive(:user_cycles?).and_return(false)
-        old_personal_impact = @user.personal_impact
-        old_network_impact = @user.network_impact
-        create_different_user_donations
-        @user.add_to_impact @first_child
-        expect(@user.reload.personal_impact).to eq(old_personal_impact + @first_child.yearly_amount)
-        expect(@user.reload.network_impact).to eq(old_network_impact + @first_child.downline_amount)
-      end
-    end
-  end
-
   describe '#save_stripe_user' do
     it 'calls create_stripe_user' do
       allow(@user).to receive(:create_stripe_user).and_return("1")
@@ -113,46 +87,6 @@ RSpec.describe User, :type => :model do
       expect{@user.create_credit_card create_token}.to raise_error
     end
   end
-
-  describe 'add_to_recurring' do
-    context 'is a subcription donation' do
-      it 'adds the amount of the donation to recurring_amount' do
-        donation = create(:subscription_donation )
-        previous_recurring_amount = @user.recurring_amount
-        @user.add_to_recurring donation
-        expect(@user.recurring_amount).to eq(previous_recurring_amount + donation.amount)
-      end
-    end
-
-    context 'is not a subcription donation' do
-      it 'does not change the recurring_amount' do
-        donation = create(:nonsubscription_donation)
-        previous_recurring_amount = @user.recurring_amount
-        @user.add_to_recurring donation
-        expect(@user.recurring_amount).to eq(previous_recurring_amount)
-      end
-    end
-  end
-
-  describe '#update_recurring' do
-    it 'removes the amount specified in yearly_amount and adds for the amount of months' do
-      donation = create(:parent)
-      old_amount = @user.recurring_amount
-      @user.update_recurring(donation, 800)
-      expect(@user.reload.recurring_amount).to eq(old_amount - donation.amount + 800)
-    end
-  end
-
-  describe '#update_impact' do
-    it 'removes the amount specified in yearly_amount and adds for the amount of months' do
-      donation = create(:parent)
-      old_amount = @user.personal_impact
-      @user.update_impact(donation, 800)
-      expect(@user.reload.personal_impact).to eq(old_amount - donation.yearly_amount + 800)
-    end
-  end
-
-
 
   def valid_stripe_params
     {email: 'test@test.com', card: create_token}
