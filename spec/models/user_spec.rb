@@ -40,7 +40,7 @@ RSpec.describe User, :type => :model do
 
   describe '#save_stripe_user' do
     it 'calls create_stripe_user' do
-      allow(@user).to receive(:create_stripe_user).and_return("1")
+      allow(@user).to receive(:create_stripe_user).and_return({status: :success, id: 1})
       expect(@user).to receive(:create_stripe_user)
       @user.save_stripe_user(valid_stripe_params)
       expect(@user.reload.stripe_id).to eq("1")

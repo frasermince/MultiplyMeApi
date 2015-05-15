@@ -18,10 +18,15 @@ module Pledgeable
     if self.is_challenged
       NotificationMailer.send_notification_email(self.user).deliver_now
     else
-      self.purchase
+      response = self.purchase
+      if response[:status] == :failed
+        raise Exception.new(response[:error])
+      end
+      response
     end
     if parent.present? && parent.challenge_completed?
       parent.purchase
+      # TODO SEND EMAIL
     end
   end
 
@@ -30,35 +35,45 @@ module Pledgeable
   end
 
   def create_subscription
-    Stripe.api_key = Rails.application.secrets.stripe_secret_key
-    customer = self.organization.get_stripe_user(user)
-    subscription = customer.subscriptions.create({
-      application_fee_percent: PERCENTAGE_FEE,
-      plan: 'pledge',
-      quantity: self.amount,
-    }, stripe_account: self.organization.stripe_id)
-    self.update_attribute('stripe_id', subscription.id)
+    begin
+      Stripe.api_key = Rails.application.secrets.stripe_secret_key
+      customer = self.organization.get_stripe_user(user)
+      subscription = customer.subscriptions.create({
+        application_fee_percent: PERCENTAGE_FEE,
+        plan: 'pledge',
+        quantity: self.amount,
+      }, stripe_account: self.organization.stripe_id)
+      self.update_attribute('stripe_id', subscription.id)
+    rescue => error
+      return {status: :failed, error: error}
+    end
+    {status: :success}
   end
 
   def create_charge
-    Stripe.api_key = Rails.application.secrets.stripe_secret_key
-    customer = self.organization.get_stripe_user(user)
-    charge = Stripe::Charge.create({
-      amount: amount,
-      application_fee: (amount * (PERCENTAGE_FEE / 100)).round,
-      currency: 'usd',
-      customer: customer.id
-    }, stripe_account: self.organization.stripe_id)
-    self.update_attribute('stripe_id', charge.id)
+    begin
+      Stripe.api_key = Rails.application.secrets.stripe_secret_key
+      customer = self.organization.get_stripe_user(user)
+      charge = Stripe::Charge.create({
+        amount: amount,
+        application_fee: (amount * (PERCENTAGE_FEE / 100)).round,
+        currency: 'usd',
+        customer: customer.id
+      }, stripe_account: self.organization.stripe_id)
+      self.update_attribute('stripe_id', charge.id)
+    rescue => error
+      return {status: :failed, error: error}
+    end
+    {status: :success}
   end
 
   def purchase
     unless self.is_paid
-      self.is_subscription ? self.create_subscription : self.create_charge
-      self.update(is_paid: true)
-      return true
+      response = self.is_subscription ? self.create_subscription : self.create_charge
+      self.update(is_paid: true) if response[:status] == :success
+      return response
     end
-    false
+    return {status: :failed, error: 'order has already been paid'}
   end
 
   def user_cycles?

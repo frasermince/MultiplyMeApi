@@ -34,21 +34,13 @@ describe Api::V1::DonationsController do
       end
     end
 
-    context 'when donation is invalid' do
+    context 'when saving stripe user returns an error' do
       it 'returns the error and sets the status to unprocessable' do
         stub_creation @donation, false
-        post :create, donation: donation_attributes, card: {email: 'test@test.com', token: '12345'}
+        post :create, donation: donation_attributes, card: invalid_card_attributes
+        parsed_body = JSON.parse(response.body)
         expect(response).to have_http_status(:unprocessable_entity)
-      end
-    end
-
-    context 'when card is fake or not present' do
-      it 'Does not save and sets status to unprocessable' do
-        count = Donation.count
-        stub_creation @donation, true
-        post :create, donation: donation_attributes, card: {fake: 'fake'}
-        expect(response).to have_http_status(:unprocessable_entity)
-        expect(count).to eq(Donation.count)
+        expect(parsed_body['error']).to eq('Your card was declined.')
       end
     end
   end
@@ -100,6 +92,10 @@ describe Api::V1::DonationsController do
 
   def valid_card_attributes
     {token: create_token, email: 'test@test.com'}
+  end
+
+  def invalid_card_attributes
+    {token: create_token('4000000000000002'), email: 'test@test.com'}
   end
 
   def string_params

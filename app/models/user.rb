@@ -52,8 +52,9 @@ class User < ActiveRecord::Base
   end
 
   def save_stripe_user(params)
-    self.stripe_id = self.create_stripe_user params
-    self.save
+    result = self.create_stripe_user params
+    self.update_attribute('stripe_id', result[:id]) if result[:status] == :success
+    result
   end
 
   def mailing_subscribe(list_id)
@@ -82,6 +83,7 @@ class User < ActiveRecord::Base
   end
 
   def create_stripe_user(params)
+    begin
     Stripe.api_key = Rails.application.secrets.stripe_secret_key
     customer = Stripe::Customer.create(
       {
@@ -89,7 +91,10 @@ class User < ActiveRecord::Base
         email: params[:email]
       }
     )
-    return customer.id
+    rescue => error
+      return {status: :failed, error: error}
+    end
+    return {status: :success, id: customer.id}
   end
 
   def create_credit_card(token)

@@ -9,7 +9,7 @@ RSpec.describe Pledgeable do
   describe '#after_create' do
     context 'receives a challenge' do
       it 'does not create a purchase for self' do
-        allow_any_instance_of(Donation).to receive(:purchase).and_return(nil)
+        allow_any_instance_of(Donation).to receive(:purchase).and_return({status: :success})
         expect_any_instance_of(Donation).not_to receive(:purchase)
         create_parent
       end
@@ -23,7 +23,7 @@ RSpec.describe Pledgeable do
 
           allow_any_instance_of(Donation)
             .to receive(:purchase)
-            .and_return(true)
+            .and_return({status: :success})
 
           expect_any_instance_of(Donation)
             .to receive(:purchase)
@@ -41,7 +41,7 @@ RSpec.describe Pledgeable do
 
           allow_any_instance_of(Donation)
             .to receive(:purchase)
-            .and_return(true)
+            .and_return({status: :success})
 
           expect_any_instance_of(Donation)
             .not_to receive(:purchase)
@@ -54,21 +54,30 @@ RSpec.describe Pledgeable do
     context 'if it is a challenge' do
       it 'sends a registration email and a notification email' do
         allow_any_instance_of(Donation)
-          .to receive(:purchase).and_return(nil)
+          .to receive(:purchase).and_return({status: :success})
         expect {create_parent}
           .to change { ActionMailer::Base.deliveries.count }.by(1)
       end
     end
 
     context 'if it is not a challenge' do
+      context 'if purchase returns false' do
+        it 'throws an error' do
+          allow_any_instance_of(Donation)
+            .to receive(:purchase).and_return({status: :failed, error: 'This is a test'})
+          expect {create_parent false}
+            .to raise_error
+        end
+      end
+
       it 'does create a purchase for self' do
-        allow_any_instance_of(Donation).to receive(:purchase).and_return(nil)
+        allow_any_instance_of(Donation).to receive(:purchase).and_return({status: :success})
         expect_any_instance_of(Donation).to receive(:purchase)
         create_parent false
       end
 
       it 'only sends a registration email' do
-        allow_any_instance_of(Donation).to receive(:purchase).and_return(nil)
+        allow_any_instance_of(Donation).to receive(:purchase).and_return({status: :success})
         expect {create_parent(false)}
           .to change { ActionMailer::Base.deliveries.count }.by(0)
       end
@@ -141,26 +150,13 @@ RSpec.describe Pledgeable do
     end
   end
 
-  describe '#update_amounts' do
-    it 'calls several functions to update amounts' do
-      donation = create(:parent)
-      allow_any_instance_of(User).to receive(:add_to_impact)
-      expect_any_instance_of(User).to receive(:add_to_impact)
-      allow_any_instance_of(User).to receive(:add_to_recurring)
-      expect_any_instance_of(User).to receive(:add_to_recurring)
-      allow_any_instance_of(Organization).to receive(:add_to_supporters)
-      expect_any_instance_of(Organization).to receive(:add_to_supporters)
-      donation.update_amounts
-    end
-  end
-
   describe '#purchase' do
     context 'succeeds in making a purchase' do
 
       context 'and donation is a subscription' do
         it 'calls create_subscription' do
           donation = create(:subscription_donation)
-          allow_any_instance_of(Donation).to receive(:create_subscription).and_return(true)
+          allow_any_instance_of(Donation).to receive(:create_subscription).and_return({status: :success})
           expect_any_instance_of(Donation).to receive(:create_subscription)
           donation.purchase
         end
@@ -169,32 +165,23 @@ RSpec.describe Pledgeable do
       context 'and donation is not a subscription' do
         it 'calls create_charge' do
           donation = create(:nonsubscription_donation)
-          allow_any_instance_of(Donation).to receive(:create_charge).and_return(true)
+          allow_any_instance_of(Donation).to receive(:create_charge).and_return({status: :success})
           expect_any_instance_of(Donation).to receive(:create_charge)
           donation.purchase
         end
       end
 
-      it 'adds to the impact' do
-        donation = create(:subscription_donation)
-        allow_any_instance_of(Donation).to receive(:create_subscription).and_return(true)
-        allow_any_instance_of(User).to receive(:add_to_impact).and_return(true)
-        expect_any_instance_of(User).to receive(:add_to_impact)
-        donation.purchase
-
-      end
-
-      it 'returns true' do
-        allow_any_instance_of(Donation).to receive(:create_subscription).and_return(true)
+      it 'returns a status of success' do
+        allow_any_instance_of(Donation).to receive(:create_subscription).and_return({status: :success})
         create_parent
         expect(@parent_donation.purchase).to be_truthy
       end
     end
 
     context 'purchase was previously made' do
-      it 'returns false' do
+      it 'returns a failed status' do
         create_paid
-        expect(@paid_donation.purchase).to be_falsey
+        expect(@paid_donation.purchase[:status]).to eq(:failed)
       end
     end
 

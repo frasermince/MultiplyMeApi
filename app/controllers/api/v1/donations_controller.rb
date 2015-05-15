@@ -3,18 +3,22 @@ module Api
     class DonationsController < ApplicationController
       before_action :authenticate_user!, except: [:show]
       def create
-        params_contain_card = card_params[:email] && card_params[:token] 
+        params_contain_card = card_params[:email] && card_params[:token]
         if params_contain_card
-          current_user.save_stripe_user(card_params)
+          response = current_user.save_stripe_user(card_params)
           @donation = Donation.new donation_params
           @donation.user_id = current_user.id
-          if @donation.save
-            if params[:subscribe]
-              current_user.mailing_subscribe('fe1087b0aa')
+          if response[:status] == :success
+            if @donation.save
+              if params[:subscribe]
+                current_user.mailing_subscribe('fe1087b0aa')
+              end
+              render json: {donation: @donation}, status: :created
+            else
+              render json: @donation.errors, status: :unprocessable_entity
             end
-            render json: {donation: @donation}, status: :created
           else
-            render json: @donation.errors, status: :unprocessable_entity
+            render json: {error: response[:error].message}, status: :unprocessable_entity
           end
         end
       end
