@@ -23,8 +23,9 @@ gem 'devise_token_auth', '0.1.32.beta9'
 gem 'pg'
 gem 'rack-cors', :require => 'rack/cors'
 gem 'mailchimp-api'
+gem 'foreman'
 gem 'resque'
-gem 'resque-scheduler'
+gem 'resque-scheduler', '2.5.4'
 
 group :development do
   gem 'guard'
