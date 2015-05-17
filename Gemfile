@@ -10,7 +10,7 @@ gem 'rest-client'
 gem 'stripe', :source => 'https://code.stripe.com/'
 gem 'sendgrid-ruby'
 gem 'gravatar_image_tag'
-gem 'omniauth-facebook'
+gem 'omniauth-facebook', '2.0.0'
 
 gem 'unicorn'
 gem 'rails-api'
@@ -22,6 +22,8 @@ gem 'devise_token_auth', git: 'git@github.com:frasermince/devise_token_auth.git'
 gem 'pg'
 gem 'rack-cors', :require => 'rack/cors'
 gem 'mailchimp-api'
+gem 'resque'
+gem 'resque-scheduler'
 
 group :development do
   gem 'guard'
