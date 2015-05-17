@@ -18,7 +18,8 @@ gem 'rails-api'
 gem 'spring', :group => :development
 
 gem 'omniauth'
-gem 'devise_token_auth', git: 'git@github.com:frasermince/devise_token_auth.git'
+#gem 'devise_token_auth', git: 'git@github.com:frasermince/devise_token_auth.git'
+gem 'devise_token_auth', '0.1.32.beta9'
 gem 'pg'
 gem 'rack-cors', :require => 'rack/cors'
 gem 'mailchimp-api'
