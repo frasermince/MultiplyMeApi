@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  mount_devise_token_auth_for 'User', at: '/auth', controllers:  { omniauth_callbacks: "overrides/omniauth_callbacks" }
+  mount_devise_token_auth_for 'User', at: 'auth', controllers:  { omniauth_callbacks: "overrides/omniauth_callbacks" }
 
   constraints :subdomain => 'api' do
     namespace :api, path: nil, defaults: {format: 'json'}  do
