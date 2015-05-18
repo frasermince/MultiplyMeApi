@@ -16,12 +16,7 @@ Rails.application.routes.draw do
       end
     end
   end
-  get 'omniauth/:provider' => 'overrides/omniauth_callbacks#redirect_callbacks'
-  constraints :subdomain => 'amala' do
-    namespace :amala, path: nil, defaults: {format: 'json'}  do
-      get '/', to: redirect('/')
-    end
-  end
+  #get 'omniauth/:provider' => 'overrides/omniauth_callbacks#redirect_callbacks'
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
