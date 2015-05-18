@@ -77,8 +77,8 @@ GEM
     ffi (1.9.8)
     foreman (0.78.0)
       thor (~> 0.19.1)
-    foreman-export-initd (0.1.1)
-      foreman (>= 0.59.0)
+    foreman-export-initscript (0.0.1)
+      foreman
     formatador (0.2.5)
     globalid (0.3.5)
       activesupport (>= 4.1.0)
@@ -302,7 +302,7 @@ DEPENDENCIES
   devise_token_auth (= 0.1.32.beta9)
   factory_girl_rails
   foreman
-  foreman-export-initd
+  foreman-export-initscript
   gravatar_image_tag
   guard
   guard-rspec

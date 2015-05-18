@@ -24,7 +24,7 @@ gem 'pg'
 gem 'rack-cors', :require => 'rack/cors'
 gem 'mailchimp-api'
 gem 'foreman'
-gem 'foreman-export-initd'
+gem 'foreman-export-initscript'
 gem 'resque'
 gem 'resque-scheduler', '2.5.4'
 
