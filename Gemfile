@@ -10,7 +10,7 @@ gem 'rest-client'
 gem 'stripe', :source => 'https://code.stripe.com/'
 gem 'sendgrid-ruby'
 gem 'gravatar_image_tag'
-gem 'omniauth-facebook', '2.0.0'
+gem 'omniauth-facebook', '2.0.1'
 
 gem 'unicorn'
 gem 'rails-api'

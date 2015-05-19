@@ -149,7 +149,7 @@ GEM
     omniauth (1.2.2)
       hashie (>= 1.2, < 4)
       rack (~> 1.0)
-    omniauth-facebook (2.0.0)
+    omniauth-facebook (2.0.1)
       omniauth-oauth2 (~> 1.2)
     omniauth-oauth2 (1.2.0)
       faraday (>= 0.8, < 0.10)
@@ -313,7 +313,7 @@ DEPENDENCIES
   guard-rspec
   mailchimp-api
   omniauth
-  omniauth-facebook (= 2.0.0)
+  omniauth-facebook (= 2.0.1)
   omniauth-stripe-connect
   pg
   rack-cors
