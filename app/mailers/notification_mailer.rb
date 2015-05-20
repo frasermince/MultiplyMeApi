@@ -28,21 +28,24 @@ class NotificationMailer < ActionMailer::Base
 
   def pledged(user, donation)
     @name = user.name
-    @amount = donation.amount
+    @amount = convert_amount(donation.amount)
     @share_link = share donation.id
     mail(to: user.email, subject: 'Thank you for taking the challenge')
   end
 
   def donated(user, donation)
     @name = user.name
-    @amount = donation.amount
+    @amount = convert_amount(donation.amount)
     mail(to: user.email, subject: 'Thank you for donating')
   end
 
   private
+  def convert_amount(amount)
+    (amount * 0.01).round(2)
+  end
   def set_friend_instance(you)
     @your_name = you.name
-    @impact = you.network_impact
+    @impact = convert_amount(you.network_impact)
   end
   def share(donation_id)
     'https://amala.multiplyme.in/#/share/' + donation_id.to_s
