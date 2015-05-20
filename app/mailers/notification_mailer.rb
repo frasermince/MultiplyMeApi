@@ -2,7 +2,7 @@ class NotificationMailer < ActionMailer::Base
   default from: 'team@multiplyme.in'
   def finish_challenge(user)
     @name = user.name
-    mail(to: user.email, subject: 'finish challenge')
+    mail(to: user.email, subject: 'Congratulations')
   end
 
   def first_friend(you, your_donation, friend)
