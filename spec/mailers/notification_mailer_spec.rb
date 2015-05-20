@@ -1,10 +1,10 @@
 require "rails_helper"
 
 RSpec.describe NotificationMailer, :type => :mailer do
-  describe '#send_notification_email' do
+  describe '#finish_challenge' do
     it 'sets the user based on parameter' do
       user = create(:user)
-      mail = NotificationMailer.send_notification_email user
+      mail = NotificationMailer.finish_challenge user
       expect(mail.to).to eql([user.email])
     end
   end

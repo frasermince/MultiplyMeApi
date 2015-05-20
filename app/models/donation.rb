@@ -16,4 +16,8 @@ class Donation < ActiveRecord::Base
     self.user_id == user_id
   end
 
+  def time_remaining
+    (((self.created_at + 3.days) - DateTime.now) / 3600 / 24).to_i
+  end
+
 end

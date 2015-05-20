@@ -19,7 +19,7 @@ module DonationCreator
 
   def create_two_children
     create_one_child
-    create(:second_child)
+    @second_child = create(:second_child)
   end
 
   def create_three_children(old = false)

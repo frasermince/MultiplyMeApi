@@ -69,4 +69,12 @@ module Traversable
     self.downline_count -= 1
     self.save
   end
+
+  def one_grandchild
+    grandchildren = 0
+    self.children.each do |child|
+      grandchildren += child.children.count
+    end
+    grandchildren == 1
+  end
 end

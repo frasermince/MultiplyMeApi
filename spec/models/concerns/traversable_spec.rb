@@ -71,6 +71,21 @@ RSpec.describe Traversable do
 
   end
 
+  describe '#one_grandchild' do
+    context 'there is one grandchild' do
+      it 'returns true' do
+        create_grandchild
+        expect(@parent_donation.one_grandchild).to eq(true)
+      end
+    end
+    context 'there is more than one grandchild' do
+      it 'returns false' do
+        create_second_grandchild
+        expect(@parent_donation.one_grandchild).to eq(false)
+      end
+    end
+  end
+
   def expect_child_downline_to_equal(count, amount)
     donation = Donation.find attributes_for(:child)[:id]
     expect(donation.downline_count).to eq(count)

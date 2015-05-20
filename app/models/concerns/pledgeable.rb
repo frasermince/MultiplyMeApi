@@ -15,9 +15,7 @@ module Pledgeable
 
   def after_create
     parent = self.parent
-    if self.is_challenged
-      NotificationMailer.send_notification_email(self.user).deliver_now
-    else
+    unless self.is_challenged
       response = self.purchase
       if response[:status] == :failed
         raise Exception.new(response[:error])
@@ -26,12 +24,43 @@ module Pledgeable
     end
     if parent.present? && parent.challenge_completed?
       parent.purchase
-      # TODO SEND EMAIL
+    end
+    self.send_mail
+  end
+
+  def send_mail
+    parent = self.parent
+    if self.is_challenged
+      NotificationMailer.pledged(self.user, self).deliver_now
+    else
+      NotificationMailer.donated(self.user, self).deliver_now
+    end
+    if parent.present?
+      grandparent = parent.parent
+      if grandparent.present? && grandparent.one_grandchild
+        NotificationMailer.first_grandchild(grandparent.user, grandparent).deliver_now
+      end
+
+      if parent.can_still_complete?
+        if parent.children.count == 1
+          NotificationMailer.first_friend(parent.user, parent, self.user).deliver_now
+        elsif parent.children.count == 2
+          NotificationMailer.second_friend(parent.user, parent, self.user).deliver_now
+        end
+      end
+
+      if parent.challenge_completed?
+        NotificationMailer.finish_challenge(parent.user).deliver_now
+      end
     end
   end
 
+  def can_still_complete?
+    self.is_challenged && self.created_at > 3.days.ago
+  end
+
   def challenge_completed?
-    self.children.count == 3 && self.created_at > 3.days.ago
+    self.children.count == 3 && self.can_still_complete?
   end
 
   def create_subscription
