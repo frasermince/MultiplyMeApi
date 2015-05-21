@@ -354,7 +354,7 @@
 Hello Clement,
 <br>
 <br>
-Your friend <%= @name %> just made a contribution using your referral link. You have just <strong>successfully</strong> completed the challenge! 
+Your friend <%= @your_name %> just made a contribution using your referral link. You have just <strong>successfully</strong> completed the challenge! 
 
 <br><br>
 Your pledge has now been donated to the Bhatt Mines School.
@@ -372,7 +372,7 @@ Your pledge has now been donated to the Bhatt Mines School.
           Your network raised
         </span>
         <span class="top-line" style="font-size: 16px;font-weight: 800;line-height: 10px0%;-webkit-text-size-adjust: 100%;-ms-text-size-adjust: 100%;">
-          $200
+          <%= number_to_currency @impact %>
         </span>
         <span class="top-line" style="font-size: 16px;font-weight: 200;line-height: 10px0%;-webkit-text-size-adjust: 100%;-ms-text-size-adjust: 100%;">
           to help<br> the Bhatti Mines School
