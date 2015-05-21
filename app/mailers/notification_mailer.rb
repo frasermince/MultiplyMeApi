@@ -41,7 +41,7 @@ class NotificationMailer < ActionMailer::Base
 
   private
   def convert_amount(amount)
-    (amount * 0.01).round(2)
+    (amount * 0.01)
   end
   def set_friend_instance(you)
     @your_name = you.name
