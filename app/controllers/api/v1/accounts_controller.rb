@@ -10,7 +10,7 @@ module Api
                       total_impact: personal_impact + network_impact,
                       recurring_amount: user.recurring_amount,
                       only_recurring: user.only_recurring,
-                      all_cancelled: user.all_cancelled
+                      all_cancelled: user.all_cancelled?
         }, status: :ok
       end
     end
