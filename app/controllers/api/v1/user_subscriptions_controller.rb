@@ -4,7 +4,7 @@ module Api
       before_action :authenticate_user!
       def destroy
         current_user.donations.each do |donation|
-          donation.destroy
+          donation.delete_subscription
         end
       end
 
