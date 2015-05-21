@@ -300,6 +300,7 @@ RSpec.describe Pledgeable do
         donation.create_subscription
         expect_any_instance_of(Stripe::Subscription).to receive(:delete)
         expect{donation.delete_subscription}.not_to raise_error
+        expect(donation.is_cancelled).to eq(true)
       end
     end
     context 'donation is not a subscription or is not paid' do

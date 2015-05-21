@@ -138,6 +138,7 @@ module Pledgeable
       subscriptions = customer.subscriptions
       unless subscriptions.data.empty?
         result = subscriptions.retrieve(self.stripe_id)
+        self.update_attribute('is_cancelled', true)
         result.delete
       end
     end

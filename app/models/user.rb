@@ -14,6 +14,15 @@ class User < ActiveRecord::Base
   has_many :organizations, through: :organizations_user
   attr_reader :contribution
 
+  def all_cancelled?
+    self.donations.each do |donation|
+      if self.is_subscription && !self.is_cancelled
+        return false
+      end
+    end
+    true
+  end
+
   def contribution
     personal_impact + network_impact
   end
