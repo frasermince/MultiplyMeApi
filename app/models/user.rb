@@ -16,7 +16,7 @@ class User < ActiveRecord::Base
 
   def all_cancelled?
     self.donations.each do |donation|
-      if self.is_subscription && !self.is_cancelled
+      if donation.is_subscription && !donation.is_cancelled
         return false
       end
     end

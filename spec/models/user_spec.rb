@@ -13,6 +13,33 @@ RSpec.describe User, :type => :model do
   it { should have_many(:donations) }
   it { should have_many(:organizations).through(:organizations_user) }
 
+  describe '#all_cancelled?' do
+    context' when all are cancelled' do
+      it 'returns true' do
+        create_two_children
+        allow_any_instance_of(User)
+          .to receive(:donations)
+          .and_return([@parent_donation, @child_donation, @second_child])
+        allow_any_instance_of(Donation)
+          .to receive(:is_cancelled)
+          .and_return(true)
+        expect(@user.all_cancelled?).to eq(true)
+      end
+    end
+    context 'when they are not cancelled' do
+      it 'returns false' do
+        create_two_children
+        allow_any_instance_of(User)
+          .to receive(:donations)
+          .and_return([@parent_donation, @child_donation, @second_child])
+        allow_any_instance_of(Donation)
+          .to receive(:is_cancelled)
+          .and_return(false)
+        expect(@user.all_cancelled?).to eq(false)
+      end
+    end
+  end
+
   describe '#mailing_subscribe' do
 
     context 'when list ID is valid and email is valid' do
