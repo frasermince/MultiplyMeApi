@@ -12,7 +12,7 @@ module Api
             #begin
               if @donation.save
                 if params[:subscribe]
-                  current_user.mailing_subscribe('fe1087b0aa')
+                  current_user.mailing_subscribe('c8e3eb0f3a')
                 end
                 render json: {donation: @donation}, status: :created
               else
