@@ -1,3 +1,4 @@
+include ActionView::Helpers::NumberHelper
 class NotificationMailer < ActionMailer::Base
   default from: 'team@multiplyme.in'
   def finish_challenge(user)
@@ -47,7 +48,7 @@ class NotificationMailer < ActionMailer::Base
   end
   def social_links(donation, impact)
     @facebook = '//www.facebook.com/sharer/sharer.php?u=https://amala.multiplyme.in/?_escaped_fragment_=share/' + donation.id.to_s
-    @twitter = "//www.twitter.com/intent/tweet?text=My network raised #{impact} to help the Bhatti Mines School #{share(donation.id)} @AmalaFoundation @MultiplyMeIn"
+    @twitter = "//www.twitter.com/intent/tweet?text=My network raised #{number_to_currency impact} to help the Bhatti Mines School #{share(donation.id)} @AmalaFoundation @MultiplyMeIn"
   end
   def set_friend_instance(you)
     @your_name = you.name
