@@ -48,6 +48,6 @@ class NotificationMailer < ActionMailer::Base
     @impact = convert_amount(you.network_impact)
   end
   def share(donation_id)
-    'https://amala.multiplyme.in/#/share/' + donation_id.to_s
+    'https://amala.multiplyme.in/#!/share/' + donation_id.to_s
   end
 end
