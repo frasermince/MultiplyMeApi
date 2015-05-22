@@ -61,8 +61,12 @@ class User < ActiveRecord::Base
   end
 
   def save_stripe_user(params)
-    result = self.create_stripe_user params
-    self.update_attribute('stripe_id', result[:id]) if result[:status] == :success
+    if self.stripe_id.present?
+      result = self.add_credit_card(params[:token])
+    else
+      result = self.create_stripe_user params
+      self.update_attribute('stripe_id', result[:id]) if result[:status] == :success
+    end
     result
   end
 
@@ -114,9 +118,9 @@ class User < ActiveRecord::Base
   def add_credit_card(token)
     if self.stripe_id.present?
       self.create_credit_card token
-      true
+      {status: :success}
     else
-      false
+      {status: :failed}
     end
   end
 
