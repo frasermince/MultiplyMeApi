@@ -23,6 +23,7 @@ class NotificationMailer < ActionMailer::Base
 
   def first_grandchild(you, your_donation)
     set_friend_instance(you)
+    social_links your_donation, @impact
     mail(from: 'MultiplyMe', to: you.email, subject: 'Your network impact is growing!')
   end
 
@@ -43,6 +44,10 @@ class NotificationMailer < ActionMailer::Base
   private
   def convert_amount(amount)
     (amount * 0.01)
+  end
+  def social_links(donation, impact)
+    @facebook = '//www.facebook.com/sharer/sharer.php?u=https://amala.multiplyme.in/?_escaped_fragment_=share/' + donation.id
+    @twitter = "//www.twitter.com/intent/tweet?text=My network raised #{impact} to help the Bhatti Mines School #{share(donation.id)} @AmalaFoundation @MultiplyMeIn"
   end
   def set_friend_instance(you)
     @your_name = you.name
