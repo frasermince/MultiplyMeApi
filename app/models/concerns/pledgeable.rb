@@ -6,7 +6,7 @@ module Pledgeable
   end
 
   def yearly_amount
-    if self.is_subscription && self.is_cancelled
+    if self.is_subscription && self.is_cancelled && self.cancelled_time.present?
       months = ((self.cancelled_time.to_f - self.created_at.to_f) / (3600 * 24 * 30)).ceil
       self.amount * months
     else
