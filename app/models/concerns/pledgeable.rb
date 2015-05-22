@@ -6,11 +6,16 @@ module Pledgeable
   end
 
   def yearly_amount
-    yearly = self.amount
-    if self.is_subscription
-      yearly *= 12
+    if self.is_subscription && self.is_cancelled
+      months = ((self.cancelled_time.to_f - self.created_at.to_f) / (3600 * 24 * 30)).ceil
+      self.amount * months
+    else
+      yearly = self.amount
+      if self.is_subscription
+        yearly *= 12
+      end
+      yearly
     end
-    yearly
   end
 
   def after_create
@@ -141,6 +146,7 @@ module Pledgeable
       unless subscriptions.data.empty?
         result = subscriptions.retrieve(self.stripe_id)
         self.update_attribute('is_cancelled', true)
+        self.update_attribute('cancelled_time', DateTime.now)
         result.delete
       end
     end
