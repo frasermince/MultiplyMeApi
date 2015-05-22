@@ -105,7 +105,7 @@ class User < ActiveRecord::Base
       }
     )
     rescue => error
-      return {status: :failed, error: error}
+      return {status: :failed, error: error.message}
     end
     return {status: :success, id: customer.id}
   end
@@ -116,12 +116,16 @@ class User < ActiveRecord::Base
   end
 
   def add_credit_card(token)
-    Stripe.api_key = Rails.application.secrets.stripe_secret_key
-    if self.stripe_id.present?
-      self.create_credit_card token
-      {status: :success}
-    else
-      {status: :failed}
+    begin
+      Stripe.api_key = Rails.application.secrets.stripe_secret_key
+      if self.stripe_id.present?
+        self.create_credit_card token
+        {status: :success}
+      else
+        {status: :failed, error: 'customer is not present'}
+      end
+    rescue => error
+      return {status: :failed, error: error.message}
     end
   end
 
