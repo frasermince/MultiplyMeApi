@@ -92,7 +92,7 @@ module Pledgeable
       customer = self.organization.get_stripe_user(user)
       charge = Stripe::Charge.create({
         amount: amount,
-        application_fee: (amount * (PERCENTAGE_FEE / 100)).round,
+        application_fee: (amount * (PERCENTAGE_FEE / 100.0)).round,
         currency: 'usd',
         customer: customer.id
       }, stripe_account: self.organization.stripe_id)
