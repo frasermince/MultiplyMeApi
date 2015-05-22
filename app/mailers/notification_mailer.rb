@@ -35,6 +35,7 @@ class NotificationMailer < ActionMailer::Base
 
   def donated(user, donation)
     @name = user.name
+    @share_link = share donation.id
     @amount = convert_amount(donation.amount)
     mail(from: 'MultiplyMe', to: user.email, subject: 'Thank you for donating')
   end
