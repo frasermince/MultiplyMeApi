@@ -105,7 +105,7 @@ class User < ActiveRecord::Base
       }
     )
     rescue => error
-      return {status: :failed, error: error.message}
+      return {status: :failed, error: error}
     end
     return {status: :success, id: customer.id}
   end
@@ -125,7 +125,7 @@ class User < ActiveRecord::Base
         {status: :failed, error: 'customer is not present'}
       end
     rescue => error
-      return {status: :failed, error: error.message}
+      return {status: :failed, error: error}
     end
   end
 
