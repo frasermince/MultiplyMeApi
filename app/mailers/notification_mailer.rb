@@ -2,7 +2,7 @@ class NotificationMailer < ActionMailer::Base
   default from: 'team@multiplyme.in'
   def finish_challenge(user)
     set_friend_instance user
-    mail(to: user.email, subject: 'Congratulations')
+    mail(from: 'MultiplyMe', to: user.email, subject: 'Congratulations')
   end
 
   def first_friend(you, your_donation, friend)
@@ -10,7 +10,7 @@ class NotificationMailer < ActionMailer::Base
     @friend_name = friend.name
     @share_link = share your_donation.id
     @days = your_donation.time_remaining
-    mail(to: you.email, subject: 'Great News! Great Friends!')
+    mail(from: 'MultiplyMe', to: you.email, subject: 'Great News! Great Friends!')
   end
 
   def second_friend(you, your_donation, friend)
@@ -18,25 +18,25 @@ class NotificationMailer < ActionMailer::Base
     @friend_name = friend.name
     @share_link = share your_donation.id
     @days = your_donation.time_remaining
-    mail(to: you.email, subject: 'Two Down! One to Go!')
+    mail(from: 'MultiplyMe' ,to: you.email, subject: 'Two Down! One to Go!')
   end
 
   def first_grandchild(you, your_donation)
     set_friend_instance(you)
-    mail(to: you.email, subject: 'Your network impact is growing!')
+    mail(from: 'MultiplyMe', to: you.email, subject: 'Your network impact is growing!')
   end
 
   def pledged(user, donation)
     @name = user.name
     @amount = convert_amount(donation.amount)
     @share_link = share donation.id
-    mail(to: user.email, subject: 'Thank you for taking the challenge')
+    mail(from: 'MultiplyMe', to: user.email, subject: 'Thank you for taking the challenge')
   end
 
   def donated(user, donation)
     @name = user.name
     @amount = convert_amount(donation.amount)
-    mail(to: user.email, subject: 'Thank you for donating')
+    mail(from: 'MultiplyMe', to: user.email, subject: 'Thank you for donating')
   end
 
   private
