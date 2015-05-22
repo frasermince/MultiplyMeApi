@@ -30,7 +30,7 @@ module Pledgeable
 
   def send_mail
     parent = self.parent
-    if self.is_subscribed
+    if self.user.is_subscribed
       if self.is_challenged
         NotificationMailer.pledged(self.user, self).deliver_now
       else
