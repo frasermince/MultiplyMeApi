@@ -29,6 +29,7 @@ class NotificationMailer < ActionMailer::Base
   end
 
   def pledged(user, donation)
+    per_month(donation)
     @name = user.name
     @amount = convert_amount(donation.amount)
     @share_link = share donation.id
@@ -36,6 +37,7 @@ class NotificationMailer < ActionMailer::Base
   end
 
   def donated(user, donation)
+    per_month(donation)
     @name = user.name
     @share_link = share donation.id
     @amount = convert_amount(donation.amount)
@@ -49,6 +51,13 @@ class NotificationMailer < ActionMailer::Base
   def social_links(donation, impact)
     @facebook = '//www.facebook.com/sharer/sharer.php?u=https://amala.multiplyme.in/?_escaped_fragment_=share/' + donation.id.to_s
     @twitter = "//www.twitter.com/intent/tweet?text=My network raised #{number_to_currency impact} to help the Bhatti Mines School #{share(donation.id)} @AmalaFoundation @MultiplyMeIn"
+  end
+  def per_month(donation)
+    if donation.is_subscription
+      @per_month = ' a month'
+    else
+      @per_month = ''
+    end
   end
   def set_friend_instance(you)
     @your_name = you.name
