@@ -11,6 +11,7 @@ Rails.application.routes.draw do
         resource :user_subscription, only: [:destroy]
         resources :user_donations, only: [:show]
         resources :accounts, only: [:show]
+        resources :challenged_pledges, only: [:index]
         resource :email_subscriptions, only: [:create, :destroy]
         get 'leaders/(:limit)' => 'leader_board#index'
         post 'subscribe/:id' => 'mailchimp#subscribe'
