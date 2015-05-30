@@ -23,6 +23,21 @@ class User < ActiveRecord::Base
     true
   end
 
+  def direct_impact
+    self.donations.reduce(0) do |accumulator, donation|
+      puts "***DONATION ID #{donation.id}"
+      total = donation.children.reduce(donation.amount) do |child_accumulator, child|
+        if child.user == self
+          child_accumulator
+        else
+          puts "***CHILD ID #{child.id}"
+          child_accumulator + child.amount
+        end
+      end
+      total + accumulator
+    end
+  end
+
   def contribution
     personal_impact + network_impact
   end

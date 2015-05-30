@@ -28,7 +28,7 @@ module DonationCreator
       @parent_donation.created_at = 4.days.ago
       @parent_donation.save
     end
-    create(:third_child)
+    @third_child = create(:third_child)
   end
 
   def create_different_user_donations

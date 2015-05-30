@@ -13,6 +13,17 @@ RSpec.describe User, :type => :model do
   it { should have_many(:donations) }
   it { should have_many(:organizations).through(:organizations_user) }
 
+  describe '#direct_impact' do
+    it 'returns the impact of users donations and children' do
+      other_user_donation = create(:first_new_user_donation)
+      create_two_children
+      allow_any_instance_of(User)
+        .to receive(:donations)
+        .and_return([@parent_donation, @child_donation, @second_child])
+      expect(@user.direct_impact).to eq(@parent_donation.amount + @child_donation.amount + @second_child.amount + other_user_donation.amount)
+    end
+  end
+
   describe '#all_cancelled?' do
     context' when all are cancelled' do
       it 'returns true' do
