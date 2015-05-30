@@ -13,7 +13,7 @@ module Api
       def get_leaders limit
         User.select(:id, 'users.name as name', 'users.email as email')
           .to_a
-          .sort_by{|user| user.personal_impact + user.network_impact}
+          .sort_by{|user| user.direct_impact}
           .reverse
           .first(limit.to_i)
       end
