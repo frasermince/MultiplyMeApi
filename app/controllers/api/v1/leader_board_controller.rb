@@ -5,7 +5,7 @@ module Api
       def index
         limit = params[:limit].nil? ? 10 : params[:limit]
         @leaders = get_leaders limit
-        render json: {leaders: @leaders}, status: :ok, methods: :direct_impact
+        render json: {leaders: @leaders}, status: :ok, methods: :contribution
       end
 
       private
@@ -13,7 +13,7 @@ module Api
       def get_leaders limit
         User.select(:id, 'users.name as name', 'users.email as email')
           .to_a
-          .sort_by{|user| user.direct_impact}
+          .sort_by{|user| user.personal_impact + user.network_impact}
           .reverse
           .first(limit.to_i)
       end
