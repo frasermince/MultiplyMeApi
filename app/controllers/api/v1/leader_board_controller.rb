@@ -5,7 +5,7 @@ module Api
       def index
         limit = params[:limit].nil? ? 10 : params[:limit]
         @leaders = get_leaders limit
-        render json: {leaders: @leaders}, status: :ok, methods: :contribution
+        render json: {leaders: @leaders}, status: :ok, methods: :direct_impact
       end
 
       private
