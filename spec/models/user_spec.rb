@@ -20,7 +20,7 @@ RSpec.describe User, :type => :model do
       allow_any_instance_of(User)
         .to receive(:donations)
         .and_return([@parent_donation, @child_donation, @second_child])
-      expect(@user.direct_impact).to eq(@parent_donation.amount + @child_donation.amount + @second_child.amount + other_user_donation.amount)
+      expect(@user.direct_impact).to eq(@parent_donation.yearly_amount + @child_donation.yearly_amount + @second_child.yearly_amount + other_user_donation.yearly_amount)
     end
   end
 
