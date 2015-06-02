@@ -56,7 +56,7 @@ module Pledgeable
         end
 
         if parent.challenge_completed?
-          NotificationMailer.finish_challenge(parent.user).deliver_now
+          NotificationMailer.finish_challenge(parent.user, self.user).deliver_now
         end
       end
     end
