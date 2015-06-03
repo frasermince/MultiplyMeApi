@@ -1,9 +1,10 @@
 include ActionView::Helpers::NumberHelper
 class NotificationMailer < ActionMailer::Base
   default from: 'team@multiplyme.in'
-  def finish_challenge(user)
-    set_friend_instance user
-    mail(from: 'MultiplyMe', to: user.email, subject: 'Congratulations')
+  def finish_challenge(you, friend)
+    set_friend_instance you
+    @friend_name = friend.name
+    mail(from: 'MultiplyMe', to: you.email, subject: 'Congratulations')
   end
 
   def first_friend(you, your_donation, friend)
