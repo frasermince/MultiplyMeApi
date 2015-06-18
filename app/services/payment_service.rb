@@ -12,7 +12,8 @@ class PaymentService
       end
       response
     end
-    if parent.present? && self.challenge_completed?(parent)
+    policy = CompletedChallengePolicy.new parent
+    if parent.present? && policy.challenge_completed?
       self.purchase
     end
   end
@@ -24,14 +25,6 @@ class PaymentService
       return response
     end
     return {status: :failed, error: 'order has already been paid'}
-  end
-
-  def challenge_completed?(donation)
-    donation.children.count == 3 && self.can_still_complete?(donation)
-  end
-
-  def can_still_complete?(donation)
-    donation.is_challenged && donation.created_at > 3.days.ago
   end
 
   def create_subscription

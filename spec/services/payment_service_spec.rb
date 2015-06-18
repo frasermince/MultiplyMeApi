@@ -39,7 +39,7 @@ RSpec.describe PaymentService do
       context 'challenge_completed? is false' do
         it 'does not call purchase' do
 
-          allow_any_instance_of(PaymentService)
+          allow_any_instance_of(CompletedChallengePolicy)
             .to receive(:challenge_completed?)
             .and_return(false)
 
@@ -74,41 +74,6 @@ RSpec.describe PaymentService do
         create_parent false
         payment_service = PaymentService.new @parent_donation
         payment_service.pay
-      end
-    end
-  end
-
-  describe '#challenge_completed?' do
-    context 'has three children and is less than three days old' do
-      it 'returns true' do
-        allow_any_instance_of(PaymentService)
-          .to receive(:purchase)
-          .and_return(true)
-        create_three_children
-        payment_service = PaymentService.new @parent_donation
-        expect(payment_service.challenge_completed?(@parent_donation)).to be_truthy
-      end
-    end
-
-    context 'is more than three days old' do
-      it 'returns false' do
-        allow_any_instance_of(PaymentService)
-          .to receive(:purchase)
-          .and_return(true)
-        create_three_children true
-        payment_service = PaymentService.new @third_child
-        expect(payment_service.challenge_completed?(@third_child)).to be_falsey
-      end
-    end
-
-    context 'has less than three children' do
-      it 'returns false' do
-        allow_any_instance_of(PaymentService)
-          .to receive(:purchase)
-          .and_return(true)
-        create_two_children
-        payment_service = PaymentService.new @second_child
-        expect(payment_service.challenge_completed?(@second_child)).to be_falsey
       end
     end
   end
