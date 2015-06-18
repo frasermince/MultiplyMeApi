@@ -1,8 +1,8 @@
 require 'rails_helper'
 
 RSpec.configure do |c|
-    c.include DonationCreator
-    c.include DonationAmounts
+  c.include DonationCreator
+  c.include DonationAmounts
 end
 
 RSpec.describe Pledgeable do
@@ -165,7 +165,8 @@ RSpec.describe Pledgeable do
     context 'has a valid stripe id' do
       it 'creates a subscription' do
         donation = create(:stripe_donation)
-        expect{donation.create_subscription}.not_to raise_error
+        result = donation.create_subscription
+        expect(result[:status]).to eq(:success)
         expect(donation.reload.stripe_id).to be
       end
     end

@@ -100,13 +100,13 @@ RSpec.describe User, :type => :model do
       allow(@user).to receive(:create_credit_card).and_return(true)
       @user.save_stripe_user(valid_stripe_params)
       result = @user.add_credit_card create_token
-      expect(result).to eq(true)
+      expect(result[:status]).to eq(:success)
     end
 
     it 'does not have a stripe_id and thus fails' do
       allow(@user).to receive(:create_credit_card).and_return(true)
       result = @user.add_credit_card create_token
-      expect(result).to eq(false)
+      expect(result[:status]).to eq(:failed)
     end
   end
 
