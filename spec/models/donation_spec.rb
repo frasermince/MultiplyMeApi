@@ -9,7 +9,6 @@ RSpec.describe Donation, :type => :model do
 
   describe 'factories' do
     it 'should be valid' do
-      allow_any_instance_of(Donation).to receive(:purchase).and_return(true)
       expect(create(:parent)).to be_valid
       expect(create(:child)).to be_valid
       expect(create(:grandchild)).to be_valid

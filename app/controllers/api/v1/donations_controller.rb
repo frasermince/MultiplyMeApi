@@ -7,6 +7,8 @@ module Api
         if params_contain_card
           response = current_user.save_stripe_user(card_params)
           @donation = Donation.new donation_params
+          payment_service = PaymentService.new(@donation)
+          payment_service.pay
           @donation.user_id = current_user.id
           if response[:status] == :success
             #begin
