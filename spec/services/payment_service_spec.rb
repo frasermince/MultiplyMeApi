@@ -6,7 +6,7 @@ RSpec.configure do |c|
 end
 
 RSpec.describe PaymentService do
-  describe '#initialize' do
+  describe '#pay' do
     context 'receives a challenge' do
       it 'does not create a purchase for self' do
         allow_any_instance_of(PaymentService).to receive(:purchase).and_return({status: :success})
