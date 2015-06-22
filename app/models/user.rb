@@ -83,23 +83,6 @@ class User < ActiveRecord::Base
     result
   end
 
-  def mailing_subscribe(list_id)
-    @mailchimp = Mailchimp::API.new Rails.application.secrets.mailchimp_api_key
-    email = self.email
-    begin
-      @mailchimp.lists.subscribe(list_id , {'email' => email})
-    rescue Mailchimp::Error => ex
-      puts "***EX #{ex}"
-      if ex.message
-        msg = ex.message
-      else
-        msg = "An unknown error occurred"
-      end
-      return {status: false, message: msg}
-    end
-    {status: true}
-  end
-
   def authentication_keys
     [:email]
   end
