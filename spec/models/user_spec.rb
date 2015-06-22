@@ -51,31 +51,6 @@ RSpec.describe User, :type => :model do
     end
   end
 
-  describe '#mailing_subscribe' do
-
-    context 'when list ID is valid and email is valid' do
-      it 'returns OK 200' do
-        response = @user.mailing_subscribe 'fe1087b0aa'
-        expect(response[:status]).to eq(true)
-      end
-    end
-    context 'when list ID is invalid and email is valid' do
-      it 'returns HTTP 500' do
-        response = @user.mailing_subscribe 'wrong_id'
-        expect(response[:status]).to eq(false)
-      end
-    end
-
-    context 'when list ID is valid but email is invalid' do
-      it 'returns HTTP 500' do
-        user = create(:wrong_email_user)
-        response = user.mailing_subscribe 'fe1087b0aa'
-        expect(response[:status]).to eq(false)
-      end
-    end
-
-  end
-
   describe '#save_stripe_user' do
     it 'calls create_stripe_user' do
       allow(@user).to receive(:create_stripe_user).and_return({status: :success, id: 1})
