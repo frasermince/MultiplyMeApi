@@ -27,7 +27,8 @@ FactoryGirl.define do
             :cvc => "314"
           }
         )
-        user.save_stripe_user({email: user.email, token: token.id})
+        stripe_user_service = StripeUserService.new(user)
+        stripe_user_service.save_stripe_user({email: user.email, token: token.id})
       end
     end
   end

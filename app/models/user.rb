@@ -73,16 +73,6 @@ class User < ActiveRecord::Base
     Donation.where(user_id: self.id, is_paid: true, is_subscription: true).sum(:amount)
   end
 
-  def save_stripe_user(params)
-    if self.stripe_id.present?
-      result = self.add_credit_card(params[:token])
-    else
-      result = self.create_stripe_user params
-      self.update_attribute('stripe_id', result[:id]) if result[:status] == :success
-    end
-    result
-  end
-
   def authentication_keys
     [:email]
   end
@@ -90,39 +80,4 @@ class User < ActiveRecord::Base
   def get_gravatar_url
     gravatar_image_url(self.email, filetype: :png, secure: true, size: 100)
   end
-
-  def create_stripe_user(params)
-    begin
-    Stripe.api_key = Rails.application.secrets.stripe_secret_key
-    customer = Stripe::Customer.create(
-      {
-        source: params[:token],
-        email: params[:email]
-      }
-    )
-    rescue => error
-      return {status: :failed, error: error}
-    end
-    return {status: :success, id: customer.id}
-  end
-
-  def create_credit_card(token)
-    customer = Stripe::Customer.retrieve(self.stripe_id)
-    customer.sources.create(:source => token)
-  end
-
-  def add_credit_card(token)
-    begin
-      Stripe.api_key = Rails.application.secrets.stripe_secret_key
-      if self.stripe_id.present?
-        self.create_credit_card token
-        {status: :success}
-      else
-        {status: :failed, error: 'customer is not present'}
-      end
-    rescue => error
-      return {status: :failed, error: error}
-    end
-  end
-
 end
