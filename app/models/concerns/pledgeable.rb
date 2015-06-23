@@ -22,35 +22,6 @@ module Pledgeable
     #self.send_mail
   end
 
-  def send_mail
-    parent = self.parent
-    if self.user.is_subscribed
-      if self.is_challenged
-        NotificationMailer.pledged(self.user, self).deliver_now
-      else
-        NotificationMailer.donated(self.user, self).deliver_now
-      end
-      if parent.present?
-        grandparent = parent.parent
-        if grandparent.present? && grandparent.one_grandchild
-          NotificationMailer.first_grandchild(grandparent.user, grandparent).deliver_now
-        end
-
-        if parent.can_still_complete?
-          if parent.children.count == 1
-            NotificationMailer.first_friend(parent.user, parent, self.user).deliver_now
-          elsif parent.children.count == 2
-            NotificationMailer.second_friend(parent.user, parent, self.user).deliver_now
-          end
-        end
-
-        if parent.challenge_completed?
-          NotificationMailer.finish_challenge(parent.user, self.user).deliver_now
-        end
-      end
-    end
-  end
-
   def user_cycles?
     if self.parent.nil?
       false

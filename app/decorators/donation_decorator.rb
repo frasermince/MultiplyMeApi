@@ -9,6 +9,7 @@ class DonationDecorator
     @mailing_list_service = MailingListService.new(@donation.user)
     @stripe_user_service = StripeUserService.new(@donation.user)
     @errors = []
+    @notification_service = NotificationService.new @donation
   end
 
   def save
@@ -17,6 +18,7 @@ class DonationDecorator
         @stripe_user_service.save_stripe_user(@card_params) &&
         @donation.save &&
         call_payment_service &&
+        @notification_service.send_mail &&
         subscribe_to_mail
     end
   end

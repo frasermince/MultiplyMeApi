@@ -6,63 +6,6 @@ RSpec.configure do |c|
 end
 
 RSpec.describe Pledgeable do
-=begin
-  describe '#send_mail' do
-    context 'self.is_challenged is true' do
-      it 'sends a pledged email' do
-        create_parent
-        mailing_stubs false, false, false
-        expect {@parent_donation.send_mail}
-          .to change { ActionMailer::Base.deliveries.count }.by(1)
-      end
-    end
-    context 'self.is_challenged is false' do
-      it 'sends a donation email' do
-        allow_any_instance_of(Donation).to receive(:purchase).and_return({status: :success})
-        expect_any_instance_of(Donation).to receive(:purchase)
-        donation = create(:unchallenged_donation)
-        mailing_stubs false, false, false
-        expect {donation.send_mail}
-          .to change { ActionMailer::Base.deliveries.count }.by(1)
-      end
-    end
-    context 'self.one_grandchild is true' do
-      it 'sends a first_grandchild email' do
-        mailing_stubs true, false, false
-        create_grandchild
-        expect {@grandchild_donation.send_mail}
-          .to change { ActionMailer::Base.deliveries.count }.by(2)
-      end
-    end
-    context 'can_still_complete? is true' do
-      it 'sends a completion email' do
-        mailing_stubs false, true, true
-        create_one_child
-        expect {@child_donation.send_mail}
-          .to change { ActionMailer::Base.deliveries.count }.by(3)
-      end
-    end
-    context 'can_still_complete? is true' do
-      context 'and there is one child' do
-        it 'sends a first friend email' do
-          mailing_stubs false, false, true
-          create_one_child
-          expect {@child_donation.send_mail}
-            .to change { ActionMailer::Base.deliveries.count }.by(2)
-        end
-      end
-      context 'and there are two children' do
-        it 'sends a first friend email' do
-          mailing_stubs false, false, true
-          create_two_children
-          expect {@second_child.send_mail}
-            .to change { ActionMailer::Base.deliveries.count }.by(2)
-        end
-      end
-    end
-  end
-=end
-
   describe '#find_cycle' do
     context 'does not have an ancestor from the same user' do
       it 'returns nil' do
@@ -150,16 +93,5 @@ RSpec.describe Pledgeable do
         donation.delete_subscription
       end
     end
-  end
-  def mailing_stubs(grandchild, completed, can_complete)
-    allow_any_instance_of(Donation)
-      .to receive(:one_grandchild)
-      .and_return(grandchild)
-    allow_any_instance_of(Donation)
-      .to receive(:challenge_completed?)
-      .and_return(completed)
-    allow_any_instance_of(Donation)
-      .to receive(:can_still_complete?)
-      .and_return(can_complete)
   end
 end
