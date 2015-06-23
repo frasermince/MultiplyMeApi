@@ -1,30 +1,22 @@
 class PaymentService
   def initialize(donation)
     @donation = donation
-  end
-
-  def pay
-    parent = @donation.parent
-    unless @donation.is_challenged
-      response = self.purchase
-      if response[:status] == :failed
-        raise Exception.new(response[:error])
-      end
-      response
-    end
-    policy = CompletedChallengePolicy.new parent
-    if parent.present? && policy.challenge_completed?
-      self.purchase
-    end
+    @errors = []
   end
 
   def purchase
-    unless @donation.is_paid
+    if @donation.is_paid
+      @errors.push 'order has already been paid'
+      false
+    else
       response = @donation.is_subscription ? self.create_subscription : self.create_charge
-      @donation.update(is_paid: true) if response[:status] == :success
-      return response
+      @donation.update(is_paid: true) if response
+      response
     end
-    return {status: :failed, error: 'order has already been paid'}
+  end
+
+  def errors
+    @errors
   end
 
   def create_subscription
@@ -38,9 +30,10 @@ class PaymentService
       }, stripe_account: @donation.organization.stripe_id)
       @donation.update_attribute('stripe_id', subscription.id)
     rescue => error
-      return {status: :failed, error: error}
+      @errors = @errors.push error.message
+      return false
     end
-    {status: :success}
+    true
   end
 
   def create_charge
@@ -55,8 +48,9 @@ class PaymentService
       }, stripe_account: @donation.organization.stripe_id)
       @donation.update_attribute('stripe_id', charge.id)
     rescue => error
-      return {status: :failed, error: error}
+      @errors = @errors.push error.message
+      return false
     end
-    {status: :success}
+    true
   end
 end

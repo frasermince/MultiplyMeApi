@@ -24,15 +24,6 @@ describe Api::V1::DonationsController do
       end
     end
 
-    context 'when subscribe is true' do
-      it 'adds user to mailing list' do
-        stub_creation @donation, true
-        allow(@user).to receive(:mailing_subscribe)
-        expect(@user).to receive(:mailing_subscribe)
-        post :create, subscribe: true, donation: donation_attributes, card: valid_card_attributes
-        expect(response).to have_http_status(:created)
-      end
-    end
 
     context 'when saving stripe user returns an error' do
       it 'returns the error and sets the status to unprocessable' do
@@ -40,7 +31,7 @@ describe Api::V1::DonationsController do
         post :create, donation: donation_attributes, card: invalid_card_attributes
         parsed_body = JSON.parse(response.body)
         expect(response).to have_http_status(:unprocessable_entity)
-        expect(parsed_body['error']).to eq('Your card was declined.')
+        expect(parsed_body['error']).to eq(['Your card was declined.'])
       end
     end
   end

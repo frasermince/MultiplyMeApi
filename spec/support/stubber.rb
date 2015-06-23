@@ -13,7 +13,7 @@ module Stubber
   end
 
   def expect_stripe_user(record)
-    allow(@user).to receive(:save_stripe_user).and_return({status: :success})
-    expect(@user).to receive(:save_stripe_user)
+    allow_any_instance_of(StripeUserService).to receive(:save_stripe_user).and_return({status: :success})
+    expect_any_instance_of(StripeUserService).to receive(:save_stripe_user)
   end
 end
