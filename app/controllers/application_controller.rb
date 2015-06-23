@@ -10,7 +10,6 @@ class ApplicationController < ActionController::API
 
   protected
   def configure_permitted_parameters
-    puts "***PARAMS #{params[:controller]}"
     unless params[:controller] == 'devise_token_auth/omniauth_callbacks' || params[:controller] == 'overrides/omniauth_callbacks'
       devise_parameter_sanitizer.for(:sign_up) << :name
     end
