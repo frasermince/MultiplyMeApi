@@ -1,5 +1,6 @@
 FactoryGirl.define do
   factory :user do
+    name 'Fraser Mince'
     email 'fraser@multiplyme.in'
     factory :wrong_email_user do
       email 'WRONG'

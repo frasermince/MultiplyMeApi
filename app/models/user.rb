@@ -12,6 +12,7 @@ class User < ActiveRecord::Base
   has_many :donations
   has_many :organizations_user
   has_many :organizations, through: :organizations_user
+  after_initialize :default_values
   attr_reader :contribution
 
   def all_cancelled?
@@ -79,5 +80,10 @@ class User < ActiveRecord::Base
 
   def get_gravatar_url
     gravatar_image_url(self.email, filetype: :png, secure: true, size: 100)
+  end
+
+  private
+  def default_values
+    self.name ||= "anon"
   end
 end
