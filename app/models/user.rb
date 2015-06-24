@@ -12,7 +12,7 @@ class User < ActiveRecord::Base
   has_many :donations
   has_many :organizations_user
   has_many :organizations, through: :organizations_user
-  after_initialize :default_values
+  before_save :default_values
   attr_reader :contribution
 
   def all_cancelled?
