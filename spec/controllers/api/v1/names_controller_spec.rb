@@ -4,10 +4,10 @@ describe Api::V1::NamesController do
   describe '#show' do
     context 'user specified by id exists' do
       it 'gets the users name based on the user_id' do
-        user = create(:user)
-        get :show, id: user.id
+        donation = create(:donation)
+        get :show, id: donation.id
         parsed_body = JSON.parse(response.body)
-        expect(parsed_body['name']).to eq(user.name)
+        expect(parsed_body['name']).to eq(donation.user.name)
       end
     end
     context 'asks for a user that does not exist' do
