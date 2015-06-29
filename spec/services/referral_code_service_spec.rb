@@ -12,7 +12,7 @@ RSpec.describe ReferralCodeService do
 
   describe '#find_by_code' do
     it 'finds based on a given code' do
-      create(:donation)
+      create(:referral_donation)
       expect(ReferralCodeService.find_by_code('FraserMince97')).to be
     end
   end
