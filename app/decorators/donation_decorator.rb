@@ -1,7 +1,8 @@
 class DonationDecorator
-  def initialize(donation, card_params, user, subscribe_to_mail)
+  def initialize(donation, card_params, user, subscribe_to_mail, referrer=nil)
     @donation = donation
     @donation.user = user
+    @donation.parent_id = ReferralCodeService.find_id_by_code(referrer)
     @subscribe_to_mail = subscribe_to_mail
     @card_params = card_params
     @parent_payment_service = PaymentService.new @donation.parent
@@ -52,7 +53,7 @@ class DonationDecorator
   def call_payment_service
     parent_result = true
     child_result = true
-    parent = @donation.parent
+    parent = @donation.reload.parent
     unless @donation.is_challenged
       child_result = @donation_payment_service.purchase
     end
