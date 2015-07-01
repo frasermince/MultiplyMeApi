@@ -1,5 +1,5 @@
 class DonationDecorator
-  def initialize(donation, card_params, user, subscribe_to_mail, referrer=nil)
+  def initialize(donation, card_params, user, subscribe_to_mail, referrer = nil)
     @donation = donation
     @donation.user = user
     @donation.parent_id = ReferralCodeService.find_id_by_code(referrer)
@@ -11,6 +11,10 @@ class DonationDecorator
     @stripe_user_service = StripeUserService.new(@donation.user)
     @errors = []
     @notification_service = NotificationService.new @donation
+  end
+
+  def donation
+    @donation
   end
 
   def save

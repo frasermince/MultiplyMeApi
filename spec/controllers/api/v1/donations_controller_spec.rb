@@ -24,6 +24,22 @@ describe Api::V1::DonationsController do
       end
     end
 
+    context 'when a referral is present' do
+      it 'passes referral to DonationDecorator and has a parent donation' do
+        parent_donation = create(:referral_donation)
+        donation_decorator = double('donation_decorator')
+        @donation.parent = parent_donation
+        allow(DonationDecorator).to receive(:new).with(any_args, parent_donation.referral_code).and_return(donation_decorator)
+        allow(donation_decorator).to receive(:save).and_return(true)
+        allow(donation_decorator).to receive(:donation).and_return(@donation)
+
+        post :create, donation: donation_attributes, card: valid_card_attributes, referral_code: parent_donation.referral_code
+        parsed_body = JSON.parse(response.body)
+
+        expect(response).to have_http_status(:created)
+        expect(parsed_body['donation']['parent_id']).to be
+      end
+    end
 
     context 'when saving stripe user returns an error' do
       it 'returns the error and sets the status to unprocessable' do
