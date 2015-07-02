@@ -4,8 +4,7 @@ class ReferralCodeService
   end
 
   def generate_code
-    referral_code = @donation.user.name + @donation.id.to_s
-    @donation.update_attribute('referral_code', referral_code)
+    @donation.user.name + @donation.id.to_s
   end
 
   def self.find_donation_by_code(code)
