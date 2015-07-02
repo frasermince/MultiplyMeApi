@@ -51,7 +51,6 @@ RSpec.describe PaymentService do
       context 'and donation is a subscription' do
         it 'calls create_subscription' do
           donation = create(:subscription_donation)
-          allow_any_instance_of(PaymentService).to receive(:create_subscription).and_return({status: true})
           expect_any_instance_of(PaymentService).to receive(:create_subscription)
           payment_service = PaymentService.new donation
           payment_service.purchase
@@ -61,7 +60,6 @@ RSpec.describe PaymentService do
       context 'and donation is not a subscription' do
         it 'calls create_charge' do
           donation = create(:nonsubscription_donation)
-          allow_any_instance_of(PaymentService).to receive(:create_charge).and_return({status: true})
           expect_any_instance_of(PaymentService).to receive(:create_charge)
           payment_service = PaymentService.new donation
           payment_service.purchase

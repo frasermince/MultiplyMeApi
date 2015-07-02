@@ -17,7 +17,7 @@ describe Overrides::OmniauthCallbacksController do
       {
         state: 1,
         scope: "read_write",
-        code: "ac_5eHQtezon3dqu1MCFbnOIJ6wBsLluOdY", 
+        code: "ac_5eHQtezon3dqu1MCFbnOIJ6wBsLluOdY",
         provider: "stripe_connect"
       }
   end

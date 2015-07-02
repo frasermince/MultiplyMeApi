@@ -12,7 +12,6 @@ describe Api::V1::UserSubscriptionsController do
     it 'deletes all of the users donations' do
       create_two_children
       @user.donations.each do |donation|
-        allow(donation).to receive(:delete_subscription)
         expect(donation).to receive(:delete_subscription)
       end
       delete :destroy
