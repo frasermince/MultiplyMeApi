@@ -1,6 +1,8 @@
 # Donation is used to track donations created by the user
 # Includes two concerns
 class Donation < ActiveRecord::Base
+
+  before_create :set_referral
   # tracks a user's downline
   include Traversable
   # tracks the amount of money donated
@@ -11,6 +13,10 @@ class Donation < ActiveRecord::Base
   # amount is a integer in cents
   validates :amount, :downline_count, :downline_amount,
             :organization_id, :user_id, presence: true
+
+  def set_referral
+    self.referral_code = ReferralCodeService.new(self).generate_code
+  end
 
   def is_owner?(user_id)
     self.user_id == user_id

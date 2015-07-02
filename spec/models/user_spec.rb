@@ -12,6 +12,13 @@ RSpec.describe User, :type => :model do
   it { should have_many(:donations) }
   it { should have_many(:organizations).through(:organizations_user) }
 
+  describe '#before_create' do
+    it 'sets the referral' do
+      donation = create(:donation)
+      expect(donation.referral_code).to be
+    end
+  end
+
   describe '#direct_impact' do
     it 'returns the impact of users donations and children' do
       other_user_donation = create(:first_new_user_donation)
