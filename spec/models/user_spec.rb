@@ -1,10 +1,5 @@
 require 'rails_helper'
 
-
-RSpec.configure do |c|
-  c.include DonationCreator
-end
-
 RSpec.describe User, :type => :model do
   before(:each) do
     @user = create(:user)

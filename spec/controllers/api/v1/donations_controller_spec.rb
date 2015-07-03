@@ -2,7 +2,6 @@ require 'rails_helper'
 
 RSpec.configure do |c|
   c.include DonationAmounts
-  c.include DonationCreator
   c.include Stubber
   c.include StripeHelpers
 end

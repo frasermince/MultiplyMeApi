@@ -2,7 +2,6 @@ require 'rails_helper'
 
 RSpec.configure do |c|
   c.include DonationAmounts
-  c.include DonationCreator
 end
 
 describe Api::V1::UserSubscriptionsController do
