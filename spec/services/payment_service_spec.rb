@@ -1,9 +1,5 @@
 require 'rails_helper'
 
-RSpec.configure do |c|
-  c.include DonationAmounts
-end
-
 RSpec.describe PaymentService do
 
   describe '#create_subscription' do

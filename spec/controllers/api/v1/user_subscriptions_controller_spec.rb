@@ -1,9 +1,5 @@
 require 'rails_helper'
 
-RSpec.configure do |c|
-  c.include DonationAmounts
-end
-
 describe Api::V1::UserSubscriptionsController do
   login_user
   before { allow(controller).to receive(:current_user) { @user } }

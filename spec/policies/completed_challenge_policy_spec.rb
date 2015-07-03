@@ -1,9 +1,5 @@
 require 'rails_helper'
 
-RSpec.configure do |c|
-  c.include DonationAmounts
-end
-
 RSpec.describe CompletedChallengePolicy do
   describe '#challenge_completed?' do
     context 'has three children and can_still_complete? is true' do

@@ -1,9 +1,5 @@
 require 'rails_helper'
 
-RSpec.configure do |c|
-  c.include DonationAmounts
-end
-
 RSpec.describe NotificationService do
   describe '#send_mail' do
     context 'self.is_challenged is true' do

@@ -1,9 +1,5 @@
 require 'rails_helper'
 
-RSpec.configure do |c|
-  c.include DonationAmounts
-end
-
 RSpec.describe Pledgeable do
   describe '#find_cycle' do
     context 'does not have an ancestor from the same user' do
