@@ -23,11 +23,8 @@ class PaymentService
     begin
       Stripe.api_key = Rails.application.secrets.stripe_secret_key
       customer = @donation.organization.get_stripe_user(@donation.user)
-      subscription = customer.subscriptions.create({
-        application_fee_percent: PERCENTAGE_FEE,
-        plan: 'pledge',
-        quantity: @donation.amount,
-      }, stripe_account: @donation.organization.stripe_id)
+      subscription = customer.subscriptions
+        .create(subscription_params, stripe_account: @donation.organization.stripe_id)
       @donation.update_attribute('stripe_id', subscription.id)
     rescue => error
       @errors = @errors.push error.message
@@ -40,17 +37,30 @@ class PaymentService
     begin
       Stripe.api_key = Rails.application.secrets.stripe_secret_key
       customer = @donation.organization.get_stripe_user(@donation.user)
-      charge = Stripe::Charge.create({
-        amount: @donation.amount,
-        application_fee: (@donation.amount * (PERCENTAGE_FEE / 100.0)).round,
-        currency: 'usd',
-        customer: customer.id
-      }, stripe_account: @donation.organization.stripe_id)
+      charge = Stripe::Charge
+        .create(charge_params(customer), stripe_account: @donation.organization.stripe_id)
       @donation.update_attribute('stripe_id', charge.id)
     rescue => error
       @errors = @errors.push error.message
       return false
     end
     true
+  end
+
+  private
+  def subscription_params
+    {
+      application_fee_percent: PERCENTAGE_FEE,
+      plan: 'pledge',
+      quantity: @donation.amount,
+    }
+  end
+  def charge_params(customer)
+    {
+      amount: @donation.amount,
+      application_fee: (@donation.amount * (PERCENTAGE_FEE / 100.0)).round,
+      currency: 'usd',
+      customer: customer.id
+    }
   end
 end
