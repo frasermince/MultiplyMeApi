@@ -15,7 +15,13 @@ class StripeUserService
     result
   end
 
+
   def create_stripe_user(params)
+    result = create_stripe_user_object(params)
+    result != false ? result.id : false
+  end
+
+  def create_stripe_user_object(params)
     begin
       Stripe.api_key = Rails.application.secrets.stripe_secret_key
       customer = Stripe::Customer.create(
@@ -28,7 +34,7 @@ class StripeUserService
       @errors.push error.message
       return false
     end
-    customer.id
+    customer
   end
 
   def add_credit_card(token)

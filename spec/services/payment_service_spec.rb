@@ -15,7 +15,9 @@ RSpec.describe PaymentService do
       it 'creates a subscription' do
         donation = create(:stripe_donation)
         payment_service = PaymentService.new donation
-        result = payment_service.create_subscription
+        result = VCR.use_cassette('create_subscription') do
+          payment_service.create_subscription
+        end
         expect(result).to eq(true)
         expect(donation.reload.stripe_id).to be
       end
@@ -34,7 +36,9 @@ RSpec.describe PaymentService do
       it 'creates a charge' do
         donation = create(:stripe_donation)
         payment_service = PaymentService.new donation
-        expect(payment_service.create_charge).to eq(true)
+        VCR.use_cassette('create_charge') do
+          expect(payment_service.create_charge).to eq(true)
+        end
         expect(donation.reload.stripe_id).to be
       end
     end

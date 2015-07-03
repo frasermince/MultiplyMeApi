@@ -27,6 +27,8 @@ gem 'foreman'
 gem 'foreman-export-initscript'
 gem 'resque'
 gem 'resque-scheduler', '2.5.4'
+gem 'metric_fu'
+gem 'vcr'
 
 group :development do
   gem 'guard'

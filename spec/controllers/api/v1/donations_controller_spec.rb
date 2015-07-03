@@ -42,11 +42,18 @@ describe Api::V1::DonationsController do
 
     context 'when saving stripe user returns an error' do
       it 'returns the error and sets the status to unprocessable' do
+        donation_decorator = double('donation_decorator')
+        errors = ['Your card was declined.']
+
+        allow(DonationDecorator).to receive(:new).and_return(donation_decorator)
+        allow(donation_decorator).to receive(:save).and_return(false)
+        allow(donation_decorator).to receive(:errors).and_return(errors)
         stub_creation @donation, false
+
         post :create, donation: donation_attributes, card: invalid_card_attributes
         parsed_body = JSON.parse(response.body)
         expect(response).to have_http_status(:unprocessable_entity)
-        expect(parsed_body['error']).to eq(['Your card was declined.'])
+        expect(parsed_body['error']).to eq(errors)
       end
     end
   end

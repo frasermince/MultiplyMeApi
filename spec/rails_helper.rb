@@ -3,13 +3,20 @@ ENV["RAILS_ENV"] ||= 'test'
 require 'simplecov'
 SimpleCov.start
 require 'webmock/rspec'
-WebMock.disable_net_connect!(:allow_localhost => true, :allow => ['api.stripe.com','us10.api.mailchimp.com'])
+WebMock.disable_net_connect!(:allow_localhost => true)#, :allow => ['api.stripe.com','us10.api.mailchimp.com'])
 require 'spec_helper'
 require File.expand_path("../../config/environment", __FILE__)
 require 'rspec/rails'
 require 'shoulda/matchers'
 require 'devise'
+require 'vcr'
 Dir[File.expand_path(File.join(File.dirname(__FILE__),"support","**","*.rb"))].each {|f| require f}
+
+
+VCR.configure do |c|
+  c.cassette_library_dir = 'spec/fixtures/vcr_cassettes'
+  c.hook_into :webmock # or :fakeweb
+end
 # Add additional requires below this line. Rails is not loaded until this point!
 
 # Requires supporting ruby files with custom matchers and macros, etc, in

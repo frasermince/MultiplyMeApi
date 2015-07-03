@@ -21,11 +21,16 @@ RSpec.describe StripeUserService do
 
   describe '#create_stripe_user' do
     it 'successfully saves a stripe user' do
-      expect(@stripe_user_service.create_stripe_user(valid_stripe_params)).not_to be_falsey
+      result = VCR.use_cassette('service_create_stripe_user') do
+        @stripe_user_service.create_stripe_user(valid_stripe_params)
+      end
+      expect(result).not_to be_falsey
     end
 
     it 'fails to create a stripe user' do
-      expect(@stripe_user_service.create_stripe_user(email: 'test@test.com', token: '12345')).to be_falsey
+      VCR.use_cassette('failed_stripe_user') do
+        expect(@stripe_user_service.create_stripe_user(email: 'test@test.com', token: '12345')).to be_falsey
+      end
       expect(@stripe_user_service.errors).not_to be_empty
     end
   end
@@ -33,8 +38,13 @@ RSpec.describe StripeUserService do
   describe '#add_credit_card' do
     it 'has stripe_id and thus can create card' do
       allow(@stripe_user_service).to receive(:create_credit_card).and_return(true)
-      @stripe_user_service.save_stripe_user(valid_stripe_params)
-      result = @stripe_user_service.add_credit_card create_token
+      VCR.use_cassette('save_stripe_user') do
+        @stripe_user_service.save_stripe_user(valid_stripe_params)
+      end
+
+      result = VCR.use_cassette('add_credit_card') do
+        @stripe_user_service.add_credit_card create_token
+      end
       expect(result).to eq(true)
     end
 
@@ -48,8 +58,14 @@ RSpec.describe StripeUserService do
 
   describe '#create_credit_card' do
     it 'successfully creates credit card' do
-      @stripe_user_service.save_stripe_user(valid_stripe_params)
-      expect(@stripe_user_service.create_credit_card create_token).not_to be_falsey
+
+      VCR.use_cassette('save_stripe_user') do
+        @stripe_user_service.save_stripe_user(valid_stripe_params)
+      end
+
+      VCR.use_cassette('create_credit_card') do
+        expect(@stripe_user_service.create_credit_card create_token).not_to be_falsey
+      end
     end
 
     it 'fails to create credit card because token is invalid' do
