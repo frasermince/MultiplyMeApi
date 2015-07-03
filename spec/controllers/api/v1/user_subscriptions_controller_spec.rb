@@ -10,7 +10,7 @@ describe Api::V1::UserSubscriptionsController do
   before { allow(controller).to receive(:current_user) { @user } }
   describe '#destroy' do
     it 'deletes all of the users donations' do
-      create_two_children
+      create(:donation)
       @user.donations.each do |donation|
         expect(donation).to receive(:delete_subscription)
       end

@@ -15,8 +15,8 @@ RSpec.describe DonationDecorator do
     context 'receives a challenge' do
       it 'does not create a purchase for self' do
         expect_any_instance_of(PaymentService).not_to receive(:purchase)
-        create_parent
-        donation_decorator = DonationDecorator.new @parent_donation, @token_hash, @user, false
+        donation = create(:donation)
+        donation_decorator = DonationDecorator.new donation, @token_hash, @user, false
         donation_decorator.instance_eval{call_payment_service}
       end
 
@@ -30,8 +30,10 @@ RSpec.describe DonationDecorator do
             .to receive(:purchase)
             .and_return({status: :success})
 
-          create_three_children
-          donation_decorator = DonationDecorator.new @third_child, @token_hash, @user, false
+          parent = create(:donation)
+          child = create(:donation)
+          child.update_attribute('parent_id', parent.id)
+          donation_decorator = DonationDecorator.new child, @token_hash, @user, false
           donation_decorator.instance_eval{call_payment_service}
         end
       end
@@ -46,8 +48,11 @@ RSpec.describe DonationDecorator do
           expect_any_instance_of(PaymentService)
             .not_to receive(:purchase)
 
-          create_one_child
-          donation_decorator = DonationDecorator.new @child_donation, @token_hash, @user, false
+          parent = create(:donation)
+          child = create(:donation)
+          child.update_attribute('parent_id', parent.id)
+
+          donation_decorator = DonationDecorator.new child, @token_hash, @user, false
           donation_decorator.instance_eval{call_payment_service}
         end
       end
@@ -55,12 +60,14 @@ RSpec.describe DonationDecorator do
 
     context 'if it is not a challenge' do
       context 'if purchase returns false' do
-        it 'throws an error' do
+        it 'returns false' do
           allow_any_instance_of(PaymentService)
             .to receive(:purchase)
             .and_return(false)
-          create_parent false
-          donation_decorator = DonationDecorator.new @parent_donation, @token_hash, @user, false
+          donation = create(:donation)
+          donation.update_attribute('is_challenged', false)
+          donation_decorator = DonationDecorator.new donation, @token_hash, @user, false
+
           expect(donation_decorator.instance_eval{call_payment_service})
             .to be_falsey
         end
@@ -70,8 +77,9 @@ RSpec.describe DonationDecorator do
         expect_any_instance_of(PaymentService)
           .to receive(:purchase)
           .and_return({status: :success})
-        create_parent false
-        donation_decorator = DonationDecorator.new @parent_donation, @token_hash, @user, false
+        donation = create(:donation)
+        donation.update_attribute('is_challenged', false)
+        donation_decorator = DonationDecorator.new donation, @token_hash, @user, false
         donation_decorator.instance_eval{call_payment_service}
       end
     end
@@ -79,8 +87,8 @@ RSpec.describe DonationDecorator do
 
   describe 'save' do
     it 'handles all before and after processes for saving a donation' do
-      create_parent
-      donation_decorator = DonationDecorator.new @parent_donation, @token_hash, @user, false
+      donation = create(:donation)
+      donation_decorator = DonationDecorator.new donation, @token_hash, @user, false
       expect(donation_decorator.save).to eq(true)
     end
 
@@ -89,8 +97,8 @@ RSpec.describe DonationDecorator do
     context 'when subscribe is true' do
       it 'adds user to mailing list' do
         expect_any_instance_of(MailingListService).to receive(:mailing_subscribe)
-        create_parent
-        donation_decorator = DonationDecorator.new @parent_donation, @token_hash, @user, true
+        donation = create(:donation)
+        donation_decorator = DonationDecorator.new donation, @token_hash, @user, true
         donation_decorator.instance_eval{subscribe_to_mail}
       end
     end
@@ -98,8 +106,8 @@ RSpec.describe DonationDecorator do
     context 'when subscribe is false' do
       it 'does not add user to mailing list' do
         expect_any_instance_of(MailingListService).not_to receive(:mailing_subscribe)
-        create_parent
-        donation_decorator = DonationDecorator.new @parent_donation, @token_hash, @user, false
+        donation = create(:donation)
+        donation_decorator = DonationDecorator.new donation, @token_hash, @user, false
         donation_decorator.instance_eval{subscribe_to_mail}
 
       end

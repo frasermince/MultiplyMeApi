@@ -7,7 +7,11 @@ end
 
 describe Api::V1::ShareTreesController do
   before(:each) do
-    create_two_children
+    @parent_donation = create(:donation)
+    @child_donation = create(:donation)
+    @child_donation.update_attribute('parent_id', @parent_donation.id)
+    @second_child = create(:donation)
+    @second_child.update_attribute('parent_id', @parent_donation.id)
   end
 
   describe '#show' do

@@ -26,7 +26,8 @@ describe Api::V1::DonationsController do
 
     context 'when a referral is present' do
       it 'passes referral to DonationDecorator and has a parent donation' do
-        parent_donation = create(:referral_donation)
+        parent_donation = build_stubbed(:donation)
+        parent_donation.referral_code = '12345'
         donation_decorator = double('donation_decorator')
         @donation.parent = parent_donation
         allow(DonationDecorator).to receive(:new).with(any_args, parent_donation.referral_code).and_return(donation_decorator)
@@ -73,17 +74,19 @@ describe Api::V1::DonationsController do
   describe '#update' do
     context 'when donation is updated successfully' do
       it 'returns the donation and sets the status to ok' do
+        updated_amount = 400
         stub_finding @donation, @donation.id
-        put :update, id: @donation.id, donation: updated_donation_attributes
+        put :update, id: @donation.id, donation: {amount: updated_amount}
         expect(response).to have_http_status(:ok)
-        expect(assigns[:donation].amount).to eq(updated_donation_attributes[:amount])
+        expect(assigns[:donation].amount).to eq(updated_amount)
       end
     end
     context 'when donation is not updated successfully' do
       it 'returns the error and sets the status to unprocessable' do
+        updated_amount = 400
         stub_finding @donation, @donation.id
         stub_creation @donation, false
-        put :update, id: @donation.id, donation: updated_donation_attributes
+        put :update, id: @donation.id, donation: {amount: updated_amount}
         expect(response).to have_http_status(:unprocessable_entity)
       end
     end
@@ -91,10 +94,6 @@ describe Api::V1::DonationsController do
 
   def donation_attributes
     attributes_for(:donation)
-  end
-
-  def updated_donation_attributes
-    attributes_for(:updated_donation)
   end
 
   def valid_card_attributes

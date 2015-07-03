@@ -10,8 +10,8 @@ RSpec.describe PaymentService do
   describe '#create_subscription' do
     context 'has a nil stripe id' do
       it 'throws an exception' do
-        create_parent
-        payment_service = PaymentService.new @parent_donation
+        donation = create(:donation)
+        payment_service = PaymentService.new donation
         result = payment_service.create_subscription
         expect(result).to eq(false)
       end
@@ -29,9 +29,9 @@ RSpec.describe PaymentService do
 
   describe '#create_charge' do
     context 'has a nil stripe id' do
-      it 'throws an exception' do
-        create_parent
-        payment_service = PaymentService.new @parent
+      it 'returns false' do
+        donation = create(:donation)
+        payment_service = PaymentService.new donation
         expect(payment_service.create_charge).to eq(false)
       end
     end
@@ -50,7 +50,8 @@ RSpec.describe PaymentService do
 
       context 'and donation is a subscription' do
         it 'calls create_subscription' do
-          donation = create(:subscription_donation)
+          donation = create(:donation)
+          donation.is_subscription = true
           expect_any_instance_of(PaymentService).to receive(:create_subscription)
           payment_service = PaymentService.new donation
           payment_service.purchase
@@ -59,7 +60,8 @@ RSpec.describe PaymentService do
 
       context 'and donation is not a subscription' do
         it 'calls create_charge' do
-          donation = create(:nonsubscription_donation)
+          donation = create(:donation)
+          donation.is_subscription = false
           expect_any_instance_of(PaymentService).to receive(:create_charge)
           payment_service = PaymentService.new donation
           payment_service.purchase
@@ -68,16 +70,17 @@ RSpec.describe PaymentService do
 
       it 'returns a status of success' do
         allow_any_instance_of(PaymentService).to receive(:create_subscription).and_return({status: true})
-        create_parent
-        payment_service = PaymentService.new @parent_donation
+        donation = create(:donation)
+        payment_service = PaymentService.new donation
         expect(payment_service.purchase).to be_truthy
       end
     end
 
     context 'purchase was previously made' do
       it 'returns a failed status' do
-        create_paid
-        payment_service = PaymentService.new @paid_donation
+        donation = create(:donation)
+        donation.is_paid = true
+        payment_service = PaymentService.new donation
         expect(payment_service.purchase).to eq(false)
       end
     end

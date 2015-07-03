@@ -7,35 +7,41 @@ end
 
 RSpec.describe CompletedChallengePolicy do
   describe '#challenge_completed?' do
-    context 'has three children and is less than three days old' do
+    context 'has three children and can_still_complete? is true' do
       it 'returns true' do
-        allow_any_instance_of(PaymentService)
-          .to receive(:purchase)
+        donation = create(:donation)
+        completed_challenge_policy = CompletedChallengePolicy.new donation
+
+        allow(donation.children).to receive(:count).and_return(3)
+        allow(completed_challenge_policy)
+          .to receive(:can_still_complete?)
           .and_return(true)
-        create_three_children
-        completed_challenge_policy = CompletedChallengePolicy.new @parent_donation
+
         expect(completed_challenge_policy.challenge_completed?).to be_truthy
       end
     end
 
-    context 'is more than three days old' do
+    context 'can_still_complete? is false' do
       it 'returns false' do
-        allow_any_instance_of(PaymentService)
-          .to receive(:purchase)
-          .and_return(true)
-        create_three_children true
-        completed_challenge_policy = CompletedChallengePolicy.new @third_child
+        donation = create(:donation)
+        completed_challenge_policy = CompletedChallengePolicy.new donation
+        allow(donation.children).to receive(:count).and_return(3)
+        allow(completed_challenge_policy)
+          .to receive(:can_still_complete?)
+          .and_return(false)
         expect(completed_challenge_policy.challenge_completed?).to be_falsey
       end
     end
 
     context 'has less than three children' do
       it 'returns false' do
-        allow_any_instance_of(PaymentService)
-          .to receive(:purchase)
-          .and_return(true)
-        create_two_children
-        completed_challenge_policy = CompletedChallengePolicy.new @second_child
+        donation = create(:donation)
+        completed_challenge_policy = CompletedChallengePolicy.new donation
+        allow(donation.children).to receive(:count).and_return(2)
+        allow(completed_challenge_policy)
+          .to receive(:can_still_complete?)
+          .and_return(false)
+
         expect(completed_challenge_policy.challenge_completed?).to be_falsey
       end
     end

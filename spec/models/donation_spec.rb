@@ -7,15 +7,9 @@ RSpec.describe Donation, :type => :model do
   it { should belong_to(:parent) }
   it { should have_many(:children) }
 
-  describe 'factories' do
+  describe 'donation factory' do
     it 'should be valid' do
-      expect(create(:parent)).to be_valid
-      expect(create(:child)).to be_valid
-      expect(create(:grandchild)).to be_valid
-      expect(create(:second_grandchild)).to be_valid
-      expect(create(:second_child)).to be_valid
-      expect(create(:third_child)).to be_valid
-
+      expect(create(:donation)).to be_valid
     end
   end
 end
