@@ -22,7 +22,9 @@ class PaymentService
   def create_subscription
     begin
       Stripe.api_key = Rails.application.secrets.stripe_secret_key
-      customer = @donation.organization.get_stripe_user(@donation.user)
+      organizations_user = OrganizationsUser.find_or_create(@donation.organization_id, @donation.user_id)
+      customer = organizations_user.get_stripe_user
+
       subscription = customer.subscriptions
         .create(subscription_params, stripe_account: @donation.organization.stripe_id)
       @donation.update_attribute('stripe_id', subscription.id)
@@ -36,7 +38,8 @@ class PaymentService
   def create_charge
     begin
       Stripe.api_key = Rails.application.secrets.stripe_secret_key
-      customer = @donation.organization.get_stripe_user(@donation.user)
+      organizations_user = OrganizationsUser.find_or_create(@donation.organization_id, @donation.user_id)
+      customer = organizations_user.get_stripe_user
       charge = Stripe::Charge
         .create(charge_params(customer), stripe_account: @donation.organization.stripe_id)
       @donation.update_attribute('stripe_id', charge.id)

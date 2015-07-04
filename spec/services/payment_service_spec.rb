@@ -7,7 +7,9 @@ RSpec.describe PaymentService do
       it 'throws an exception' do
         donation = create(:donation)
         payment_service = PaymentService.new donation
-        result = payment_service.create_subscription
+        result = VCR.use_cassette('create_subscription_failed') do
+          payment_service.create_subscription
+        end
         expect(result).to eq(false)
       end
     end
