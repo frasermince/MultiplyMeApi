@@ -1,3 +1,4 @@
+require 'set'
 # Donation is used to track donations created by the user
 # Includes two concerns
 class Donation < ActiveRecord::Base
@@ -7,8 +8,11 @@ class Donation < ActiveRecord::Base
   include Traversable
   # tracks the amount of money donated
   # automatically charges for a donation when it has three children
+  belongs_to :parent, :class_name => 'Donation'
   belongs_to :user
   belongs_to :organization
+
+  has_many :children, :class_name => 'Donation', :foreign_key => 'parent_id'
   # amount is a integer in cents
   validates :amount, :downline_count, :downline_amount,
     :organization_id, :user_id, presence: true
@@ -76,5 +80,21 @@ class Donation < ActiveRecord::Base
         result.delete
       end
     end
+  end
+
+  def traverse_downline(set)
+    set.add self.id
+    self.children.each do |child|
+      set = set | child.traverse_downline(set)
+    end
+    set
+  end
+
+  def one_grandchild
+    grandchildren = 0
+    self.children.each do |child|
+      grandchildren += child.children.count
+    end
+    grandchildren == 1
   end
 end
