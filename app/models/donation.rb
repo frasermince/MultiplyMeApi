@@ -5,7 +5,6 @@ class Donation < ActiveRecord::Base
 
   before_create :set_referral
   # tracks a user's downline
-  include Traversable
   # tracks the amount of money donated
   # automatically charges for a donation when it has three children
   belongs_to :parent, :class_name => 'Donation'
