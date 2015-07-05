@@ -1,7 +1,7 @@
 module StripeHelpers
   def create_token_object(card=4242424242424242)
     Stripe.api_key = Rails.application.secrets.stripe_secret_key
-    VCR.use_cassette('create_stripe_token', :record => :all) do
+    VCR.use_cassette('create_stripe_token') do #, :record => :all) do
       Stripe::Token.create(
         card: {
           :number => card,
