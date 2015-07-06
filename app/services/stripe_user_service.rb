@@ -2,7 +2,7 @@ require 'stripe'
 class StripeUserService
   def initialize(user)
     @user = user
-    @errors = []
+    @stripe_client = StripeClient.new
   end
 
   def save_stripe_user(params)
@@ -15,56 +15,19 @@ class StripeUserService
     result
   end
 
-
   def create_stripe_user(params)
-    result = create_stripe_user_object(params)
+    result = @stripe_client.create_stripe_user(params)
     result != false ? result.id : false
   end
 
-  def create_stripe_user_object(params)
-    begin
-      Stripe.api_key = Rails.application.secrets.stripe_secret_key
-      customer = Stripe::Customer.create(
-        {
-          source: params[:token],
-          email: params[:email]
-        }
-      )
-    rescue => error
-      @errors.push error.message
-      return false
-    end
-    customer
-  end
-
   def add_credit_card(token)
-    begin
-      Stripe.api_key = Rails.application.secrets.stripe_secret_key
-      if @user.stripe_id.present?
-        create_credit_card token
-        true
-      else
-        @errors.push 'customer is not present'
-        return false
-      end
-    rescue => error
-      @errors.push error.message
+    Stripe.api_key = Rails.application.secrets.stripe_secret_key
+    if @user.stripe_id.present?
+      @stripe_client.create_credit_card token, @user
+      true
+    else
+      #@errors.push 'customer is not present'
       return false
     end
   end
-
-  def errors
-    @errors
-  end
-
-  def create_credit_card(token)
-    begin
-      customer = Stripe::Customer.retrieve(@user.stripe_id)
-      customer.sources.create(:source => token)
-    rescue => error
-      @errors.push error.message
-      return false
-    end
-  end
-
 end
