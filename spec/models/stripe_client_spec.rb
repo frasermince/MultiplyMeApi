@@ -71,4 +71,32 @@ RSpec.describe StripeClient do
     end
   end
 
+  describe '#create_charge' do
+    context 'has a valid stripe id' do
+      it 'creates a charge' do
+        donation = create(:stripe_donation)
+        customer = create_stripe_user
+
+        VCR.use_cassette('create_charge') do
+          expect{@stripe_client.create_charge donation, customer}
+            .not_to raise_error
+        end
+        expect(donation.reload.stripe_id).to be
+      end
+    end
+  end
+
+  describe '#create_subscription' do
+    context 'has a valid stripe id' do
+      it 'creates a subscription' do
+        donation = create(:stripe_donation)
+        customer = create_stripe_user
+        VCR.use_cassette('create_subscription') do
+          expect{@stripe_client.create_subscription donation, customer}
+            .not_to raise_error
+        end
+        expect(donation.reload.stripe_id).to be
+      end
+    end
+  end
 end
