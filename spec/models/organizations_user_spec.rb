@@ -34,7 +34,11 @@ RSpec.describe OrganizationsUser, :type => :model do
       user = create(:stripe_user)
       organizations_user = create(:organizations_user)
       organizations_user.update_attribute('user_id', user.id)
-      allow(organizations_user)
+      stripe_client = StripeClient.new(organizations_user.organization)
+      allow(StripeClient)
+        .to receive(:new)
+        .and_return(stripe_client)
+      allow(stripe_client)
         .to receive(:create_stripe_token)
         .and_return(create_token)
       VCR.use_cassette('create_stripe_organization_user') do
@@ -69,16 +73,6 @@ RSpec.describe OrganizationsUser, :type => :model do
         VCR.use_cassette('retrieve_stripe_user') do
           expect(organizations_user.get_stripe_user).to be
         end
-      end
-    end
-  end
-
-  describe '#create_stripe_token' do
-    it 'creates a token' do
-      user = create(:stripe_user)
-      organizations_user = create(:organizations_user)
-      VCR.use_cassette('create_stripe_token_for_organizations_user') do
-        expect(organizations_user.create_stripe_token user.stripe_id).to be
       end
     end
   end

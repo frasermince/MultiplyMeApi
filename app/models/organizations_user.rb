@@ -17,22 +17,12 @@ class OrganizationsUser < ActiveRecord::Base
   end
 
   def create_stripe_user
-    Stripe.api_key = self.organization.stripe_access_token
-    token_id = create_stripe_token(self.user.stripe_id)
-    customer = Stripe::Customer.create(
-      *stripe_user_params(token_id)
-    )
+    stripe_client = StripeClient.new(self.organization)
+    token_id = stripe_client.create_stripe_token(self.user.stripe_id)
+    customer = stripe_client.create_stripe_user(token: token_id, email: self.user.email)
     save_stripe_user(customer)
   end
 
-  def create_stripe_token(customer_id)
-    Stripe.api_key = Rails.application.secrets.stripe_secret_key
-    token = Stripe::Token.create(
-      { customer: customer_id},
-      self.organization.stripe_access_token
-    )
-    token.id
-  end
   private
 
   def save_stripe_user(customer)
