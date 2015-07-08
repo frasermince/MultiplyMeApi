@@ -5,9 +5,9 @@ module StripeHelpers
     end
   end
 
-  def create_stripe_user
+  def create_stripe_user(organization=nil)
     VCR.use_cassette('create_user_helper') do
-      StripeClient.new.create_stripe_user({
+      StripeClient.new(organization).create_stripe_user({
         token: create_token,
         email: 'test@test.com'
       })
