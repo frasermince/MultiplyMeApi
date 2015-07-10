@@ -9,88 +9,55 @@ RSpec.describe DonationDecorator do
     @user = create(:user)
     @token_hash = {token: create_token, email: 'email@email.com'}
   end
-  describe '#call_payment_service' do
-    context 'receives a challenge' do
-      it 'does not create a purchase for self' do
-        expect_any_instance_of(PaymentService).not_to receive(:purchase)
+
+  describe '#save' do
+    context 'card information is not passed' do
+      it 'raises an error' do
         donation = create(:donation)
         donation_decorator = DonationDecorator.new donation, @token_hash, @user, false
-        donation_decorator.instance_eval{call_payment_service}
-      end
-
-      context 'challenge_completed? is true' do
-        it 'does call purchase' do
-          expect_any_instance_of(CompletedChallengePolicy)
-            .to receive(:challenge_completed?)
-            .and_return(true)
-
-          expect_any_instance_of(PaymentService)
-            .to receive(:purchase)
-            .and_return({status: :success})
-
-          parent = create(:donation)
-          child = create(:donation)
-          child.update_attribute('parent_id', parent.id)
-          donation_decorator = DonationDecorator.new child, @token_hash, @user, false
-          donation_decorator.instance_eval{call_payment_service}
-        end
-      end
-
-      context 'challenge_completed? is false' do
-        it 'does not call purchase' do
-
-          expect_any_instance_of(CompletedChallengePolicy)
-            .to receive(:challenge_completed?)
-            .and_return(false)
-
-          expect_any_instance_of(PaymentService)
-            .not_to receive(:purchase)
-
-          parent = create(:donation)
-          child = create(:donation)
-          child.update_attribute('parent_id', parent.id)
-
-          donation_decorator = DonationDecorator.new child, @token_hash, @user, false
-          donation_decorator.instance_eval{call_payment_service}
-        end
+        allow(donation_decorator)
+          .to receive(:contains_card)
+          .and_return(false)
+        expect{donation_decorator.save}.to raise_error
       end
     end
 
-    context 'if it is not a challenge' do
-      context 'if purchase returns false' do
-        it 'returns false' do
-          allow_any_instance_of(PaymentService)
-            .to receive(:purchase)
-            .and_return(false)
+    context 'card information is passed' do
+      context 'step throws an exception' do
+        it 'propogates the exception and rolls back' do
           donation = create(:donation)
-          donation.update_attribute('is_challenged', false)
+          amount = 5
+          donation.amount = amount
           donation_decorator = DonationDecorator.new donation, @token_hash, @user, false
+          mock_user_service
+          allow(Payments::PaymentFactory)
+            .to receive(:new)
+            .and_raise('exception')
 
-          expect(donation_decorator.instance_eval{call_payment_service})
-            .to be_falsey
+          expect{donation_decorator.save}.to raise_error
+          expect(donation.reload.amount).not_to eq(amount)
         end
       end
 
-      it 'does create a purchase for self' do
-        expect_any_instance_of(PaymentService)
-          .to receive(:purchase)
-          .and_return({status: :success})
-        donation = create(:donation)
-        donation.update_attribute('is_challenged', false)
-        donation_decorator = DonationDecorator.new donation, @token_hash, @user, false
-        donation_decorator.instance_eval{call_payment_service}
+      context 'all steps are successful' do
+        it 'handles all before and after processes for saving a donation' do
+          donation = create(:donation)
+          donation_decorator = DonationDecorator.new donation, @token_hash, @user, false
+          mock_user_service
+          mock_payment_service
+          mock_notification_service
+          allow(donation_decorator)
+            .to receive(:subscribe_to_mail)
+            .and_return(true)
+          expect(donation_decorator)
+            .to receive(:subscribe_to_mail)
+          expect(donation_decorator.save).to eq(true)
+        end
       end
     end
-  end
-
-  describe 'save' do
-    it 'handles all before and after processes for saving a donation' do
-      donation = create(:donation)
-      donation_decorator = DonationDecorator.new donation, @token_hash, @user, false
-      expect(donation_decorator.save).to eq(true)
-    end
 
   end
+
   describe '#subscribe_to_mail' do
     context 'when subscribe is true' do
       it 'adds user to mailing list' do
@@ -112,4 +79,39 @@ RSpec.describe DonationDecorator do
     end
   end
 
+  def mock_payment_service
+    payment_service = double('payment_service')
+    allow(Payments::PaymentFactory)
+      .to receive(:new)
+      .and_return(payment_service)
+    allow(payment_service)
+      .to receive(:pay)
+      .and_return(true)
+    expect(payment_service)
+      .to receive(:pay)
+  end
+
+  def mock_notification_service
+    notification_service = double('notification_service')
+    allow(NotificationService)
+      .to receive(:new)
+      .and_return(notification_service)
+    allow(notification_service)
+      .to receive(:send_mail)
+      .and_return(true)
+    expect(notification_service)
+      .to receive(:send_mail)
+  end
+
+  def mock_user_service
+    stripe_user_service = double('stripe_user_service')
+    allow(StripeUserService)
+      .to receive(:new)
+      .and_return(stripe_user_service)
+    allow(stripe_user_service)
+      .to receive(:save_stripe_user)
+      .and_return(true)
+    expect(stripe_user_service)
+      .to receive(:save_stripe_user)
+  end
 end
