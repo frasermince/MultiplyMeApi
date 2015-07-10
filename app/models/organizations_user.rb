@@ -1,6 +1,12 @@
 class OrganizationsUser < ActiveRecord::Base
   belongs_to :organization
   belongs_to :user
+
+  def self.get_stripe_user(organization, user)
+    organization_user = find_or_create(organization.id, user.id)
+    organization_user.get_stripe_user
+  end
+
   def self.find_or_create(organization_id, user_id)
     query_hash = {organization_id: organization_id, user_id: user_id}
     organizations_user = self.where(query_hash).first
