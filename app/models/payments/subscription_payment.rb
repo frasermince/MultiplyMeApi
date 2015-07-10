@@ -6,8 +6,10 @@ module Payments
     end
 
     def pay
-      customer = OrganizationsUser.get_stripe_user(@donation.organization, @donation.user)
-      @stripe_client.create_subscription(@donation, customer)
+      unless @donation.is_paid?
+        customer = OrganizationsUser.get_stripe_user(@donation.organization, @donation.user)
+        @stripe_client.create_subscription(@donation, customer)
+      end
     end
   end
 end
