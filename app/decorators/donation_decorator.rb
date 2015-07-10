@@ -12,17 +12,28 @@ class DonationDecorator
   end
 
   def save
-    @donation.transaction do
-      contains_card &&
-        StripeUserService.new(@donation.user).save_stripe_user(@card_params)
-        @donation.save!
-        call_payment_service
-        @notification_service.send_mail
-        subscribe_to_mail
-    end
+      if contains_card
+        do_transaction
+      else
+        raise 'No card information is passed'
+      end
   end
 
   private
+  def do_transaction
+    @donation.transaction do
+      donation_flow
+    end
+  end
+
+  def donation_flow
+    StripeUserService.new(@donation.user).save_stripe_user(@card_params)
+    @donation.save!
+    Payments::PaymentFactory.new(donation).pay
+    NotificationService.new(@donation).send_mail
+    subscribe_to_mail
+  end
+
   def subscribe_to_mail
     if @subscribe_to_mail
       MailingListService.new(@donation.user).mailing_subscribe('c8e3eb0f3a')
@@ -32,23 +43,4 @@ class DonationDecorator
   def contains_card
     @card_params[:email].present? && @card_params[:token].present?
   end
-
-  def call_payment_service
-    parent = @donation.reload.parent
-    policy = CompletedChallengePolicy.new parent
-    donation_purchase && parent_purchase(parent, policy)
-  end
-
-  def donation_purchase
-    unless @donation.is_challenged
-      PaymentService.new(@donation, @donation.organization).purchase
-    end
-  end
-
-  def parent_purchase(parent, policy)
-    if parent.present? && policy.challenge_completed?
-      PaymentService.new(parent, parent.organization).purchase
-    end
-  end
-
 end
