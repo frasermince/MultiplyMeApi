@@ -11,7 +11,7 @@ class DonationDecorator
     @donation
   end
 
-  def save
+  def save!
       if contains_card
         do_transaction
       else
