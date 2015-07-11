@@ -14,46 +14,34 @@ describe Api::V1::DonationsController do
   describe '#create' do
     context 'when donation is valid' do
       it 'returns the donation and sets the status to created' do
-        stub_creation @donation, true
-        expect_stripe_user @donation
-        post :create, donation: donation_attributes, card: valid_card_attributes
-        expect(response).to have_http_status(:created)
-        expect(assigns[:donation]).to eq(@donation)
-      end
-    end
-
-    context 'when a referral is present' do
-      it 'passes referral to DonationDecorator and has a parent donation' do
         parent_donation = build_stubbed(:donation)
         parent_donation.referral_code = '12345'
-        donation_decorator = double('donation_decorator')
-        @donation.parent = parent_donation
-        allow(DonationDecorator).to receive(:new).with(any_args, parent_donation.referral_code).and_return(donation_decorator)
-        allow(donation_decorator).to receive(:save).and_return(true)
-        allow(donation_decorator).to receive(:donation).and_return(@donation)
-
+        stub_decorator(parent_donation.referral_code)
         post :create, donation: donation_attributes, card: valid_card_attributes, referral_code: parent_donation.referral_code
         parsed_body = JSON.parse(response.body)
-
         expect(response).to have_http_status(:created)
-        expect(parsed_body['donation']['parent_id']).to be
+        expect(parsed_body['donation']['id']).to eq(@donation.id)
       end
     end
 
-    context 'when saving stripe user returns an error' do
-      it 'returns the error and sets the status to unprocessable' do
+    context 'when saving decorator returns error' do
+      it 'replies with the error and sets the status to unprocessable' do
         donation_decorator = double('donation_decorator')
-        errors = ['Your card was declined.']
+        error = 'Your card was declined.'
 
-        allow(DonationDecorator).to receive(:new).and_return(donation_decorator)
-        allow(donation_decorator).to receive(:save).and_return(false)
-        allow(donation_decorator).to receive(:errors).and_return(errors)
-        stub_creation @donation, false
+        allow(DonationDecorator)
+          .to receive(:new)
+          .and_return(donation_decorator)
+
+        allow(donation_decorator)
+          .to receive(:save!)
+          .and_raise error
+
 
         post :create, donation: donation_attributes, card: invalid_card_attributes
         parsed_body = JSON.parse(response.body)
         expect(response).to have_http_status(:unprocessable_entity)
-        expect(parsed_body['error']).to eq(errors)
+        expect(parsed_body['error']).to eq(error)
       end
     end
   end
@@ -107,6 +95,20 @@ describe Api::V1::DonationsController do
 
   def invalid_card_attributes
     {token: create_token('4000000000000002'), email: 'test@test.com'}
+  end
+
+  def stub_decorator(referral_code)
+    donation_decorator = double('donation_decorator')
+    allow(DonationDecorator)
+      .to receive(:new)
+      .with(any_args, referral_code)
+      .and_return(donation_decorator)
+    allow(donation_decorator)
+      .to receive(:save!)
+      .and_return(true)
+    allow(donation_decorator)
+      .to receive(:donation)
+      .and_return(@donation)
   end
 
   def string_params

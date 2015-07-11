@@ -5,11 +5,7 @@ module Api
       def create
         @donation = Donation.new donation_params
         donation_decorator = DonationDecorator.new(@donation, card_params, current_user, params[:subscribe], params[:referral_code])
-        if donation_decorator.save
-          render json: {donation: donation_decorator.donation}, status: :created
-        else
-          render json: {error: donation_decorator.errors}, status: :unprocessable_entity
-        end
+        respond_to_create donation_decorator
       end
 
       def show
@@ -28,6 +24,19 @@ module Api
       end
 
       private
+
+      def respond_to_create(donation_decorator)
+        begin
+          donation_decorator.save!
+        rescue => error
+          return render json: {error: error.message}, status: :unprocessable_entity
+        end
+        render json: {donation: donation_decorator.donation}, status: :created
+      end
+
+      def successful_save
+
+      end
 
       def donation_params
         params.require(:donation).permit(:parent_id, :amount, :organization_id, :is_default, :is_subscription, :is_challenged)

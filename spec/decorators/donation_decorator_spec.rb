@@ -10,7 +10,7 @@ RSpec.describe DonationDecorator do
     @token_hash = {token: create_token, email: 'email@email.com'}
   end
 
-  describe '#save' do
+  describe '#save!' do
     context 'card information is not passed' do
       it 'raises an error' do
         donation = create(:donation)
@@ -18,7 +18,7 @@ RSpec.describe DonationDecorator do
         allow(donation_decorator)
           .to receive(:contains_card)
           .and_return(false)
-        expect{donation_decorator.save}.to raise_error
+        expect{donation_decorator.save!}.to raise_error
       end
     end
 
@@ -34,7 +34,7 @@ RSpec.describe DonationDecorator do
             .to receive(:new)
             .and_raise('exception')
 
-          expect{donation_decorator.save}.to raise_error
+          expect{donation_decorator.save!}.to raise_error
           expect(donation.reload.amount).not_to eq(amount)
         end
       end
@@ -51,7 +51,7 @@ RSpec.describe DonationDecorator do
             .and_return(true)
           expect(donation_decorator)
             .to receive(:subscribe_to_mail)
-          expect(donation_decorator.save).to eq(true)
+          expect(donation_decorator.save!).to eq(true)
         end
       end
     end
