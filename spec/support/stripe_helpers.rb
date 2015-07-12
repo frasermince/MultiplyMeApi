@@ -32,7 +32,7 @@ module StripeHelpers
     create_token_object(card).id
   end
 
-  def valid_stripe_params
-    {email: 'test@test.com', token: create_token}
+  def valid_stripe_params(card=4242424242424242)
+    {email: 'test@test.com', token: create_token(card)}
   end
 end
