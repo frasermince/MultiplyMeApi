@@ -28,7 +28,7 @@ module Api
       def respond_to_create(donation_decorator)
         begin
           donation_decorator.save!
-        rescue => error
+        rescue Stripe::StripeError => error
           return render json: {error: error.message}, status: :unprocessable_entity
         end
         render json: {donation: donation_decorator.donation}, status: :created

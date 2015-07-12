@@ -40,6 +40,7 @@ ActiveRecord::Migration.maintain_test_schema!
 
 RSpec.configure do |config|
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
+  config.include Requests::JsonHelpers, type: :request
   config.fixture_path = "#{::Rails.root}/spec/fixtures"
   config.include Devise::TestHelpers, :type => :controller
   config.extend ControllerMacros, :type => :controller
@@ -63,4 +64,15 @@ RSpec.configure do |config|
   # The different available types are documented in the features, such as in
   # https://relishapp.com/rspec/rspec-rails/docs
   config.infer_spec_type_from_file_location!
+  config.around(:each) do |example|
+    if example.metadata[:type] == :request
+      WebMock.allow_net_connect!
+      VCR.turn_off!(:ignore_cassettes => true)
+      example.run
+      WebMock.disable_net_connect!
+      VCR.turn_on!
+    else
+      example.run
+    end
+  end
 end

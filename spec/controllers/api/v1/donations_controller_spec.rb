@@ -35,7 +35,7 @@ describe Api::V1::DonationsController do
 
         allow(donation_decorator)
           .to receive(:save!)
-          .and_raise error
+          .and_raise(Stripe::StripeError, error)
 
 
         post :create, donation: donation_attributes, card: invalid_card_attributes

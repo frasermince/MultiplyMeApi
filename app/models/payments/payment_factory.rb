@@ -5,11 +5,13 @@ module Payments
       @parent = donation.parent
       @strategy_array = []
       build_strategies
+      @strategy_array
     end
 
-    def new(donation)
-      initialize donation
-      PaymentService.new @strategy_array
+    def self.new(*args, &block)
+      obj = self.allocate
+      array = obj.send :initialize, *args, &block
+      PaymentService.new array
     end
 
     private
