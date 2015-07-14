@@ -66,13 +66,21 @@ RSpec.describe OrganizationsUser, :type => :model do
         user = create(:stripe_user)
         organizations_user = create(:organizations_user)
         organizations_user.update_attribute('user_id', user.id)
+        stripe_user = create_stripe_user(organizations_user.organization)
+        organizations_user.update_attribute('stripe_id', stripe_user.id)
+        stripe_client = double('stripe_client')
 
-        VCR.use_cassette('create_stripe_organization_user_helper') do
-          organizations_user.create_stripe_user
-        end
+        allow(StripeClient)
+          .to receive(:new)
+          .and_return(stripe_client)
+        allow(stripe_client)
+          .to receive(:retrieve_stripe_user)
+          .and_return(stripe_user)
+
         VCR.use_cassette('retrieve_stripe_user') do
           expect(organizations_user.get_stripe_user).to be
         end
+
       end
     end
   end

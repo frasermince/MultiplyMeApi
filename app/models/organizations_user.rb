@@ -15,8 +15,8 @@ class OrganizationsUser < ActiveRecord::Base
 
   def get_stripe_user
     if self.stripe_id.present?
-      Stripe.api_key = self.organization.stripe_access_token
-      Stripe::Customer.retrieve self.stripe_id
+      stripe_client = StripeClient.new self.organization
+      stripe_client.retrieve_stripe_user self.user
     else
       create_stripe_user
     end
