@@ -34,10 +34,6 @@ module Api
         render json: {donation: donation_decorator.donation}, status: :created
       end
 
-      def successful_save
-
-      end
-
       def donation_params
         params.require(:donation).permit(:parent_id, :amount, :organization_id, :is_default, :is_subscription, :is_challenged)
       end
