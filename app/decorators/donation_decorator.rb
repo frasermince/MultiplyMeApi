@@ -12,11 +12,11 @@ class DonationDecorator
   end
 
   def save!
-      if contains_card
-        do_transaction
-      else
-        raise 'No card information is passed'
-      end
+    if contains_card
+      do_transaction
+    else
+      raise 'No card information is passed'
+    end
   end
 
   private
