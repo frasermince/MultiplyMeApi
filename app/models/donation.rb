@@ -70,7 +70,7 @@ class Donation < ActiveRecord::Base
 
   def delete_subscription
     if self.is_subscription && self.is_paid
-      customer = self.organization.get_stripe_user self.user
+      customer = OrganizationsUser.get_stripe_user(self.organization, self.user)
       subscriptions = customer.subscriptions
       unless subscriptions.data.empty?
         result = subscriptions.retrieve(self.stripe_id)

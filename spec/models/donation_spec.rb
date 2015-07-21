@@ -1,5 +1,9 @@
 require 'rails_helper'
 
+RSpec.configure do |c|
+  c.include StripeHelpers
+end
+
 RSpec.describe Donation, :type => :model do
 
   it { should belong_to(:organization) }
@@ -110,9 +114,27 @@ RSpec.describe Donation, :type => :model do
     context 'donation is a subscription' do
       it 'deletes the subscription' do
         donation = create(:stripe_donation)
-        payment_service = PaymentService.new(donation)
-        payment_service.create_subscription
-        expect_any_instance_of(Stripe::Subscription).to receive(:delete)
+        customer = create_stripe_user(donation.organization)
+        stripe_client = StripeClient.new(donation.organization)
+        subscriptions = double('subscriptions')
+        retrieved = double('retrieved')
+        VCR.use_cassette('create_subscription_setup') do
+          stripe_client.create_subscription(donation, customer)
+        end
+        allow(OrganizationsUser)
+          .to receive(:get_stripe_user)
+          .and_return(customer)
+        allow(customer)
+          .to receive(:subscriptions)
+          .and_return(subscriptions)
+        allow(subscriptions)
+          .to receive(:data)
+          .and_return([1])
+        allow(subscriptions)
+          .to receive(:retrieve)
+          .and_return(retrieved)
+        allow(retrieved)
+          .to receive(:delete)
         expect{donation.delete_subscription}.not_to raise_error
         expect(donation.is_cancelled).to eq(true)
       end
