@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
   mount_devise_token_auth_for 'User', at: 'auth', controllers:  { omniauth_callbacks: "overrides/omniauth_callbacks" }
 
-  constraints :subdomain => 'api' do
+  #constraints :subdomain => 'api' do
     namespace :api, path: nil, defaults: {format: 'json'}  do
       namespace :v1 do
         resources :donations, only: [:create, :show, :update]
@@ -17,6 +17,6 @@ Rails.application.routes.draw do
         post 'subscribe/:id' => 'mailchimp#subscribe'
       end
     end
-  end
+  #end
   #get 'omniauth/:provider' => 'overrides/omniauth_callbacks#redirect_callbacks'
 end
