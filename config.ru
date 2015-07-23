@@ -2,7 +2,7 @@
 require 'rack/cors'
 use Rack::Cors do
   allow do
-    origins 'localhost:9001', 'amala.multiplyme.in', ' amala-multiplyme.in.s3-website-us-west-2.amazonaws.com/'
+    origins 'localhost:9001', 'amala.multiplyme.in', ' amala-multiplyme.in.s3-website-us-west-2.amazonaws.com/', 'backonmyfeet.multiplyme.in'
     resource '*',
       :methods => [:get, :post, :put, :delete, :options],
       :headers => :any,
