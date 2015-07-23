@@ -1,5 +1,5 @@
 development: 104.131.166.165:6379
 test: localhost:6379
-staging: 104.131.166.165:6379
+staging: 104.236.212.96:6379
 fi: localhost:6379
 production: 104.131.166.165:6379
