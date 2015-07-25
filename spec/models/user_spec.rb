@@ -37,26 +37,28 @@ RSpec.describe User, :type => :model do
       it 'returns true' do
         donation = create(:donation)
         second_donation = create(:donation)
+        donations = Donation.where('id = ? OR id = ?', donation.id, second_donation.id)
         allow_any_instance_of(User)
           .to receive(:donations)
-          .and_return([donation, second_donation])
+          .and_return(donations)
         allow_any_instance_of(Donation)
           .to receive(:is_cancelled)
           .and_return(true)
-        expect(@user.all_cancelled?).to eq(true)
+        expect(@user.all_cancelled?(donation.organization_id)).to eq(true)
       end
     end
     context 'when they are not cancelled' do
       it 'returns false' do
         donation = create(:donation)
         second_donation = create(:donation)
+        donations = Donation.where('id = ? OR id = ?', donation.id, second_donation.id)
         allow_any_instance_of(User)
           .to receive(:donations)
-          .and_return([donation, second_donation])
+          .and_return(donations)
         allow_any_instance_of(Donation)
           .to receive(:is_cancelled)
           .and_return(false)
-        expect(@user.all_cancelled?).to eq(false)
+        expect(@user.all_cancelled?(donation.organization_id)).to eq(false)
       end
     end
   end
