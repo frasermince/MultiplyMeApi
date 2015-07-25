@@ -15,8 +15,9 @@ class User < ActiveRecord::Base
   before_save :default_values
   attr_reader :contribution
 
-  def all_cancelled?
-    self.donations.each do |donation|
+  def all_cancelled?(organization_id)
+    filtered_donations = self.donations.filter_by_organization(organization_id)
+    filtered_donations.each do |donation|
       if donation.is_subscription && !donation.is_cancelled
         return false
       end
@@ -41,16 +42,17 @@ class User < ActiveRecord::Base
     personal_impact + network_impact
   end
 
-  def personal_impact
-    total = 0
-    self.donations.where(is_paid: 1).each{|donation| total += donation.yearly_amount }
-    total
+  def personal_impact(organization_id)
+    filtered_donations = self.donations.filter_by_organization(organization_id)
+    filtered_donations.where(is_paid: 1).reduce(0) do |accumulator, donation|
+      accumulator += donation.yearly_amount
+    end
   end
 
-  def network_impact
-    network_set = Set.new
-    self.donations.each do |donation|
-      network_set = network_set | donation.traverse_downline(network_set)
+  def network_impact(organization_id)
+    donations = self.donations.filter_by_organization(organization_id)
+    network_set = donations.reduce(Set.new) do |accumulator, donation|
+      accumulator | donation.traverse_downline(accumulator)
     end
     network_set.subtract self.donations.map{|donation| donation.id}
     total = 0
@@ -63,15 +65,17 @@ class User < ActiveRecord::Base
     total
   end
 
-  def only_recurring
-    self.donations.where(is_paid: true).each do |donation|
+  def only_recurring(organization_id)
+    donations = self.donations.filter_by_organization(organization_id)
+    donations.where(is_paid: true).each do |donation|
       return false unless donation.is_subscription
     end
     true
   end
 
-  def recurring_amount
-    Donation.where(user_id: self.id, is_paid: true, is_subscription: true).sum(:amount)
+  def recurring_amount(organization_id)
+    donations = self.donations.filter_by_organization(organization_id)
+    donations.where(user_id: self.id, is_paid: true, is_subscription: true).sum(:amount)
   end
 
   def authentication_keys

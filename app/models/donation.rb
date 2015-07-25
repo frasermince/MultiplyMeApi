@@ -89,6 +89,14 @@ class Donation < ActiveRecord::Base
     set
   end
 
+  def self.filter_by_organization(organization_id)
+    if(organization_id)
+      where(organization_id: organization_id)
+    else
+      self
+    end
+  end
+
   def one_grandchild
     grandchildren = 0
     self.children.each do |child|
