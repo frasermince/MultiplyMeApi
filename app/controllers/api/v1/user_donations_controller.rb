@@ -3,7 +3,8 @@ module Api
     class UserDonationsController < ApplicationController
       def show
         user = User.find(params[:id])
-        render json: {donation_ids: user.donations.map{|donation| donation.id}}, status: :ok
+        donations = user.donations.filter_by_organization params[:organization_id]
+        render json: {donation_ids: donations.map{|donation| donation.id}}, status: :ok
       end
     end
   end
