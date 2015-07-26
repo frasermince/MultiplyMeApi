@@ -3,6 +3,7 @@ module Api
     class ShareTreesController < ApplicationController
       def show
         @donation = Donation.find params[:id]
+        @organization_id = params[:organization_id]
         render(json: share_tree_json, status: :ok)
       end
 
@@ -10,7 +11,7 @@ module Api
       def share_tree_json
         {
           hours_remaining: (72.hours - (DateTime.now.to_f - @donation.created_at.to_f)) / 3600,
-          impact: @donation.user.personal_impact + @donation.user.network_impact,
+          impact: @donation.user.personal_impact(@organization_id) + @donation.user.network_impact(@organization_id),
           parent: parent,
           children: children,
           number_of_children: @donation.children.count,

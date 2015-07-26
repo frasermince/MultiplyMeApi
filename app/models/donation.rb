@@ -93,7 +93,7 @@ class Donation < ActiveRecord::Base
     if(organization_id)
       where(organization_id: organization_id)
     else
-      self
+      self.all
     end
   end
 
