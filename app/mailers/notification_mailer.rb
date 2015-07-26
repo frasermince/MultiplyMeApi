@@ -1,30 +1,30 @@
 include ActionView::Helpers::NumberHelper
 class NotificationMailer < ActionMailer::Base
   default from: 'team@multiplyme.in'
-  def finish_challenge(you, friend)
-    set_friend_instance you
+  def finish_challenge(you, friend, organization_id)
+    set_friend_instance you, organization_id
     @friend_name = friend.name
     mail(from: 'MultiplyMe', to: you.email, subject: 'Congratulations')
   end
 
-  def first_friend(you, your_donation, friend)
-    set_friend_instance(you)
+  def first_friend(you, your_donation, friend, organization_id)
+    set_friend_instance(you, organization_id)
     @friend_name = friend.name
     @share_link = share your_donation.id
     @days = your_donation.time_remaining
     mail(from: 'MultiplyMe', to: you.email, subject: 'Great News! Great Friends!')
   end
 
-  def second_friend(you, your_donation, friend)
-    set_friend_instance(you)
+  def second_friend(you, your_donation, friend, organization_id)
+    set_friend_instance(you, organization_id)
     @friend_name = friend.name
     @share_link = share your_donation.id
     @days = your_donation.time_remaining
     mail(from: 'MultiplyMe' ,to: you.email, subject: 'Two Down! One to Go!')
   end
 
-  def first_grandchild(you, your_donation)
-    set_friend_instance(you)
+  def first_grandchild(you, your_donation, organization_id)
+    set_friend_instance(you, organization_id)
     social_links your_donation, @impact
     mail(from: 'MultiplyMe', to: you.email, subject: 'Your network impact is growing!')
   end
@@ -60,9 +60,9 @@ class NotificationMailer < ActionMailer::Base
       @per_month = ''
     end
   end
-  def set_friend_instance(you)
+  def set_friend_instance(you, organization_id)
     @your_name = you.name
-    @impact = convert_amount(you.network_impact)
+    @impact = convert_amount(you.network_impact(organization_id))
   end
   def share(donation_id)
     'https://amala.multiplyme.in/#!/share/' + donation_id.to_s
