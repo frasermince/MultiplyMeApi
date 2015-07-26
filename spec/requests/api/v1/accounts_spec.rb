@@ -30,14 +30,6 @@ RSpec.describe 'Accounts API', type: :request do
     end
   end
 
-  context ' organization without donations is passed to request' do
-    it 'gives amounts of zero' do
-      setup
-      get "/v1/accounts/#{@user.id}", organization_id: @donation.organization_id + 1
-      expect(json['personal_impact']).to eq(0)
-    end
-  end
-
   def setup
     @user = create(:user)
     @donation = create(:donation)

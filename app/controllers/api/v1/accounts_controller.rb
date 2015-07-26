@@ -1,6 +1,6 @@
 module Api
   module V1
-    class AccountsController < ApplicationController
+    class AccountsController < BaseController
       def show
         user = User.find params[:id]
         @organization_id = params[:organization_id]

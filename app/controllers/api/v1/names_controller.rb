@@ -1,6 +1,6 @@
 module Api
   module V1
-    class NamesController < ApplicationController
+    class NamesController < BaseController
       def show
         donation = Donation.find(params[:id])
         user = donation.user

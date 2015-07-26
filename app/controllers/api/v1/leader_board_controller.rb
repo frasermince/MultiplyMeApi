@@ -1,6 +1,6 @@
 module Api
   module V1
-    class LeaderBoardController < ApplicationController
+    class LeaderBoardController < BaseController
 
       def index
         limit = params[:limit].nil? ? 10 : params[:limit]

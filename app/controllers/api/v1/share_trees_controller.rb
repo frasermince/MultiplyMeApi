@@ -1,6 +1,6 @@
 module Api
   module V1
-    class ShareTreesController < ApplicationController
+    class ShareTreesController < BaseController
       def show
         @donation = Donation.find params[:id]
         @organization_id = params[:organization_id]

@@ -1,6 +1,6 @@
 module Api
   module V1
-    class DonationsController < ApplicationController
+    class DonationsController < BaseController
       before_action :authenticate_user!, except: [:show]
       def create
         @donation = Donation.new donation_params

@@ -1,6 +1,6 @@
 module Api
   module V1
-    class UserDonationsController < ApplicationController
+    class UserDonationsController < BaseController
       def show
         user = User.find(params[:id])
         donations = user.donations.filter_by_organization params[:organization_id]

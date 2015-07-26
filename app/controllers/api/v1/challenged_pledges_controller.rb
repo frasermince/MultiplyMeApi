@@ -1,6 +1,6 @@
 module Api
   module V1
-    class ChallengedPledgesController < ApplicationController
+    class ChallengedPledgesController < BaseController
       def index
         donations = Donation
           .where('created_at > ? AND is_challenged is true AND organization_id = ?', 3.days.ago, params[:organization_id])
