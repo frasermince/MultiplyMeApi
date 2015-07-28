@@ -15,7 +15,8 @@ module Api
           parent: parent,
           children: children,
           number_of_children: @donation.children.count,
-          paid: @donation.is_paid
+          paid: @donation.is_paid,
+          referral_code: @donation.referral_code
         }
       end
 
