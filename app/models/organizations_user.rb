@@ -16,7 +16,7 @@ class OrganizationsUser < ActiveRecord::Base
   def get_stripe_user
     if self.stripe_id.present?
       stripe_client = StripeClient.new self.organization
-      stripe_client.retrieve_stripe_user self.user
+      stripe_client.retrieve_stripe_user self
     else
       create_stripe_user
     end
