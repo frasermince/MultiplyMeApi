@@ -11,7 +11,8 @@ module Api
       def share_tree_json
         {
           hours_remaining: (72.hours - (DateTime.now.to_f - @donation.created_at.to_f)) / 3600,
-          impact: @donation.user.personal_impact(@organization_id) + @donation.user.network_impact(@organization_id),
+          personal_impact: @donation.user.personal_impact(@organization_id),
+          network_impact: @donation.user.network_impact(@organization_id),
           parent: parent,
           children: children,
           number_of_children: @donation.children.count,
