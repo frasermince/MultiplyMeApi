@@ -42,14 +42,14 @@ class User < ActiveRecord::Base
     personal_impact + network_impact
   end
 
-  def personal_impact(organization_id)
+  def personal_impact(organization_id=2)
     filtered_donations = self.donations.filter_by_organization(organization_id)
     filtered_donations.where(is_paid: 1).reduce(0) do |accumulator, donation|
       accumulator += donation.yearly_amount
     end
   end
 
-  def network_impact(organization_id)
+  def network_impact(organization_id=2)
     donations = self.donations.filter_by_organization(organization_id)
     network_set = donations.reduce(Set.new) do |accumulator, donation|
       accumulator | donation.traverse_downline(accumulator)
