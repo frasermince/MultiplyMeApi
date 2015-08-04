@@ -1,7 +1,7 @@
 source 'https://code.stripe.com'
 source 'https://rubygems.org'
 
-
+gem "capistrano-resque", "~> 0.2.1", require: false
 gem 'rails', '4.2.0'
 gem 'responders', '~> 2.0'
 gem 'omniauth-stripe-connect'
@@ -11,6 +11,7 @@ gem 'stripe', :source => 'https://code.stripe.com/'
 gem 'sendgrid-ruby'
 gem 'gravatar_image_tag'
 gem 'omniauth-facebook', '2.0.1'
+gem 'mono_logger'
 
 gem 'unicorn'
 gem 'rails-api'
