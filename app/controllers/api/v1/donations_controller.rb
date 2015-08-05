@@ -10,7 +10,8 @@ module Api
 
       def show
         @donation = Donation.find params[:id]
-        render json: {donation: @donation, name: @donation.user.name, parent_donation: @donation.parent, parent_name: @donation.parent.user.name}, status: :ok
+        parent_name = @donation.parent ? @donation.parent.user.name : nil
+        render json: {donation: @donation, name: @donation.user.name, parent_donation: @donation.parent, parent_name: parent_name}, status: :ok
       end
 
       def update
