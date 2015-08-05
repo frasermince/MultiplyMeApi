@@ -6,7 +6,7 @@ RSpec.describe ReferralCodeService do
       donation = create(:donation)
       referral_code_service = ReferralCodeService.new donation
       result = referral_code_service.generate_code
-      expect(result).to eq(donation.user.name + donation.id.to_s )
+      expect(result).to eq(donation.user.name.split(" ")[0] + donation.id.to_s )
     end
   end
 
