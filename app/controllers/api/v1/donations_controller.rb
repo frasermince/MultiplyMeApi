@@ -12,7 +12,8 @@ module Api
         @donation = Donation.find params[:id]
         parent_name = @donation.parent ? @donation.parent.user.name : nil
         parents_children_count = @donation.parent ? @donation.parent.children.count : nil
-        render json: {donation: @donation, name: @donation.user.name, parent_donation: @donation.parent, parent_name: parent_name, parents_children_count: parents_children_count}, status: :ok
+        parent_time_remaining = @donation.parent ? @donation.parent.time_remaining : nil
+        render json: {donation: @donation, name: @donation.user.name, parent_donation: @donation.parent, parent_name: parent_name, parents_children_count: parents_children_count, parent_time_remaining: parent_time_remaining}, status: :ok
       end
 
       def update
