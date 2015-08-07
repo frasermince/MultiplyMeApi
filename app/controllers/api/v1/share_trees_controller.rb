@@ -2,7 +2,7 @@ module Api
   module V1
     class ShareTreesController < BaseController
       def show
-        @donation = Donation.find params[:id]
+        @donation = ReferralCodeService.find_donation_by_code params[:id]
         @organization_id = params[:organization_id]
         render(json: share_tree_json, status: :ok)
       end

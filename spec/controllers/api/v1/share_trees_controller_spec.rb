@@ -17,7 +17,7 @@ describe Api::V1::ShareTreesController do
     context 'when donation is found' do
       it 'returns the share tree that corresponds with the donation' do
         stub_finding @parent_donation, @parent_donation.id
-        get :show, id: @parent_donation.id
+        get :show, id: @parent_donation.referral_code
         parsed_body = JSON.parse(response.body)
         expect(response).to have_http_status(:ok)
         expect(parsed_body['parent']['image_url']).to be
