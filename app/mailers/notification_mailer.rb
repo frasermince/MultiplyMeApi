@@ -10,7 +10,7 @@ class NotificationMailer < ActionMailer::Base
   def first_friend(you, your_donation, friend, organization_id)
     set_friend_instance(you, organization_id)
     @friend_name = friend.name
-    @share_link = share your_donation.id
+    @share_link = share your_donation.referral_code
     @days = your_donation.time_remaining
     mail(from: 'MultiplyMe', to: you.email, subject: 'Great News! Great Friends!')
   end
@@ -18,7 +18,7 @@ class NotificationMailer < ActionMailer::Base
   def second_friend(you, your_donation, friend, organization_id)
     set_friend_instance(you, organization_id)
     @friend_name = friend.name
-    @share_link = share your_donation.id
+    @share_link = share your_donation.referral_code
     @days = your_donation.time_remaining
     mail(from: 'MultiplyMe' ,to: you.email, subject: 'Two Down! One to Go!')
   end
@@ -33,14 +33,14 @@ class NotificationMailer < ActionMailer::Base
     per_month(donation)
     @name = user.name
     @amount = convert_amount(donation.amount)
-    @share_link = share donation.id
+    @share_link = share donation.referral_code
     mail(from: 'MultiplyMe', to: user.email, subject: 'Thank you for taking the challenge')
   end
 
   def donated(user, donation)
     per_month(donation)
     @name = user.name
-    @share_link = share donation.id
+    @share_link = share donation.referral_code
     @amount = convert_amount(donation.amount)
     mail(from: 'MultiplyMe', to: user.email, subject: 'Thank you for donating')
   end
@@ -50,8 +50,8 @@ class NotificationMailer < ActionMailer::Base
     (amount * 0.01)
   end
   def social_links(donation, impact)
-    @facebook = '//www.facebook.com/sharer/sharer.php?u=https://amala.multiplyme.in/?_escaped_fragment_=share/' + donation.id.to_s
-    @twitter = "//www.twitter.com/intent/tweet?text=My network raised #{number_to_currency impact} to help the Bhatti Mines School #{share(donation.id)} @AmalaFoundation @MultiplyMeIn"
+    @facebook = '//www.facebook.com/sharer/sharer.php?u=https://backonmyfeet.multiplyme.in/?_escaped_fragment_=share/' + donation.referral_code
+    @twitter = "//www.twitter.com/intent/tweet?text=My network raised #{number_to_currency impact} to help Back On My Feet #{share(donation.referral_code)} @backonmyfeet @MultiplyMeIn"
   end
   def per_month(donation)
     if donation.is_subscription
@@ -64,7 +64,7 @@ class NotificationMailer < ActionMailer::Base
     @your_name = you.name
     @impact = convert_amount(you.network_impact(organization_id))
   end
-  def share(donation_id)
-    'https://amala.multiplyme.in/#!/share/' + donation_id.to_s
+  def share(referral_code)
+    'https://backonmyfeet.multiplyme.in/#!/sharedReceipt/' + referral_code
   end
 end
