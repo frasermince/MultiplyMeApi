@@ -3,7 +3,7 @@ require 'set'
 # Includes two concerns
 class Donation < ActiveRecord::Base
 
-  before_create :set_referral
+  after_create :set_referral
   # tracks a user's downline
   # tracks the amount of money donated
   # automatically charges for a donation when it has three children
@@ -17,7 +17,7 @@ class Donation < ActiveRecord::Base
     :organization_id, :user_id, presence: true
 
   def set_referral
-    self.referral_code = ReferralCodeService.new(self).generate_code
+    self.update_attribute('referral_code', ReferralCodeService.new(self).generate_code)
   end
 
   def is_owner?(user_id)
