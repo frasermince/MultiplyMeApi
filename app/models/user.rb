@@ -82,8 +82,8 @@ class User < ActiveRecord::Base
     [:email]
   end
 
-  def get_gravatar_url
-    gravatar_image_url(self.email, filetype: :png, secure: true, size: 75)
+  def get_gravatar_url(size=75)
+    gravatar_image_url(self.email, filetype: :png, secure: true, size: size)
   end
 
   private
