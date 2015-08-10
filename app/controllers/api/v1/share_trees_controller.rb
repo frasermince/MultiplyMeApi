@@ -33,7 +33,7 @@ module Api
         @donation.children.limit(3).map do |child|
           {donation: child,
            name: child.user.name,
-           image_url: child.user.get_gravatar_url
+           image_url: child.user.get_gravatar_url(100)
           }
         end
       end
