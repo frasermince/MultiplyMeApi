@@ -13,7 +13,7 @@ module Api
         parent_name = @donation.parent ? @donation.parent.user.name : nil
         parents_children_count = @donation.parent != nil ? @donation.parent.children.count : 0
         parent_time_remaining = @donation.parent ? @donation.parent.hours_remaining.to_i : nil
-        children_images = @donation.children.map{|child| child.user.get_gravatar_url(50)}
+        children_images = @donation.parent != nil ? @donation.parent.children.map{|child| child.user.get_gravatar_url(50)} : []
         render json: {donation: @donation, name: @donation.user.name, parent_donation: @donation.parent, parent_name: parent_name, parents_children_count: parents_children_count, parent_time_remaining: parent_time_remaining, children_images: children_images}, status: :ok
       end
 
