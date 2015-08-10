@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150624215541) do
+ActiveRecord::Schema.define(version: 20150809231350) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -32,6 +32,7 @@ ActiveRecord::Schema.define(version: 20150624215541) do
     t.boolean  "is_cancelled",                default: false
     t.datetime "cancelled_time"
     t.string   "referral_code"
+    t.datetime "last_reminder"
   end
 
   add_index "donations", ["organization_id"], name: "index_donations_on_organization_id", using: :btree

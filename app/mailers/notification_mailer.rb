@@ -23,6 +23,14 @@ class NotificationMailer < ActionMailer::Base
     mail(from: 'MultiplyMe' ,to: you.email, subject: 'Two Down! One to Go!')
   end
 
+  def remind_friend(you, your_donation, organization_id)
+    set_friend_instance(you, organization_id)
+    @remaining_friends = 3 - your_donation.children.count
+    @share_link = share your_donation.referral_code
+    @days = your_donation.time_remaining
+    mail(from: 'MultiplyMe' ,to: you.email, subject: 'Friendly Reminder from MultiplyMe!')
+  end
+
   def first_grandchild(you, your_donation, organization_id)
     set_friend_instance(you, organization_id)
     social_links your_donation, @impact
