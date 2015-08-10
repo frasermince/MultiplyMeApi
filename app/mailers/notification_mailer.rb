@@ -73,6 +73,6 @@ class NotificationMailer < ActionMailer::Base
     @impact = convert_amount(you.network_impact(organization_id))
   end
   def share(referral_code)
-    'https://backonmyfeet.multiplyme.in/#!/sharedReceipt/' + referral_code
+    'https://backonmyfeet.multiplyme.in/#!/share/' + referral_code
   end
 end
