@@ -31,7 +31,7 @@ class DonationDecorator
     @donation.save!
     Payments::PaymentFactory.new(donation).pay
     NotificationService.new(@donation).send_mail
-    subscribe_to_mail
+    #subscribe_to_mail
   end
 
   def subscribe_to_mail
