@@ -24,8 +24,12 @@ class Donation < ActiveRecord::Base
     self.user_id == user_id
   end
 
+  def hours_remaining
+    (self.created_at + 3.days - DateTime.now) / 3600
+  end
+
   def time_remaining
-    (((self.created_at + 3.days) - DateTime.now) / 3600 / 24).to_i
+    (hours_remaining / 24).to_i
   end
 
   def yearly_amount
