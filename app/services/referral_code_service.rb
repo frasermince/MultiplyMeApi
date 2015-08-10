@@ -4,12 +4,12 @@ class ReferralCodeService
   end
 
   def generate_code
-    (@donation.user.name.split(" ")[0] + @donation.id.to_s)
+    (@donation.user.name.split(" ")[0] + @donation.id.to_s).downcase
   end
 
   def self.find_donation_by_code(code)
     if code.present?
-      Donation.where(referral_code: code).first
+      Donation.where(referral_code: code.downcase).first
     else
       nil
     end
