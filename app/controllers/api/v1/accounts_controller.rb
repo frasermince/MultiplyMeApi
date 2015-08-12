@@ -13,7 +13,7 @@ module Api
       def children(user)
         donations = user.donations
         donations.inject([]) do |accumulator, donation|
-          accumulator.concat donation.children.map{|child| {name: child.user.name, referral_link: child.referral_code, is_paid: child.is_paid, is_challenged: child.is_challenged}}
+          accumulator.concat donation.children.map{|child| {name: child.user.name, referral_link: child.referral_code, is_paid: child.is_paid, is_challenged: child.is_challenged, challenged_ongoing: donation.time_remaining > 0}}
         end
       end
       def json_response(user, personal_impact, network_impact, referral_code)
