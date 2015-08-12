@@ -11,7 +11,7 @@ module Api
       end
       private
       def children(user)
-        donations = user.donations
+        donations = user.donations.where(organization_id: @organization_id)
         donations.inject([]) do |accumulator, donation|
           accumulator.concat donation.children.map{|child| {name: child.user.name, referral_link: child.referral_code, is_paid: child.is_paid, is_challenged: child.is_challenged, challenge_ongoing: donation.time_remaining > 0}}
         end
