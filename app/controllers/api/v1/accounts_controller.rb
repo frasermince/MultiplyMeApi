@@ -10,6 +10,12 @@ module Api
         render json: json_response(user, personal_impact, network_impact, referral_code), status: :ok
       end
       private
+      def children(user)
+        donations = user.donations
+        donations.inject([]) do |accumulator, donation|
+          accumulator.concat donation.children.map{|child| {name: child.user.name, referral_link: child.referral_code, is_paid: child.is_paid, is_challenged: child.is_challenged}}
+        end
+      end
       def json_response(user, personal_impact, network_impact, referral_code)
         {
           personal_impact: personal_impact,
@@ -18,7 +24,8 @@ module Api
           recurring_amount: user.recurring_amount(@organization_id),
           only_recurring: user.only_recurring(@organization_id),
           all_cancelled: user.all_cancelled?(@organization_id),
-          referral_code: referral_code
+          referral_code: referral_code,
+          children: children(user)
         }
       end
     end
