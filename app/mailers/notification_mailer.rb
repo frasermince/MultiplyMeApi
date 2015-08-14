@@ -23,10 +23,11 @@ class NotificationMailer < ActionMailer::Base
     mail(from: 'MultiplyMe' ,to: you.email, subject: 'Two Down! One to Go!')
   end
 
-  def thank_friend(friend, content)
+  def thank_friend(you, friend_name, content)
     @content = content
-    @your_name = friend.name
-    mail(from: 'MultiplyMe', to: friend.email, subject: 'Thank you!')
+    @friend_name = friend_name
+    @your_name = you.name
+    mail(from: 'MultiplyMe', to: you.email, subject: "#{friend_name} thanks you")
   end
 
   def remind_friend(you, your_donation, organization_id)

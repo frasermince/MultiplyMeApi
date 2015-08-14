@@ -347,14 +347,22 @@ body, #bodyTable {
            class="bodyContent"
            style="-webkit-text-size-adjust: 100%;-ms-text-size-adjust: 100%;mso-table-lspace: 0pt;mso-table-rspace: 0pt;color: #141c26;font-family: Open Sans, Helvetica;font-size: 14px;line-height: 130%;padding-top: -10px;padding-right: 50px;padding-bottom: 60px;padding-left: 50px;text-align: left;">
                   <p class="top-line" style="font-size: 24px;font-weight: 200;line-height: 130%;-webkit-text-size-adjust: 100%;-ms-text-size-adjust: 100%;text-align:center">
-                  Thank you!
+                  Thank You
+                  <p>Hi <%= @your_name %>,</p>
+
+                  <p>Your friend <%= @friend_name %> just wanted to thank you for your support with the following message:</p>
+                  <br>
+                  <%= @content %>
+
+                  </p>
+                  <br>
+                  <p>
+                  Sent with &hearts; from MultiplyMe
                   </p>
 
                   <br>
-                  Hello <%= @your_name %>,
                   <br>
                   <br>
-                  <%= @content %>
                   <br>
                   <br>
                 </td>
