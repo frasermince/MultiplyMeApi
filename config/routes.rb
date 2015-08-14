@@ -4,6 +4,7 @@ Rails.application.routes.draw do
   #constraints :subdomain => 'api' do
     namespace :api, path: nil, defaults: {format: 'json'}  do
       namespace :v1 do
+        resources :thanks, only: [:create]
         resources :donations, only: [:create, :show, :update]
         resources :donation_reminders, only: [:create]
         resources :share_trees, only: [:show]
@@ -13,6 +14,7 @@ Rails.application.routes.draw do
         resources :user_donations, only: [:show]
         resources :accounts, only: [:show]
         resources :challenged_pledges, only: [:index]
+        resources :remind_challengers, only: [:index]
         resource :email_subscriptions, only: [:create, :destroy]
         get 'leaders/(:limit)' => 'leader_board#index'
         post 'subscribe/:id' => 'mailchimp#subscribe'
