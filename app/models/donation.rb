@@ -20,6 +20,17 @@ class Donation < ActiveRecord::Base
     self.update_attribute('referral_code', ReferralCodeService.new(self).generate_code)
   end
 
+  def count_generations_up
+    count = 1
+    current = self
+    while(current.parent != nil)
+      current = self.parent
+      count += 1
+
+    end
+    count
+  end
+
   def is_owner?(user_id)
     self.user_id == user_id
   end
