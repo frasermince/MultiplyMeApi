@@ -13,7 +13,7 @@ module Api
       def children(user)
         donations = user.donations.where(organization_id: @organization_id)
         donations.inject([]) do |accumulator, donation|
-          accumulator.concat donation.children.map{|child| {name: child.user.name, referral_link: child.referral_code, is_paid: child.is_paid, is_challenged: child.is_challenged, challenge_ongoing: child.hours_remaining > 0}}
+          accumulator.concat donation.children.map{|child| {name: child.user.name, referral_link: child.referral_code, is_paid: child.is_paid, is_challenged: child.is_challenged, challenge_ongoing: child.hours_remaining > 0, can_thank: user.thanks_date.nil?}}
         end
       end
       def json_response(user, personal_impact, network_impact, referral_code)
@@ -25,8 +25,7 @@ module Api
           only_recurring: user.only_recurring(@organization_id),
           all_cancelled: user.all_cancelled?(@organization_id),
           referral_code: referral_code,
-          children: children(user),
-          can_thank: user.thanks_date.nil?
+          children: children(user)
         }
       end
     end
