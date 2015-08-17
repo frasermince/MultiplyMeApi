@@ -25,7 +25,8 @@ module Api
           only_recurring: user.only_recurring(@organization_id),
           all_cancelled: user.all_cancelled?(@organization_id),
           referral_code: referral_code,
-          children: children(user)
+          children: children(user),
+          can_thank: user.thanks_date.nil?
         }
       end
     end
