@@ -4,7 +4,7 @@ module Api
       def create
         content = params[:content]
         friend_name = params[:friend_name]
-        user = Donation.find(params[:id]).user
+        user = ReferralCodeService.find_donation_by_code(params[:id]).user
         NotificationMailer.thank_friend(user, friend_name, content)
       end
     end
