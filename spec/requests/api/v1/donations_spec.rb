@@ -6,14 +6,13 @@ end
 RSpec.describe 'Donation API', :type => :request do
   before { host! "api.multiplyme.in" }
   describe 'POST' do
-
     context 'donation is third child of a challenged' do
       it 'successfully returns the donation' do
         parent = create(:stripe_donation)
         first_child = create(:donation)
         second_child = create(:donation)
         parent.update_attribute('is_challenged', true)
-        referral_code = 'TEST'
+        referral_code = 'test'
         parent.update_attribute('referral_code', referral_code)
         first_child.update_attribute('parent_id', parent.id)
         second_child.update_attribute('parent_id', parent.id)
@@ -23,12 +22,13 @@ RSpec.describe 'Donation API', :type => :request do
         expect(json['error']).not_to be
       end
     end
+
     context 'information is valid' do
       context 'referral is present' do
         it 'sets the parent donation based on the referral' do
           parent = create(:donation)
-          parent.update_attribute 'referral_code', 'TEST'
-          call_donation_create 'TEST'
+          parent.update_attribute 'referral_code', 'test'
+          call_donation_create 'test'
           expect(json['donation']['parent_id']).to eq(parent.id)
         end
       end
@@ -103,6 +103,6 @@ RSpec.describe 'Donation API', :type => :request do
     donation_attributes[:is_challenged] = false
     card_params = valid_stripe_params(card)
     subscribe = false
-    post '/v1/donations', {donation: donation_attributes, card: card_params, subscribe: subscribe, referral_code: referral_code}, auth_headers
+    post '/v1/donations', { donation: donation_attributes, card: card_params, subscribe: subscribe, referral_code: referral_code }, auth_headers
   end
 end

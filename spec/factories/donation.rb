@@ -3,6 +3,7 @@ FactoryGirl.define do
     organization_id {Organization.first.present? ? Organization.first.id : create(:organization).id}
     user_id {User.first.present? ? User.first.id : create(:user).id}
     amount 300
+    referral_code 'test'
 
     factory :stripe_donation do
       is_paid true
