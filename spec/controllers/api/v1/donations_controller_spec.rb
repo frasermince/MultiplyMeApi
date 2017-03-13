@@ -29,7 +29,7 @@ describe Api::V1::DonationsController do
         donation_decorator = double('donation_decorator')
         error = 'Your card was declined.'
 
-        allow(DonationDecorator)
+        allow(DonationFlow)
           .to receive(:new)
           .and_return(donation_decorator)
 
@@ -99,7 +99,7 @@ describe Api::V1::DonationsController do
 
   def stub_decorator(referral_code)
     donation_decorator = double('donation_decorator')
-    allow(DonationDecorator)
+    allow(DonationFlow)
       .to receive(:new)
       .with(any_args, referral_code)
       .and_return(donation_decorator)

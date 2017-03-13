@@ -4,8 +4,8 @@ module Api
       before_action :authenticate_user!, except: [:show]
       def create
         @donation = Donation.new donation_params
-        donation_decorator = DonationDecorator.new(@donation, card_params, current_user, params[:subscribe], params[:referral_code])
-        respond_to_create donation_decorator
+        donation_flow = DonationFlow.new(@donation, card_params, current_user, params[:subscribe], params[:referral_code])
+        respond_to_create donation_flow
       end
 
       def show
