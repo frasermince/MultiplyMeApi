@@ -9,13 +9,16 @@ module Api
         referral_code = user.donations.present? ? user.donations.last.referral_code : nil
         render json: json_response(user, personal_impact, network_impact, referral_code), status: :ok
       end
+
       private
+
       def children(user)
         donations = user.donations.where(organization_id: @organization_id)
         donations.inject([]) do |accumulator, donation|
-          accumulator.concat donation.children.map{|child| {name: child.user.name, referral_link: child.referral_code, is_paid: child.is_paid, is_challenged: child.is_challenged, challenge_ongoing: child.hours_remaining > 0, can_thank: child.thanks_date.nil?}}
+          accumulator.concat donation.children.map{|child| {name: child.user.name, referral_link: child.referral_code, is_paid: child.is_paid, is_challenged: child.is_challenged, challenge_ongoing: child.hours_remaining > 0, can_thank: child.user.thanks_date.nil?}}
         end
       end
+
       def json_response(user, personal_impact, network_impact, referral_code)
         {
           personal_impact: personal_impact,
