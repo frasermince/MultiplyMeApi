@@ -64,10 +64,12 @@ class NotificationMailer < ActionMailer::Base
   def convert_amount(amount)
     (amount * 0.01)
   end
+
   def social_links(donation, impact)
     @facebook = '//www.facebook.com/sharer/sharer.php?u=https://backonmyfeet.multiplyme.in/?_escaped_fragment_=share/' + donation.referral_code
     @twitter = "//www.twitter.com/intent/tweet?text=My network raised #{number_to_currency impact} to help Back On My Feet #{share(donation.referral_code)} @backonmyfeet @MultiplyMeIn"
   end
+
   def per_month(donation)
     if donation.is_subscription
       @per_month = ' a month'
@@ -75,10 +77,12 @@ class NotificationMailer < ActionMailer::Base
       @per_month = ''
     end
   end
+
   def set_friend_instance(you, organization_id)
     @your_name = you.name
     @impact = convert_amount(you.network_impact(organization_id))
   end
+
   def share(referral_code)
     'https://backonmyfeet.multiplyme.in/#!/share/' + referral_code
   end
